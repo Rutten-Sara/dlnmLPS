@@ -64,8 +64,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // poisson_loglik_samples_cpp
-Rcpp::NumericMatrix poisson_loglik_samples_cpp(Rcpp::NumericVector xi_mode, Rcpp::NumericMatrix betas, Rcpp::S4 Xv, Rcpp::NumericVector y, Rcpp::NumericVector offset, SEXP v_mode);
-RcppExport SEXP _DLNMLPS_poisson_loglik_samples_cpp(SEXP xi_modeSEXP, SEXP betasSEXP, SEXP XvSEXP, SEXP ySEXP, SEXP offsetSEXP, SEXP v_modeSEXP) {
+Rcpp::NumericMatrix poisson_loglik_samples_cpp(Rcpp::NumericVector xi_mode, Rcpp::NumericMatrix betas, Rcpp::S4 Xv, Rcpp::NumericVector y, Rcpp::NumericVector offset, SEXP v_mode, SEXP Ntrials);
+RcppExport SEXP _DLNMLPS_poisson_loglik_samples_cpp(SEXP xi_modeSEXP, SEXP betasSEXP, SEXP XvSEXP, SEXP ySEXP, SEXP offsetSEXP, SEXP v_modeSEXP, SEXP NtrialsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -75,13 +75,31 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type offset(offsetSEXP);
     Rcpp::traits::input_parameter< SEXP >::type v_mode(v_modeSEXP);
-    rcpp_result_gen = Rcpp::wrap(poisson_loglik_samples_cpp(xi_mode, betas, Xv, y, offset, v_mode));
+    Rcpp::traits::input_parameter< SEXP >::type Ntrials(NtrialsSEXP);
+    rcpp_result_gen = Rcpp::wrap(poisson_loglik_samples_cpp(xi_mode, betas, Xv, y, offset, v_mode, Ntrials));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gaussian_loglik_samples_cpp
+Rcpp::NumericMatrix gaussian_loglik_samples_cpp(Rcpp::NumericVector xi_mode, Rcpp::NumericMatrix betas, Rcpp::S4 Xv, Rcpp::NumericVector y, Rcpp::NumericVector offset, SEXP v_mode, SEXP Ntrials);
+RcppExport SEXP _DLNMLPS_gaussian_loglik_samples_cpp(SEXP xi_modeSEXP, SEXP betasSEXP, SEXP XvSEXP, SEXP ySEXP, SEXP offsetSEXP, SEXP v_modeSEXP, SEXP NtrialsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type xi_mode(xi_modeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type betas(betasSEXP);
+    Rcpp::traits::input_parameter< Rcpp::S4 >::type Xv(XvSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type offset(offsetSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type v_mode(v_modeSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type Ntrials(NtrialsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gaussian_loglik_samples_cpp(xi_mode, betas, Xv, y, offset, v_mode, Ntrials));
     return rcpp_result_gen;
 END_RCPP
 }
 // nb_loglik_samples_cpp
-Rcpp::NumericMatrix nb_loglik_samples_cpp(Rcpp::NumericVector xi_mode, Rcpp::NumericMatrix betas, Rcpp::S4 Xv, Rcpp::NumericVector y, Rcpp::NumericVector offset, SEXP v_mode);
-RcppExport SEXP _DLNMLPS_nb_loglik_samples_cpp(SEXP xi_modeSEXP, SEXP betasSEXP, SEXP XvSEXP, SEXP ySEXP, SEXP offsetSEXP, SEXP v_modeSEXP) {
+Rcpp::NumericMatrix nb_loglik_samples_cpp(Rcpp::NumericVector xi_mode, Rcpp::NumericMatrix betas, Rcpp::S4 Xv, Rcpp::NumericVector y, Rcpp::NumericVector offset, SEXP v_mode, SEXP Ntrials);
+RcppExport SEXP _DLNMLPS_nb_loglik_samples_cpp(SEXP xi_modeSEXP, SEXP betasSEXP, SEXP XvSEXP, SEXP ySEXP, SEXP offsetSEXP, SEXP v_modeSEXP, SEXP NtrialsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -91,7 +109,25 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type offset(offsetSEXP);
     Rcpp::traits::input_parameter< SEXP >::type v_mode(v_modeSEXP);
-    rcpp_result_gen = Rcpp::wrap(nb_loglik_samples_cpp(xi_mode, betas, Xv, y, offset, v_mode));
+    Rcpp::traits::input_parameter< SEXP >::type Ntrials(NtrialsSEXP);
+    rcpp_result_gen = Rcpp::wrap(nb_loglik_samples_cpp(xi_mode, betas, Xv, y, offset, v_mode, Ntrials));
+    return rcpp_result_gen;
+END_RCPP
+}
+// logistic_loglik_samples_cpp
+Rcpp::NumericMatrix logistic_loglik_samples_cpp(Rcpp::NumericVector xi_mode, Rcpp::NumericMatrix betas, Rcpp::S4 Xv, Rcpp::NumericVector y, Rcpp::NumericVector offset, SEXP v_mode, SEXP Ntrials);
+RcppExport SEXP _DLNMLPS_logistic_loglik_samples_cpp(SEXP xi_modeSEXP, SEXP betasSEXP, SEXP XvSEXP, SEXP ySEXP, SEXP offsetSEXP, SEXP v_modeSEXP, SEXP NtrialsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type xi_mode(xi_modeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type betas(betasSEXP);
+    Rcpp::traits::input_parameter< Rcpp::S4 >::type Xv(XvSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type offset(offsetSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type v_mode(v_modeSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type Ntrials(NtrialsSEXP);
+    rcpp_result_gen = Rcpp::wrap(logistic_loglik_samples_cpp(xi_mode, betas, Xv, y, offset, v_mode, Ntrials));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -151,6 +187,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// solve_gaussian_mode
+Eigen::VectorXd solve_gaussian_mode(const Eigen::SparseMatrix<double>& Qv, const Eigen::SparseMatrix<double>& XtX, const Eigen::VectorXd& Xty, const double v1);
+RcppExport SEXP _DLNMLPS_solve_gaussian_mode(SEXP QvSEXP, SEXP XtXSEXP, SEXP XtySEXP, SEXP v1SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::SparseMatrix<double>& >::type Qv(QvSEXP);
+    Rcpp::traits::input_parameter< const Eigen::SparseMatrix<double>& >::type XtX(XtXSEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type Xty(XtySEXP);
+    Rcpp::traits::input_parameter< const double >::type v1(v1SEXP);
+    rcpp_result_gen = Rcpp::wrap(solve_gaussian_mode(Qv, XtX, Xty, v1));
+    return rcpp_result_gen;
+END_RCPP
+}
 // solve_sparse_cholesky_constr
 Eigen::MatrixXd solve_sparse_cholesky_constr(const Eigen::SparseMatrix<double>& Qv, const Eigen::VectorXd& Cvxi, const Eigen::SparseMatrix<double>& Xv, const Eigen::SparseMatrix<double>& A, const Eigen::VectorXd& b);
 RcppExport SEXP _DLNMLPS_solve_sparse_cholesky_constr(SEXP QvSEXP, SEXP CvxiSEXP, SEXP XvSEXP, SEXP ASEXP, SEXP bSEXP) {
@@ -179,6 +229,21 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Eigen::SparseMatrix<double>& >::type A(ASEXP);
     Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type b(bSEXP);
     rcpp_result_gen = Rcpp::wrap(solve_sparse_cholesky_NB_constr(Qv, Wnb, MVnb, Xv, A, b));
+    return rcpp_result_gen;
+END_RCPP
+}
+// solve_gaussian_mode_constr
+Eigen::VectorXd solve_gaussian_mode_constr(const Eigen::SparseMatrix<double>& Qv, const Eigen::SparseMatrix<double>& XtX, const Eigen::VectorXd& Xty, const double v1, const Eigen::SparseMatrix<double>& C);
+RcppExport SEXP _DLNMLPS_solve_gaussian_mode_constr(SEXP QvSEXP, SEXP XtXSEXP, SEXP XtySEXP, SEXP v1SEXP, SEXP CSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::SparseMatrix<double>& >::type Qv(QvSEXP);
+    Rcpp::traits::input_parameter< const Eigen::SparseMatrix<double>& >::type XtX(XtXSEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type Xty(XtySEXP);
+    Rcpp::traits::input_parameter< const double >::type v1(v1SEXP);
+    Rcpp::traits::input_parameter< const Eigen::SparseMatrix<double>& >::type C(CSEXP);
+    rcpp_result_gen = Rcpp::wrap(solve_gaussian_mode_constr(Qv, XtX, Xty, v1, C));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -215,6 +280,17 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type Cvxi(CvxiSEXP);
     Rcpp::traits::input_parameter< const Eigen::SparseMatrix<double>& >::type Xv(XvSEXP);
     rcpp_result_gen = Rcpp::wrap(XWX_func_approx(Cvxi, Xv));
+    return rcpp_result_gen;
+END_RCPP
+}
+// XX_func
+Eigen::SparseMatrix<double> XX_func(const Eigen::SparseMatrix<double>& Xv);
+RcppExport SEXP _DLNMLPS_XX_func(SEXP XvSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::SparseMatrix<double>& >::type Xv(XvSEXP);
+    rcpp_result_gen = Rcpp::wrap(XX_func(Xv));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -280,17 +356,22 @@ static const R_CallMethodDef CallEntries[] = {
     {"_DLNMLPS_Hutchinson_pD_con", (DL_FUNC) &_DLNMLPS_Hutchinson_pD_con, 4},
     {"_DLNMLPS_simulate_from_precision", (DL_FUNC) &_DLNMLPS_simulate_from_precision, 2},
     {"_DLNMLPS_simulate_from_precision_con", (DL_FUNC) &_DLNMLPS_simulate_from_precision_con, 3},
-    {"_DLNMLPS_poisson_loglik_samples_cpp", (DL_FUNC) &_DLNMLPS_poisson_loglik_samples_cpp, 6},
-    {"_DLNMLPS_nb_loglik_samples_cpp", (DL_FUNC) &_DLNMLPS_nb_loglik_samples_cpp, 6},
+    {"_DLNMLPS_poisson_loglik_samples_cpp", (DL_FUNC) &_DLNMLPS_poisson_loglik_samples_cpp, 7},
+    {"_DLNMLPS_gaussian_loglik_samples_cpp", (DL_FUNC) &_DLNMLPS_gaussian_loglik_samples_cpp, 7},
+    {"_DLNMLPS_nb_loglik_samples_cpp", (DL_FUNC) &_DLNMLPS_nb_loglik_samples_cpp, 7},
+    {"_DLNMLPS_logistic_loglik_samples_cpp", (DL_FUNC) &_DLNMLPS_logistic_loglik_samples_cpp, 7},
     {"_DLNMLPS_Hess_logpxi", (DL_FUNC) &_DLNMLPS_Hess_logpxi, 3},
     {"_DLNMLPS_Hess_logpxi_NB", (DL_FUNC) &_DLNMLPS_Hess_logpxi_NB, 4},
     {"_DLNMLPS_solve_sparse_cholesky", (DL_FUNC) &_DLNMLPS_solve_sparse_cholesky, 4},
     {"_DLNMLPS_solve_sparse_cholesky_NB", (DL_FUNC) &_DLNMLPS_solve_sparse_cholesky_NB, 5},
+    {"_DLNMLPS_solve_gaussian_mode", (DL_FUNC) &_DLNMLPS_solve_gaussian_mode, 4},
     {"_DLNMLPS_solve_sparse_cholesky_constr", (DL_FUNC) &_DLNMLPS_solve_sparse_cholesky_constr, 5},
     {"_DLNMLPS_solve_sparse_cholesky_NB_constr", (DL_FUNC) &_DLNMLPS_solve_sparse_cholesky_NB_constr, 6},
+    {"_DLNMLPS_solve_gaussian_mode_constr", (DL_FUNC) &_DLNMLPS_solve_gaussian_mode_constr, 5},
     {"_DLNMLPS_determinant_Pv", (DL_FUNC) &_DLNMLPS_determinant_Pv, 1},
     {"_DLNMLPS_XWX_func", (DL_FUNC) &_DLNMLPS_XWX_func, 3},
     {"_DLNMLPS_XWX_func_approx", (DL_FUNC) &_DLNMLPS_XWX_func_approx, 2},
+    {"_DLNMLPS_XX_func", (DL_FUNC) &_DLNMLPS_XX_func, 1},
     {"_DLNMLPS_Predict_se_con", (DL_FUNC) &_DLNMLPS_Predict_se_con, 4},
     {"_DLNMLPS_Predict_se", (DL_FUNC) &_DLNMLPS_Predict_se, 3},
     {"_DLNMLPS_Predict_se_all_con", (DL_FUNC) &_DLNMLPS_Predict_se_all_con, 5},

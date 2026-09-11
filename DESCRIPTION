@@ -4,7 +4,6 @@ Version: 0.1.0
 Authors@R: 
     person("Sara", "Rutten", , "sara.rutten@uhasselt.be", role = c("aut", "cre"))
 Description: Tools for fitting distributed lag non-linear models within a Bayesian framework using Laplacian P-splines. The package enables flexible modelling of complex exposure-lag-response relationships based on the methodology of Rutten et al. (2026) <https://doi.org/10.1007/s11222-025-10790-9>.
-License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
@@ -21,6 +20,13 @@ Imports:
     stats,
     tsModel,
     utils
+Suggests:
+    dplyr,
+    lubridate
 LinkingTo: 
     Rcpp,
     RcppEigen
+License: GPL (>= 3)
+Depends: 
+    R (>= 3.5)
+LazyData: true

@@ -17,12 +17,20 @@ simulate_from_precision_con <- function(Prec, A, nsim = 500L) {
     .Call(`_DLNMLPS_simulate_from_precision_con`, Prec, A, nsim)
 }
 
-poisson_loglik_samples_cpp <- function(xi_mode, betas, Xv, y, offset, v_mode) {
-    .Call(`_DLNMLPS_poisson_loglik_samples_cpp`, xi_mode, betas, Xv, y, offset, v_mode)
+poisson_loglik_samples_cpp <- function(xi_mode, betas, Xv, y, offset, v_mode, Ntrials) {
+    .Call(`_DLNMLPS_poisson_loglik_samples_cpp`, xi_mode, betas, Xv, y, offset, v_mode, Ntrials)
 }
 
-nb_loglik_samples_cpp <- function(xi_mode, betas, Xv, y, offset, v_mode) {
-    .Call(`_DLNMLPS_nb_loglik_samples_cpp`, xi_mode, betas, Xv, y, offset, v_mode)
+gaussian_loglik_samples_cpp <- function(xi_mode, betas, Xv, y, offset, v_mode, Ntrials) {
+    .Call(`_DLNMLPS_gaussian_loglik_samples_cpp`, xi_mode, betas, Xv, y, offset, v_mode, Ntrials)
+}
+
+nb_loglik_samples_cpp <- function(xi_mode, betas, Xv, y, offset, v_mode, Ntrials) {
+    .Call(`_DLNMLPS_nb_loglik_samples_cpp`, xi_mode, betas, Xv, y, offset, v_mode, Ntrials)
+}
+
+logistic_loglik_samples_cpp <- function(xi_mode, betas, Xv, y, offset, v_mode, Ntrials) {
+    .Call(`_DLNMLPS_logistic_loglik_samples_cpp`, xi_mode, betas, Xv, y, offset, v_mode, Ntrials)
 }
 
 Hess_logpxi <- function(Qv, Cvxi, Xv) {
@@ -41,12 +49,20 @@ solve_sparse_cholesky_NB <- function(Qv, Wnb, MVnb, Xv, b) {
     .Call(`_DLNMLPS_solve_sparse_cholesky_NB`, Qv, Wnb, MVnb, Xv, b)
 }
 
+solve_gaussian_mode <- function(Qv, XtX, Xty, v1) {
+    .Call(`_DLNMLPS_solve_gaussian_mode`, Qv, XtX, Xty, v1)
+}
+
 solve_sparse_cholesky_constr <- function(Qv, Cvxi, Xv, A, b) {
     .Call(`_DLNMLPS_solve_sparse_cholesky_constr`, Qv, Cvxi, Xv, A, b)
 }
 
 solve_sparse_cholesky_NB_constr <- function(Qv, Wnb, MVnb, Xv, A, b) {
     .Call(`_DLNMLPS_solve_sparse_cholesky_NB_constr`, Qv, Wnb, MVnb, Xv, A, b)
+}
+
+solve_gaussian_mode_constr <- function(Qv, XtX, Xty, v1, C) {
+    .Call(`_DLNMLPS_solve_gaussian_mode_constr`, Qv, XtX, Xty, v1, C)
 }
 
 determinant_Pv <- function(Pv) {
@@ -59,6 +75,10 @@ XWX_func <- function(Cvxi, Xv, tXv) {
 
 XWX_func_approx <- function(Cvxi, Xv) {
     .Call(`_DLNMLPS_XWX_func_approx`, Cvxi, Xv)
+}
+
+XX_func <- function(Xv) {
+    .Call(`_DLNMLPS_XX_func`, Xv)
 }
 
 Predict_se_con <- function(Prec, Xpred, ind, A) {

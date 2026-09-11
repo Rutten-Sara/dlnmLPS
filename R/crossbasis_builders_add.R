@@ -225,6 +225,7 @@ build_component_spline<-function(state, sm_args_iter, term, all_terms, constants
   logpv.fixed <- state$logpv.fixed
   v_init <- state$v_init
   sm_list <- state$sm_list
+  has_no_intercept <- state$has_no_intercept_smooth
 
   constraint_matrix  <- state$constraint
 
@@ -233,6 +234,10 @@ build_component_spline<-function(state, sm_args_iter, term, all_terms, constants
   b <- constants$b
   nu <- constants$nu
 
+  if(sm_args_iter$arg$intercept  & has_no_intercept){
+    state$has_no_intercept_smooth = FALSE
+
+  }
 
   if(sm_args_iter$arg$type == "ps"){
     sm_list[[term]] <- dlnm::ps(sm_args_iter$x,
@@ -333,7 +338,6 @@ build_component_spatialrw<-function(state, sm_args_iter, term, all_terms, consta
   a.rho <- constants$a.rho
   b.rho <- constants$b.rho
   data <- constants$data
-  env <- constants$env
 
   # RW effect
   lev <- sort(unique(sm_args_iter$x))
@@ -553,7 +557,6 @@ build_component_rwspatial<-function(state, sm_args_iter, term, all_terms, consta
   a.rho <- constants$a.rho
   b.rho <- constants$b.rho
   data <- constants$data
-  env <- constants$env
 
   # RW effect
 
@@ -772,18 +775,29 @@ build_component_rwspatial<-function(state, sm_args_iter, term, all_terms, consta
 ###########################################
 
 
-build_component_fixed<-function(model, state,  term, all_terms, constants){
+build_component_fixed<-function(model, state,  all_fixed_terms, count_term, constants){
 
   Wcb <- state$Wcb
   Pv.list <- state$Pv.list
   logpv.fixed <- state$logpv.fixed
 
   constraint_matrix  <- state$constraint
+  has_no_intercept <- state$has_no_intercept_smooth
 
   zeta <- constants$zeta
   data <- constants$data
 
-  other_formula <- stats::as.formula(call("~", model[[2]], all_terms[[term]]))
+  rhs_fixed <- Reduce(
+    function(x, y) call("+", x, y),
+    if (has_no_intercept) {
+      c(list(0), all_fixed_terms)
+    } else {
+      all_fixed_terms
+    }
+  )
+
+
+  other_formula <- stats::as.formula(call("~", model[[2]], rhs_fixed))
   if(!is.null(data)){
     mod <- stats::model.frame(other_formula, data = data, na.action = stats::na.pass)
     na_ind = (Matrix::rowSums(is.na(mod))>0)
@@ -794,30 +808,44 @@ build_component_fixed<-function(model, state,  term, all_terms, constants){
       j = rep(seq_len(ncol(Z.linear_part)), each = length(which(!na_ind))),
       x = as.numeric(Z.linear_part),
       dims = c(length(na_ind), ncol(Z.linear_part))
-    )[, -1, drop = FALSE]
+    )
+
+    if(!has_no_intercept){
+      Z.linear <- Z.linear[, -1, drop = FALSE]
+    }
 
     Z.NA <- Matrix::sparseMatrix(
       i = rep(which(na_ind), times = ncol(Z.linear_part)),
       j = rep(seq_len(ncol(Z.linear_part)), each = length(which(na_ind))),
       x = rep(NA_real_, sum(na_ind)*ncol(Z.linear_part)),
       dims = c(length(na_ind), ncol(Z.linear_part))
-    )[, -1, drop = FALSE]
+    )
+
+    if(!has_no_intercept){
+      Z.NA<- Z.NA[, -1, drop = FALSE]
+    }
 
 
     Z.linear <- Z.linear + Z.NA
 
     p_term <- ncol(Z.linear)
+
+    if(!has_no_intercept){
     colnames(Z.linear) <- colnames(Z.linear_part)[-1]
+    }else{
+      colnames(Z.linear) <- colnames(Z.linear_part)
+    }
+
     Wcb <- add_wcb_block(Wcb, Z.linear)
 
-    Pv.list[[term]] <- function(v){
+    Pv.list[[count_term]] <- function(v){
       methods::as(Matrix::Diagonal(
         n = p_term,
         x = zeta), "generalMatrix")
     }
 
 
-  } else{ # dit deel begrijp ik nog niet
+  } else{
     mod <- stats::model.frame(other_formula, na.action = stats::na.pass)
 
     na_ind = (Matrix::rowSums(is.na(mod))>0)
@@ -828,33 +856,46 @@ build_component_fixed<-function(model, state,  term, all_terms, constants){
       j = rep(seq_len(ncol(Z.linear_part)), each = length(which(!na_ind))),
       x = as.numeric(Z.linear_part),
       dims = c(length(na_ind), ncol(Z.linear_part))
-    )[, -1, drop = FALSE]
+    )
+
+    if(!has_no_intercept){
+      Z.linear <- Z.linear[, -1, drop = FALSE]
+    }
 
     Z.NA <- Matrix::sparseMatrix(
       i = rep(which(na_ind), times = ncol(Z.linear_part)),
       j = rep(seq_len(ncol(Z.linear_part)), each = length(which(na_ind))),
       x = rep(NA_real_, sum(na_ind)*ncol(Z.linear_part)),
       dims = c(length(na_ind), ncol(Z.linear_part))
-    )[, -1, drop = FALSE]
+    )
+
+    if(!has_no_intercept){
+      Z.NA<- Z.NA[, -1, drop = FALSE]
+    }
 
 
     Z.linear <- Z.linear + Z.NA
 
 
     p_term <- ncol(Z.linear)
-    colnames(Z.linear) <- colnames(Z.linear_part)[-1]
+    if(!has_no_intercept){
+      colnames(Z.linear) <- colnames(Z.linear_part)[-1]
+    }else{
+      colnames(Z.linear) <- colnames(Z.linear_part)
+    }
+
     Wcb <- add_wcb_block(Wcb, Z.linear)
 
-    Pv.list[[term]] <- function(v){
+    Pv.list[[count_term]] <- function(v){
       methods::as(Matrix::Diagonal(n = p_term,
                           x = zeta), "generalMatrix")
     }
 
   }
 
-  logpv.fixed[[term]] <- function(v) 0
+  logpv.fixed[[count_term]] <- function(v) 0
 
-  constraint_matrix[[term]] <- Matrix::Matrix(0,1,ncol(Z.linear))
+  constraint_matrix[[count_term]] <- Matrix::Matrix(0,1,ncol(Z.linear))
 
   state$Wcb<-Wcb
   state$Pv.list<-Pv.list

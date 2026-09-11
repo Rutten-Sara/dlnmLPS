@@ -167,7 +167,25 @@ eval_expression <- function(x_expr, data = NULL, env = globalenv()){
 initialize_laplace_setup_constraint <- function(model, data, include_dispersion = FALSE) {
   rhs <- model[[3]]
   all_terms <- split_terms(rhs)
-  all_terms[[which(vapply(all_terms, identical, logical(1), 1))]] = NULL
+
+
+  has_no_intercept <- attr(stats::terms(model), "intercept") == 0
+
+  is_intercept_term <- vapply(all_terms, function(x) {
+    identical(x, 0) ||
+      identical(x, 1) ||
+      (is.call(x) &&
+         identical(x[[1]], as.name("-")) &&
+         identical(x[[2]], 1))
+  }, logical(1))
+
+  all_terms <- all_terms[!is_intercept_term]
+
+  is_sm <- vapply(all_terms, is_sm, logical(1))
+  all_fixed_terms <- all_terms[!is_sm]
+  all_sm_terms    <- all_terms[is_sm]
+
+  all_terms <- c(all_sm_terms, all_fixed_terms )
 
 
   if(!is.null(data)){
@@ -181,7 +199,6 @@ initialize_laplace_setup_constraint <- function(model, data, include_dispersion 
 
   output <- list(
     all_terms = all_terms,
-    env = globalenv(),
     y = y, # response,
     Wcb = NULL,
     pen_dlnm = if (include_dispersion) 1 else 0,
@@ -189,7 +206,9 @@ initialize_laplace_setup_constraint <- function(model, data, include_dispersion 
     logpv.fixed = list(),
     v_init = if (include_dispersion) 0 else NULL,
     sm_list = vector("list", n_terms),
-    constraint = NULL
+    constraint = NULL,
+    has_no_intercept = has_no_intercept,
+    has_no_intercept_smooth = has_no_intercept
   )
 
   output

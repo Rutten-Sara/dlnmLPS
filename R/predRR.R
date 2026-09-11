@@ -100,7 +100,7 @@ predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all
 
 
   if(exc.prob){
-    CI.all = T
+    CI.all = TRUE
   }
 
 
@@ -176,6 +176,8 @@ predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all
     Qlower_logpredX <- quantiles[1,]
     Qupper_logpredX <- quantiles[2,]
 
+    Qlower_logpredX <- matrix(Qlower_logpredX, nrow = length(predvar), byrow = FALSE)
+    Qupper_logpredX <- matrix(Qupper_logpredX, nrow = length(predvar), byrow = FALSE)
 
   }else{
     sd_logpredX <- Qlower_logpredX <- Qupper_logpredX <- NULL
@@ -215,7 +217,7 @@ predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all
 
   if(exc.prob){
     prob_all <- mapply(function(mean_val, sd_val) {
-      stats::pnorm(log(threshold), mean = mean_val, sd = sd_val, lower.tail = F)
+      stats::pnorm(log(threshold), mean = mean_val, sd = sd_val, lower.tail = FALSE)
     }, log(pred_all), sd_all)
     exc.prob_res = prob_all
   }else{
@@ -224,9 +226,9 @@ predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all
 
 
 
-  output <- list("logpredX" = matrix(logpredX, nrow = length(predvar), byrow = F),
-                 "Qlower_logpredX" =  matrix(Qlower_logpredX, nrow = length(predvar), byrow = F),
-                 "Qupper_logpredX" =  matrix(Qupper_logpredX, nrow = length(predvar), byrow = F),
+  output <- list("logpredX" = matrix(logpredX, nrow = length(predvar), byrow = FALSE),
+                 "Qlower_logpredX" =  Qlower_logpredX,
+                 "Qupper_logpredX" =  Qupper_logpredX,
                  "Qlower_all" = Qlower_all,
                  "Qupper_all" = Qupper_all,
                  "pred_all" = pred_all,
@@ -267,7 +269,7 @@ predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all
 
       pred_all <- exp(as.numeric(Xpredall %*% c(xi_mode_cb, xi_mode_cb_spat_i)))
 
-      output[[i]] <- list("logpredX" = matrix(logpredX, nrow = length(predvar), byrow = F),
+      output[[i]] <- list("logpredX" = matrix(logpredX, nrow = length(predvar), byrow = FALSE),
                           "pred_all" = pred_all,
                           "by" = i,
                           "x" = at_x,
@@ -295,7 +297,7 @@ predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all
 
         if(exc.prob){
           prob_all <- mapply(function(mean_val, sd_val) {
-            stats::pnorm(log(threshold), mean = mean_val, sd = sd_val, lower.tail = F)
+            stats::pnorm(log(threshold), mean = mean_val, sd = sd_val, lower.tail = FALSE)
           }, log(output[[i]]$pred_all), sd_all[i,])
           output[[i]]$exc.prob = prob_all
         }
@@ -315,8 +317,8 @@ predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all
         quantiles <- mapply(function(mean_val, sd_val) {
           stats::qnorm(p = c((1-ci.level)/2, (1+ci.level)/2), mean = mean_val, sd = sd_val)
         }, output[[i]]$logpredX, sd_logpredX[i,])
-        output[[i]]$Qlower_logpredX <- matrix(quantiles[1,], nrow = length(predvar), byrow = F)
-        output[[i]]$Qupper_logpredX <- matrix(quantiles[2,], nrow = length(predvar), byrow = F)
+        output[[i]]$Qlower_logpredX <- matrix(quantiles[1,], nrow = length(predvar), byrow = FALSE)
+        output[[i]]$Qupper_logpredX <- matrix(quantiles[2,], nrow = length(predvar), byrow = FALSE)
       }
 
     }
@@ -395,6 +397,10 @@ predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all
 
       Qlower_logpredX <- quantiles[1,]
       Qupper_logpredX <- quantiles[2,]
+
+      Qlower_logpredX <- matrix(Qlower_logpredX, nrow = length(predvar), byrow = FALSE)
+      Qupper_logpredX <- matrix(Qupper_logpredX, nrow = length(predvar), byrow = FALSE)
+
     }else{
       Qlower_logpredX = NULL
       Qupper_logpredX = NULL
@@ -422,16 +428,16 @@ predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all
 
     if(exc.prob){
       prob_all <- mapply(function(mean_val, sd_val) {
-        stats::pnorm(log(threshold), mean = mean_val, sd = sd_val, lower.tail = F)
+        stats::pnorm(log(threshold), mean = mean_val, sd = sd_val, lower.tail = FALSE)
       }, log(pred_all), sd_all)
       exc.prob_res = prob_all
     }else{
       exc.prob_res = NULL
     }
 
-    output[[by.value]] <- list("logpredX" = matrix(logpredX, nrow = length(predvar), byrow = F),
-                   "Qlower_logpredX" = matrix(Qlower_logpredX, nrow = length(predvar), byrow = F),
-                   "Qupper_logpredX" = matrix(Qupper_logpredX, nrow = length(predvar), byrow = F),
+    output[[by.value]] <- list("logpredX" = matrix(logpredX, nrow = length(predvar), byrow = FALSE),
+                   "Qlower_logpredX" = Qlower_logpredX,
+                   "Qupper_logpredX" = Qupper_logpredX,
                    "Qlower_all" = Qlower_all,
                    "Qupper_all" = Qupper_all,
                    "pred_all" = pred_all,
@@ -550,7 +556,7 @@ data_pred_1d <- function(basis, at_x, predlag, cen){
   # basis variables for center
   basiscen <- do.call(dlnm::onebasis, c(list(x = cen), attr(basis,"argvar")))
   # center data matrix
-  Xpred_cen <- scale(basisvar,center = basiscen, scale = F)
+  Xpred_cen <- scale(basisvar,center = basiscen, scale = FALSE)
 
   # Prediction matrix
   Xpred <- matrix(0, nrow=length(at_x), ncol = ncol(basis))

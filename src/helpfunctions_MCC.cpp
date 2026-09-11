@@ -203,7 +203,8 @@ Rcpp::NumericMatrix poisson_loglik_samples_cpp(
     Rcpp::S4 Xv,
     Rcpp::NumericVector y,
     Rcpp::NumericVector offset,
-    SEXP v_mode
+    SEXP v_mode,
+    SEXP Ntrials
 ) {
   // Extract sparse matrix slots
   Rcpp::IntegerVector i = Xv.slot("i");   // row indices
@@ -264,6 +265,80 @@ Rcpp::NumericMatrix poisson_loglik_samples_cpp(
 
 
 
+
+
+// [[Rcpp::export]]
+Rcpp::NumericMatrix gaussian_loglik_samples_cpp(
+    Rcpp::NumericVector xi_mode,
+    Rcpp::NumericMatrix betas,
+    Rcpp::S4 Xv,
+    Rcpp::NumericVector y,
+    Rcpp::NumericVector offset,
+    SEXP v_mode,
+    SEXP Ntrials
+) {
+  // Extract sparse matrix slots
+  Rcpp::IntegerVector i = Xv.slot("i");   // row indices
+  Rcpp::IntegerVector p = Xv.slot("p");   // column pointers
+  Rcpp::NumericVector x = Xv.slot("x");   // values
+  Rcpp::IntegerVector dims = Xv.slot("Dim");
+
+  int n = dims[0];
+  int p_dim = dims[1];
+  int S = betas.ncol();
+  const double pi = std::acos(-1.0);
+
+  Rcpp::NumericVector v(v_mode);
+  double tau = std::exp(v[0]);
+
+  Rcpp::NumericMatrix result(n, S);
+
+  // Precompute eta_base
+  Rcpp::NumericVector eta_base = Rcpp::clone(offset);
+
+  for (int col = 0; col < p_dim; col++) {
+    for (int idx = p[col]; idx < p[col + 1]; idx++) {
+      int row = i[idx];
+      eta_base[row] += x[idx] * xi_mode[col];
+    }
+  }
+
+
+  // Main computation
+  for (int s = 0; s < S; s++) {
+
+    // Start from eta_base
+    Rcpp::NumericVector eta = Rcpp::clone(eta_base);
+
+    // Add Xv %*% betas[, s] using sparse structure
+    for (int col = 0; col < p_dim; col++) {
+      double beta_val = betas(col, s);
+      if (beta_val == 0.0) continue;
+
+      for (int idx = p[col]; idx < p[col + 1]; idx++) {
+        int row = i[idx];
+        eta[row] += x[idx] * beta_val;
+      }
+    }
+
+    // Final likelihood
+    for (int r = 0; r < n; r++) {
+      double resid = y[r] - eta[r];
+
+      result(r, s) =
+        -0.5 * log(2*pi)
+        +0.5 * log(tau)
+        -0.5 * resid * resid *tau;
+
+    }
+  }
+
+  return result;
+}
+
+
+
+
 // [[Rcpp::export]]
 Rcpp::NumericMatrix nb_loglik_samples_cpp(
     Rcpp::NumericVector xi_mode,
@@ -271,7 +346,8 @@ Rcpp::NumericMatrix nb_loglik_samples_cpp(
     Rcpp::S4 Xv,
     Rcpp::NumericVector y,
     Rcpp::NumericVector offset,
-    SEXP v_mode
+    SEXP v_mode,
+    SEXP Ntrials
 ) {
   // Extract sparse matrix slots
   Rcpp::IntegerVector i = Xv.slot("i");   // row indices
@@ -345,6 +421,76 @@ Rcpp::NumericMatrix nb_loglik_samples_cpp(
 }
 
 
+
+// [[Rcpp::export]]
+Rcpp::NumericMatrix logistic_loglik_samples_cpp(
+    Rcpp::NumericVector xi_mode,
+    Rcpp::NumericMatrix betas,
+    Rcpp::S4 Xv,
+    Rcpp::NumericVector y,
+    Rcpp::NumericVector offset,
+    SEXP v_mode,
+    SEXP Ntrials
+) {
+  // Extract sparse matrix slots
+  Rcpp::IntegerVector i = Xv.slot("i");   // row indices
+  Rcpp::IntegerVector p = Xv.slot("p");   // column pointers
+  Rcpp::NumericVector x = Xv.slot("x");   // values
+  Rcpp::IntegerVector dims = Xv.slot("Dim");
+
+  // Ntrials
+  Rcpp::NumericVector ntrials(Ntrials);
+
+  int n = dims[0];
+  int p_dim = dims[1];
+  int S = betas.ncol();
+
+  Rcpp::NumericMatrix result(n, S);
+
+  // Precompute eta_base
+  Rcpp::NumericVector eta_base = Rcpp::clone(offset);
+
+  for (int col = 0; col < p_dim; col++) {
+    for (int idx = p[col]; idx < p[col + 1]; idx++) {
+      int row = i[idx];
+      eta_base[row] += x[idx] * xi_mode[col];
+    }
+  }
+
+  // Precompute log-factorial
+  Rcpp::NumericVector lfy(n);
+  for (int r = 0; r < n; r++) {
+    lfy[r] = std::lgamma(y[r] + 1.0);
+  }
+
+  // Main computation
+  for (int s = 0; s < S; s++) {
+
+    // Start from eta_base
+    Rcpp::NumericVector eta = Rcpp::clone(eta_base);
+
+    // Add Xv %*% betas[, s] using sparse structure
+    for (int col = 0; col < p_dim; col++) {
+      double beta_val = betas(col, s);
+      if (beta_val == 0.0) continue;
+
+      for (int idx = p[col]; idx < p[col + 1]; idx++) {
+        int row = i[idx];
+        eta[row] += x[idx] * beta_val;
+      }
+    }
+
+    // Final likelihood
+    for (int r = 0; r < n; r++) {
+      double mu = std::exp(eta[r]);
+      double p_mu = mu/(1.0+mu);
+      result(r, s) = std::pow(p_mu, y[r]) *
+          std::pow(1.0 - p_mu, ntrials[r] - y[r]);
+    }
+  }
+
+  return result;
+}
 
 
 

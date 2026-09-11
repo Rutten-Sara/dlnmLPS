@@ -129,6 +129,36 @@ Eigen::MatrixXd solve_sparse_cholesky_NB(const Eigen::SparseMatrix<double> &Qv,
 
 
 
+// [[Rcpp::export]]
+Eigen::VectorXd solve_gaussian_mode(
+    const Eigen::SparseMatrix<double> &Qv,
+    const Eigen::SparseMatrix<double> &XtX,
+    const Eigen::VectorXd &Xty,
+    const double v1
+) {
+
+  Eigen::SparseMatrix<double> A = v1 * XtX;
+  A += Qv;
+
+  A += 1e-5 *
+    Eigen::MatrixXd::Identity(A.rows(), A.cols()).sparseView();
+
+  Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver;
+  solver.compute(A);
+
+  if (solver.info() != Eigen::Success)
+    Rcpp::stop("Sparse LDLT decomposition failed");
+
+  Eigen::VectorXd xi = solver.solve(Xty);
+
+  if (solver.info() != Eigen::Success)
+    Rcpp::stop("Sparse LDLT solve failed");
+
+  return v1 * xi;
+}
+
+
+
 
 // [[Rcpp::export]]
 Eigen::MatrixXd solve_sparse_cholesky_constr(const Eigen::SparseMatrix<double> &Qv,
@@ -344,6 +374,116 @@ Eigen::MatrixXd solve_sparse_cholesky_NB_constr(const Eigen::SparseMatrix<double
 
 
 // [[Rcpp::export]]
+Eigen::VectorXd solve_gaussian_mode_constr(
+    const Eigen::SparseMatrix<double> &Qv,
+    const Eigen::SparseMatrix<double> &XtX,
+    const Eigen::VectorXd &Xty,
+    const double v1,
+    const Eigen::SparseMatrix<double> &C
+) {
+  const int n = Qv.rows();
+  const int m = C.rows();
+
+  if (Qv.cols() != n)
+    Rcpp::stop("Qv must be square");
+
+  if (XtX.rows() != n || XtX.cols() != n)
+    Rcpp::stop("XtX dimensions do not match Qv");
+
+  if (Xty.size() != n)
+    Rcpp::stop("Xty length does not match Qv");
+
+  if (C.cols() != n)
+    Rcpp::stop(
+      "C has %d columns but the parameter dimension is %d",
+      C.cols(), n
+    );
+
+  // ------------------------------------------------------------
+  // 1. Gaussian Hessian
+  // ------------------------------------------------------------
+  Eigen::SparseMatrix<double> G = v1 * XtX;
+  G += Qv;
+
+  G += 1e-5 *
+    Eigen::MatrixXd::Identity(n, n).sparseView();
+
+  // ------------------------------------------------------------
+  // 2. Factorize G ONCE
+  // ------------------------------------------------------------
+  Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver;
+  solver.compute(G);
+
+  if (solver.info() != Eigen::Success)
+    Rcpp::stop("Sparse LDLT decomposition failed");
+
+  // ------------------------------------------------------------
+  // 3. Unconstrained solution
+  // ------------------------------------------------------------
+  Eigen::VectorXd x0 = v1*solver.solve(Xty);
+
+  if (solver.info() != Eigen::Success)
+    Rcpp::stop("Sparse LDLT solve failed");
+
+  // ------------------------------------------------------------
+  // 4. Solve
+  //
+  //     Y = G^{-1} C^T
+  // ------------------------------------------------------------
+  Eigen::MatrixXd Ct_dense = Eigen::MatrixXd(C.transpose());
+
+  Eigen::MatrixXd Y = solver.solve(Ct_dense);
+
+  if (solver.info() != Eigen::Success)
+    Rcpp::stop("Sparse LDLT solve for C^T failed");
+
+  // ------------------------------------------------------------
+  // 5. Schur complement
+  //
+  //     S = C G^{-1} C^T = C Y
+  // ------------------------------------------------------------
+  Eigen::MatrixXd S = C * Y;
+
+  // ------------------------------------------------------------
+  // 6. Constraint RHS
+  //
+  //     r = C x0
+  // ------------------------------------------------------------
+  Eigen::VectorXd r = C * x0;
+
+  // ------------------------------------------------------------
+  // 7. Solve
+  //
+  //     S lambda = r
+  // ------------------------------------------------------------
+  Eigen::LDLT<Eigen::MatrixXd> schur_solver;
+  schur_solver.compute(S);
+
+  if (schur_solver.info() != Eigen::Success)
+    Rcpp::stop("Schur factorization failed");
+
+  Eigen::VectorXd lambda = schur_solver.solve(r);
+
+  if (schur_solver.info() != Eigen::Success)
+    Rcpp::stop("Schur solve failed");
+
+  // ------------------------------------------------------------
+  // 8. Correct the unconstrained solution
+  //
+  //     xi = x0 - G^{-1} C^T lambda
+  // ------------------------------------------------------------
+  Eigen::VectorXd xi = x0 - Y * lambda;
+
+  // ------------------------------------------------------------
+  // 9. Preserve the convention of the unconstrained function
+  // ------------------------------------------------------------
+  return xi;
+}
+
+
+
+
+// [[Rcpp::export]]
 double determinant_Pv(const Eigen::SparseMatrix<double> &Pv) {
   // Perform LDLT decomposition
   Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> ldlt(Pv);
@@ -413,4 +553,17 @@ Eigen::SparseMatrix<double> XWX_func_approx (const Eigen::VectorXd &Cvxi,
   Eigen::SparseMatrix<double> result = Xt_W_Xv;
 
   return result;
+}
+
+
+
+
+// [[Rcpp::export]]
+Eigen::SparseMatrix<double> XX_func(
+    const Eigen::SparseMatrix<double> &Xv
+) {
+  Eigen::SparseMatrix<double> XtX =
+    Xv.transpose() * Xv;
+
+  return XtX;
 }

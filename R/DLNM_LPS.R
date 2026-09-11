@@ -18,8 +18,10 @@
 #'   Possible elements are `DIC`, `WAIC`, and `CPO`, each taking a logical value
 #'   (`TRUE` or `FALSE`). All criteria default to `FALSE`.
 #' @param family The distribution family used for the response model. Currently
-#'   supported options are `poisson` (default) and `NB` for the negative
-#'   binomial distribution.
+#'   supported options are `poisson` for the poisson distribution,
+#'   `NB` for the negative binomial distribution, `Gaussian` for the normal
+#'   distribution (default) or `Bernoulli`/`binomial` for binary data.
+#' @param Ntrials Number of trials per observation (for `family`=binomial).
 #' @param refit Optional number of additional model refinement iterations. Each
 #'   iteration updates the coefficient and hyperparameter estimates based on the
 #'   previous iteration. Default is `0`.
@@ -27,21 +29,189 @@
 #' @returns A list of class `"DLNMLPS"`. See [DLNMLPS_Object] for a description of
 #' the returned object and its components.
 #'
+#' @examples
+#' data(barcelona_temp)
+#' data(shapefile_bcn)
+#'
+#' # Examples of applications
+#'
+#' dataset <- barcelona_temp |>
+#'   dplyr::mutate(
+#'     dow = weekdays(date),
+#'     year = lubridate::year(date),
+#'     month = lubridate::month(date)
+#'   )
+#'
+#' group <- factor(paste0(dataset$District, "-", dataset$year))
+#'
+#'
+#' ### Example 1: Unpenalized and spatially varying DLNM
+#'
+#' # Create the (unpenalized) crossbasis
+#' knots_max <- quantile(dataset$Tmax, probs = c(0.10,0.50,0.90))
+#' knots_lag <- dlnm::logknots(0:14, nk = 2)
+#'
+#' basis.max_unpen <- dlnm::crossbasis(
+#'     dataset$Tmax,
+#'     argvar=list(fun = "ns", knots = knots_max),
+#'     arglag=list(fun="ns", knots = knots_lag),
+#'     lag=14,
+#'     group=group
+#' )
+#'
+#' # Fit model
+#' model_max_spat <- DLNM_LPS(
+#'     dtot ~ 1 + factor(dow) +
+#'     sm(month, arg = list(type = "ns", df = 3)) +
+#'     sm(year, arg = list(type = "rw1")) +
+#'     sm(basis.max_unpen, by = District,
+#'             arg.by = list(type = "Leroux", map = shapefile_bcn)) +
+#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+#'     data = dataset,
+#'     offset = log(pop),
+#'     model.comparison = list(DIC = TRUE),
+#'     family = "poisson")
+#'
+#'
+#' # Make predictions
+#' pred_spat_max <- predRR(
+#'     basis.max_unpen,
+#'     model_max_spat,
+#'     at_x = 22:30,
+#'     cen = 25,
+#'     lag = c(0,14),
+#'     CI = TRUE,
+#'     by = unique(dataset$District)
+#' )
+#'
+#' # Plot results (region-specific overal RR)
+#' plot(pred_spat_max, ptype = "overall", CI = TRUE, xlab = "temp", ylab = "RR", ylim = c(0.9,3.0))
+#'
+#'
+#' ### Example 2: Unpenalized and deprivation-varying DLNM
+#'
+#' # Fit model
+#' model_max_conf <- DLNM_LPS(
+#'     dtot ~ 1 + factor(dow) +
+#'     sm(month, arg = list(type = "ns", df = 3)) +
+#'     sm(year, arg = list(type = "rw1")) +
+#'     sm(depriv, arg = list(type = "ns", df = 3)) +
+#'     sm(basis.max_unpen, by = depriv,
+#'             arg.by = list(type = "ns", df = 3)) +
+#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+#'     data = dataset,
+#'     offset = log(pop),
+#'     model.comparison = list(DIC = TRUE),
+#'     family = "poisson")
+#'
+#' # Make predictions
+#' pred_conf_max <- predRR(
+#'     basis.max_unpen,
+#'     model_max_conf,
+#'     at_x = 22:30,
+#'     cen = 25,
+#'     lag = c(0,14),
+#'     CI = TRUE,
+#'     by = quantile(dataset$depriv,probs= c(0.10, 0.90))
+#' )
+#'
+#' # Plot results (contour plot exposure-lag-response)
+#' contour(pred_conf_max, ptype = "cross", cols = function(n) hcl.colors(n, "Inferno"))
+#'
+#'
+#' ### Example 3: Penalized and common DLNM
+#'
+#' # Create the (penalized) crossbasis
+#' basis.max <- dlnm::crossbasis(
+#'     dataset$Tmax,
+#'     argvar = list(df = 5, fun = "ps"),
+#'     arglag = list(df = 5, fun = "ps"),
+#'     lag = 14,
+#'     group = group
+#' )
+#'
+#' # Fit model
+#' model_max_common <- DLNM_LPS(
+#'     dtot ~ 1 + factor(dow) +
+#'     sm(month, arg = list(type = "ns", df = 3)) +
+#'     sm(year, arg = list(type = "rw1")) +
+#'     sm(basis.max, arg = list(pen= 2)) +
+#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+#'     data = dataset,
+#'     offset = log(pop),
+#'     model.comparison = list(DIC = TRUE),
+#'     family = "poisson"
+#' )
+#'
+#' # Make predictions
+#' pred_max <- predRR(
+#'      basis = basis.max,
+#'      model = model_max_common,
+#'      at_x = 22:30,
+#'      cen = 25,
+#'      lag = c(0,14),
+#'      CI = TRUE
+#' )
+#'
+#' # Plot results (lag-specific and overall RR)
+#' plot(pred_max, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, xlab = "temp", ylab = "RR")
+#' plot(pred_max, ptype = "overall", CI = TRUE, xlab = "temp", ylab = "RR")
+#'
+#'
+#' ### Example 4: Penalized and common joint DLNM
+#'
+#' # Create the (penalized) joint crossbasis
+#' basis.max_min <- joint.crossbasis(
+#'     cbind(dataset$Tmax, dataset$Tmin),
+#'     argvar1 = list(df = 5, fun = "ps"),
+#'     argvar2 = list(df = 5, fun = "ps"),
+#'     arglag = list(df = 5, fun = "ps"),
+#'     lag = 14,
+#'     group = group
+#' )
+#'
+#' # Fit model
+#' model_joint_common <- DLNM_LPS(
+#'     dtot ~ 1 + factor(dow) +
+#'     sm(month, arg = list(type = "ns", df = 3)) +
+#'     sm(year, arg = list(type = "rw1")) +
+#'     sm(basis.max_min, arg = list(pen= 2)) +
+#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+#'     data = dataset,
+#'     offset = log(pop),
+#'     model.comparison = list(DIC = TRUE),
+#'     family = "poisson"
+#' )
+#'
+#' # Make predictions
+#' pred_max_min <- predRR(
+#'      basis = basis.max_min,
+#'      model = model_joint_common,
+#'      at_x = c(29,29,29,30,30,30,31,31,31),
+#'      at_y = c(20,21,22,20,21,22,20,21,22),
+#'      cen = c(25,15),
+#'      lag = c(0,14),
+#'      CI = TRUE
+#' )
+#'
+#' # Plot results (contour plot overall RR)
+#' contour(pred_max_min, ptype = "overall", cols = function(n) hcl.colors(n, "Inferno"))
+#'
 #' @export
 #'
 DLNM_LPS <- function(model,
                          data = NULL,
                          offset = NULL,
                          model.comparison = list(DIC = FALSE, WAIC = FALSE, CPO = FALSE),
-                         family = "poisson", refit = 0){
+                         family = "Gaussian", Ntrials = NULL, refit = 0){
 
   model.comparison <- utils::modifyList(
     list(DIC = F, WAIC = F, CPO = F),
     model.comparison
   )
 
-  offset <- eval(substitute(offset), data, parent.frame())
-
+  base_env <- parent.frame()
+  offset <- eval(substitute(offset), data, base_env)
 
 
   if(family == "poisson"){
@@ -49,13 +219,37 @@ DLNM_LPS <- function(model,
                               data,
                               offset,
                               model.comparison,
-                              refit)
+                              refit,
+                              base_env)
+  }else if (family == "binomial" | family == "Bernoulli"){
+    if(family == "Bernoulli"){
+      Ntrials <-   rep(1, nrow(data))
+    }else{
+      Ntrials <- eval(substitute(Ntrials), data, parent.frame())
+    }
+    output = DLNM_LPS_binomial(model,
+                                data,
+                                offset,
+                                model.comparison,
+                                Ntrials,
+                                refit,
+                                base_env)
+
   }else if (family =="NB"){
     output = DLNM_LPS_NB(model,
                              data,
                              offset,
                              model.comparison,
-                             refit)
+                             refit,
+                             base_env)
+
+  }else if (family =="Gaussian"){
+    output = DLNM_LPS_Gaussian(model,
+                         data,
+                         offset,
+                         model.comparison,
+                         refit,
+                         base_env)
 
   }
 }

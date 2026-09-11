@@ -271,7 +271,7 @@ plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, CI, ... ){
   }
 
   if (is.null(xlim))
-    xlim <- range(unlist(x$x), na.rm = T)
+    xlim <- range(unlist(x$x), na.rm = TRUE)
 
 
   if (is.null(ylim)) {
@@ -281,9 +281,9 @@ plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, CI, ... ){
         x$pred_all,
         x$Qlower_all,
         x$Qupper_all
-      ), na.rm = T)
+      ), na.rm = TRUE)
     } else {
-      ylim <- range(unlist(x$pred_all), na.rm = T)
+      ylim <- range(unlist(x$pred_all), na.rm = TRUE)
     }
   }
 
@@ -428,7 +428,7 @@ plot_overall_2D <- function(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, C
 
 
   if (is.null(xlim))
-    xlim <- range(unlist(plot_x), na.rm = T)
+    xlim <- range(unlist(plot_x), na.rm = TRUE)
 
 
   if (is.null(ylim)) {
@@ -438,9 +438,9 @@ plot_overall_2D <- function(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, C
         unlist(plot_y),
         unlist(plot_lower),
         unlist(plot_upper)
-      ), na.rm = T)
+      ), na.rm = TRUE)
     } else {
-      ylim <- range(unlist(plot_y), na.rm = T)
+      ylim <- range(unlist(plot_y), na.rm = TRUE)
     }
   }
 
@@ -535,14 +535,14 @@ plot_overall_3D <- function(x, xlim, ylim, zlim, cols, xlab, ylab, zlab, CI, con
 
 
   if (is.null(xlim))
-    xlim <- range(unlist(xvals), na.rm = T)
+    xlim <- range(unlist(xvals), na.rm = TRUE)
 
 
   if (is.null(ylim))
-    ylim <- range(unlist(yvals), na.rm = T)
+    ylim <- range(unlist(yvals), na.rm = TRUE)
 
   if (is.null(zlim))
-    zlim <- range(unlist(z), na.rm = T)
+    zlim <- range(unlist(z), na.rm = TRUE)
 
 
   if(!contour){
@@ -630,14 +630,14 @@ plot_cross_3D <- function(x, xlim, ylim, zlim, cols, xlab, ylab, zlab, CI, conto
 
 
   if (is.null(xlim))
-    xlim <- range(unlist(xvals), na.rm = T)
+    xlim <- range(unlist(xvals), na.rm = TRUE)
 
 
   if (is.null(ylim))
-    ylim <- range(unlist(yvals), na.rm = T)
+    ylim <- range(unlist(yvals), na.rm = TRUE)
 
   if (is.null(zlim))
-    zlim <- range(unlist(z), na.rm = T)
+    zlim <- range(unlist(z), na.rm = TRUE)
 
 
   # -------------------------------
@@ -824,14 +824,14 @@ plot_slices3D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
 
 
   if (is.null(xlim))
-    xlim <- range(unlist(xvals), na.rm = T)
+    xlim <- range(unlist(xvals), na.rm = TRUE)
 
 
   if (is.null(ylim))
-    ylim <- range(unlist(yvals), na.rm = T)
+    ylim <- range(unlist(yvals), na.rm = TRUE)
 
   if (is.null(zlim))
-    zlim <- range(unlist(z), na.rm = T)
+    zlim <- range(unlist(z), na.rm = TRUE)
 
 
 
@@ -920,15 +920,15 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
       if (anyNA(idx))
         stop("Slice lag must be present in predictions.")
 
-      plot_y <- exp(x$logpredX[, idx, drop = F])
+      plot_y <- exp(x$logpredX[, idx, drop = FALSE])
 
       plot_y <- lapply(seq_len(ncol(plot_y)),
                        function(i) plot_y[, i])
       plot_x <- rep(list(x$x), length(plot_y))
 
       if (CI) {
-        plot_lower <- exp(x$Qlower_logpredX[, idx, drop = F])
-        plot_upper <- exp(x$Qupper_logpredX[, idx, drop = F])
+        plot_lower <- exp(x$Qlower_logpredX[, idx, drop = FALSE])
+        plot_upper <- exp(x$Qupper_logpredX[, idx, drop = FALSE])
 
         plot_lower <- lapply(seq_len(ncol(plot_lower)),
                              function(i) plot_lower[, i])
@@ -951,15 +951,15 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
       if (anyNA(idx))
         stop("Slice exposure must be present in predictions")
 
-      plot_y <- exp(x$logpredX[idx, , drop = F])
+      plot_y <- exp(x$logpredX[idx, , drop = FALSE])
       plot_y <- lapply(seq_len(nrow(plot_y)),
                        function(i) plot_y[i, ])
       plot_x <- rep(list(x$lag), length(plot_y))
 
 
       if (CI) {
-        plot_lower <- exp(x$Qlower_logpredX[idx, , drop = F])
-        plot_upper <- exp(x$Qupper_logpredX[idx, , drop = F])
+        plot_lower <- exp(x$Qlower_logpredX[idx, , drop = FALSE])
+        plot_upper <- exp(x$Qupper_logpredX[idx, , drop = FALSE])
 
         plot_lower <- lapply(seq_len(nrow(plot_lower)),
                              function(i) plot_lower[i, ])
@@ -996,14 +996,14 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
 
       idx <- unlist(idx)
 
-      plot_y <- exp(x$logpredX[idx, , drop = F])
+      plot_y <- exp(x$logpredX[idx, , drop = FALSE])
       plot_y <- lapply(seq_len(nrow(plot_y)),
                        function(i) plot_y[i, ])
       plot_x <- rep(list(x$lag), length(plot_y))
 
       if (CI) {
-        plot_lower <- exp(x$Qlower_logpredX[idx, , drop = F])
-        plot_upper <- exp(x$Qupper_logpredX[idx, , drop = F])
+        plot_lower <- exp(x$Qlower_logpredX[idx, , drop = FALSE])
+        plot_upper <- exp(x$Qupper_logpredX[idx, , drop = FALSE])
 
         plot_lower <- lapply(seq_len(nrow(plot_lower)),
                              function(i) plot_lower[i, ])
@@ -1153,7 +1153,7 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
 
 
   if (is.null(xlim))
-    xlim <- range(unlist(plot_x), na.rm = T)
+    xlim <- range(unlist(plot_x), na.rm = TRUE)
 
 
   if (is.null(ylim)) {
@@ -1163,9 +1163,9 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
         unlist(plot_y),
         unlist(plot_lower),
         unlist(plot_upper)
-      ), na.rm = T)
+      ), na.rm = TRUE)
     } else {
-      ylim <- range(unlist(plot_y), na.rm = T)
+      ylim <- range(unlist(plot_y), na.rm = TRUE)
     }
   }
 

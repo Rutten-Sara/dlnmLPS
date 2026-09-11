@@ -10,7 +10,9 @@ calculate_DIC_tot <- function(xi_mode,
                               y,
                               offset,
                               v_mode = NULL,
-                              model.family = "poisson", constraint_matrix){
+                              model.family = "poisson",
+                              constraint_matrix,
+                              Ntrials = NULL){
   # DIC of mean
 
   if(model.family == "poisson"){
@@ -19,9 +21,21 @@ calculate_DIC_tot <- function(xi_mode,
       return(sum((y * log(Cvxi_mean) - Cvxi_mean-lfactorial(y))))
     }
 
+    }else if (model.family == "binomial"){
+      log_lik <- function(xi_mode,y, Xv, offset, v_mode){
+        Cvxi_mean <-  exp(as.numeric(Xv %*% xi_mode)+offset)
+        pxi_mean <- Cvxi_mean/(1+Cvxi_mean)
+        return(sum(y * log(pxi_mean)+(Ntrials-y)*log(1-pxi_mean)))
+      }
 
-
-  } else{
+      }else if(model.family == "Gaussian"){
+      log_lik <- function(xi_mode,y, Xv, offset, v_mode){
+        tau <- exp(v_mode)[1]
+        Cvxi_mean <-  as.numeric(Xv %*% xi_mode)+offset
+        n <- length(y)
+        return(-n*0.5*(log(2*pi)-log(tau))-0.5*tau*sum(((y-Cvxi_mean)^2)))
+      }
+    }else{
     log_lik <- function(xi_mode,y, Xv, offset, v_mode){
       Cvxi_mean <-  exp(as.numeric(Xv %*% xi_mode)+offset)
       varval <-  Cvxi_mean + (1 / exp(v_mode[1])) * (Cvxi_mean ^ 2)
@@ -55,24 +69,6 @@ calculate_DIC_tot <- function(xi_mode,
 }
 
 
-nb_loglik_samples <- function(xi_mode, betas, Xv, y, offset, v_mode) {
-  eta_base <- as.numeric(Xv %*% xi_mode) + offset
-  eta_samples <- matrix(eta_base, nrow = length(eta_base), ncol = ncol(betas)) + as.matrix(Xv %*% betas)
-  mu_samples <- exp(eta_samples)
-  phi <- exp(v_mode[1])
-  inv_phi <- 1 / phi
-  y_mat <- matrix(y, nrow = length(y), ncol = ncol(betas))
-  log_y_factorial <- lgamma(y + 1)
-
-  gammanb <- phi * log(mu_samples / (mu_samples + phi))
-  bgammanb <- (-1) * (phi ^ 2) * log(phi / (phi + mu_samples))
-
-  inv_phi * ((y_mat * gammanb) - bgammanb) +
-    lgamma(y_mat + phi) -
-    lgamma(phi) - log_y_factorial
-}
-
-
 
 
 # Combine WAIC and CPO in one function such that samples only have to be calculated once
@@ -87,12 +83,17 @@ calculate_CPO_WAIC <- function(xi_mode,
                                model.family = "poisson",
                                CPO,
                                WAIC,
-                               constraint_matrix){
+                               constraint_matrix,
+                               Ntrials = NULL){
   # WAIC of mean
 
   if(model.family == "poisson"){
     loglik_samples_fun <- poisson_loglik_samples_cpp
-  } else{
+  } else if (model.family == "binomial"){
+    loglik_samples_fun <- logistic_loglik_samples_cpp
+    }else if (model.family == "Gaussian"){
+    loglik_samples_fun <- gaussian_loglik_samples_cpp
+    }else{
     loglik_samples_fun <- nb_loglik_samples_cpp
   }
 
@@ -103,7 +104,7 @@ calculate_CPO_WAIC <- function(xi_mode,
     betas = simulate_from_precision_con(Prec,constraint_matrix, nsim = 500)
   }
 
-  loglik_samples <- loglik_samples_fun(xi_mode, betas, Xv, y, offset, v_mode)
+  loglik_samples <- loglik_samples_fun(xi_mode, betas, Xv, y, offset, v_mode, Ntrials)
 
   if(WAIC){
     lppd <- sum(log(Matrix::rowMeans(exp(loglik_samples))))

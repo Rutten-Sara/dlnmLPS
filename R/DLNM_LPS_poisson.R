@@ -2,7 +2,8 @@ DLNM_LPS_pois <- function(model,
                   data,
                   offset,
                   model.comparison,
-                  refit){
+                  refit,
+                  base_env){
 
 
   types_term <- NULL
@@ -10,6 +11,17 @@ DLNM_LPS_pois <- function(model,
   # Split formula
   setup <- initialize_laplace_setup_constraint(model, data)
   all_terms <- setup$all_terms
+
+  rhs_fixed <- Reduce(
+    function(x, y) call("+", x, y),
+    if (setup$has_no_intercept) c(list(0), all_terms) else c(list(1), all_terms)
+  )
+
+  model <- stats::as.formula(
+    call("~", model[[2]], rhs_fixed)
+  )
+
+
 
   # constants
   constants <- list(
@@ -20,7 +32,7 @@ DLNM_LPS_pois <- function(model,
     a.rho = 0.5,
     b.rho = 0.5,
     data = data,
-    env = globalenv()
+    env = base_env
   )
 
 
@@ -41,12 +53,18 @@ DLNM_LPS_pois <- function(model,
 
   setup$Wcb = Wcb_blocks
 
+  all_fixed_terms = list()
 
+  if (length(all_terms) == 0){
+    if(setup$has_no_intercept){
+      stop("Specify at least one term in your model")
+    }
+  }else{
+    count_term = 1
   for(term in 1:length(all_terms)){
-
     setup$pen_dlnm <- c(setup$pen_dlnm,0)
-
     if(is_sm(all_terms[[term]])){
+      count_term = count_term + 1
       sm_args_iter <- normalize_sm_call(all_terms[[term]])
       sm_args_iter <- check_sm_term_inputs(sm_args_iter, constants$data, constants$env)
 
@@ -103,10 +121,15 @@ DLNM_LPS_pois <- function(model,
       }
     }
     }else{
-      setup <- build_component_fixed(model,setup, term, all_terms, constants)
+      all_fixed_terms <- c(all_fixed_terms, all_terms[[term]])
       types_term <- c(types_term, "fixed")
     }
 
+  }
+    if(length(all_fixed_terms) != 0){
+      setup <- build_component_fixed(model,setup, all_fixed_terms, count_term, constants)
+
+    }
   }
 
   # Bind design matrix
@@ -128,16 +151,25 @@ DLNM_LPS_pois <- function(model,
   sm_list <- setup$sm_list
 
   constraint_matrix <- setup$constraint
+  has_intercept <- !setup$has_no_intercept
   rm(setup)
 
 
   #Bind intercept
+  if(has_intercept){
   intercept_block <- Matrix::Matrix(matrix(1, nrow = length(y), ncol = 1), sparse = TRUE)
   colnames(intercept_block) <- "(Intercept)"
   Wcb <- Matrix::cbind2(intercept_block, Wcb)
   constraint_matrix <- c(list(Matrix::Matrix(0,1,1)), constraint_matrix)
   all_terms <- c(list(1), all_terms)
 
+  logpv.fixed <- c(list(function(v) 0), logpv.fixed)
+  Pv.list <- c(list(function(v){
+    methods::as(Matrix::Diagonal(n = 1,
+                                 x = constants$zeta), "generalMatrix")
+
+  }), Pv.list)
+  }
 
 
   constraint_matrix <- methods::as(do.call(Matrix::bdiag, constraint_matrix), "CsparseMatrix")
@@ -151,12 +183,7 @@ DLNM_LPS_pois <- function(model,
 
 
 
-  logpv.fixed <- c(list(function(v) 0), logpv.fixed)
-  Pv.list <- c(list(function(v){
-    methods::as(Matrix::Diagonal(n = 1,
-                        x = constants$zeta), "generalMatrix")
 
-  }), Pv.list)
 
 
 
@@ -168,7 +195,7 @@ DLNM_LPS_pois <- function(model,
 
 
   ind <- (Matrix::rowSums(is.na(Wcb)) + is.na(y) + is.na(offset)) == 0
-  Wcb <- Wcb[ind,]
+  Wcb <- Wcb[ind, , drop = FALSE]
   y <- y[ind]
   offset <- offset[ind]
   XtWcb <- Matrix::t(Wcb)
@@ -176,7 +203,7 @@ DLNM_LPS_pois <- function(model,
 
   #Precision matrix for parameter xi
   Qv <- function(v){
-    blocks <- lapply(seq_along(all_terms), function(terms_q) {
+    blocks <- lapply(seq_along(Pv.list), function(terms_q) {
       Pv.list[[terms_q]](v)
     })
     if (length(blocks) == 1L) {
@@ -188,7 +215,7 @@ DLNM_LPS_pois <- function(model,
 
   # Hyperparameters
     logpv.hyper <- function(v) {
-      sum(sapply(seq_along(all_terms),
+      sum(sapply(seq_along(Pv.list),
                  function(i) logpv.fixed[[i]](v)))
     }
 
@@ -204,11 +231,6 @@ DLNM_LPS_pois <- function(model,
       sum(y * (eta + offset) - Cvxi) - 0.5 * quad
     }
 
-
-    log_pxi <- function(xi, Qv, Cvxi) {
-      eta <- as.numeric(Wcb %*% xi)
-      log_pxi_eta(xi, Qv, eta, Cvxi)
-    }
 
 
     Grad.logpxi <- function(xi, Qv, Cvxi){

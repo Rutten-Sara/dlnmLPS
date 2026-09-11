@@ -2,13 +2,24 @@ DLNM_LPS_NB <- function(model,
                   data,
                   offset,
                   model.comparison,
-                  refit){
+                  refit,
+                  base_env){
 
   types_term <- NULL
 
   # Split formula
   setup <- initialize_laplace_setup_constraint(model, data, TRUE)
   all_terms <- setup$all_terms
+
+  rhs_fixed <- Reduce(
+    function(x, y) call("+", x, y),
+    if (setup$has_no_intercept) c(list(0), all_terms) else c(list(1), all_terms)
+  )
+
+  model <- stats::as.formula(
+    call("~", model[[2]], rhs_fixed)
+  )
+
 
   # constants
   constants <- list(
@@ -19,7 +30,7 @@ DLNM_LPS_NB <- function(model,
     a.rho = 0.5,
     b.rho = 0.5,
     data = data,
-    env = globalenv()
+    env = base_env
   )
 
   a.disp <- 1e-05
@@ -43,73 +54,85 @@ DLNM_LPS_NB <- function(model,
 
   setup$Wcb = Wcb_blocks
 
+  all_fixed_terms = list()
 
-  for(term in 1:length(all_terms)){
+  if (length(all_terms) == 0){
+    if(setup$has_no_intercept){
+      stop("Specify at least one term in your model")
+    }
+  }else{
+    count_term = 1
+    for(term in 1:length(all_terms)){
+      setup$pen_dlnm <- c(setup$pen_dlnm,0)
+      if(is_sm(all_terms[[term]])){
+        count_term = count_term + 1
+        sm_args_iter <- normalize_sm_call(all_terms[[term]])
+        sm_args_iter <- check_sm_term_inputs(sm_args_iter, constants$data, constants$env)
 
-    setup$pen_dlnm <- c(setup$pen_dlnm,0)
 
-    if(is_sm(all_terms[[term]])){
-      sm_args_iter <- normalize_sm_call(all_terms[[term]])
-      sm_args_iter <- check_sm_term_inputs(sm_args_iter, constants$data, constants$env)
-
-
-      # Construct crossbasis
-      if(sm_args_iter$arg$type=="rw1"){
-        if(is.null(sm_args_iter$by)){
-          setup <- build_component_rw(setup, sm_args_iter, term, all_terms, constants,1)
-          types_term <- c(types_term, "RW1")
-        }else if (sm_args_iter$arg.by$type %in% c("ind","ICAR","Leroux")){
-          setup <- build_component_spatialrw(setup, sm_args_iter, term, all_terms, constants,1)
-          types_term <- c(types_term, "spatial RW1")
-        }
-      }else if (sm_args_iter$arg$type=="rw2"){
-        if(is.null(sm_args_iter$by)){
-          setup <- build_component_rw(setup, sm_args_iter, term, all_terms, constants,2)
-          types_term <- c(types_term, "RW2")
-        }else if (sm_args_iter$arg.by$type %in% c("ind","ICAR","Leroux")){
-          setup <- build_component_spatialrw(setup, sm_args_iter, term, all_terms, constants,2)
-          types_term <- c(types_term, "spatial RW2")
-        }
-      }else if (sm_args_iter$arg$type %in% c("ind","ICAR","Leroux","Convolution")){
-        if(is.null(sm_args_iter$by)){
-          setup <- build_component_re(setup, sm_args_iter, term, all_terms, constants)
-          types_term <- c(types_term, "re")
-        }else{
-          setup <-build_component_rwspatial(setup, sm_args_iter, term, all_terms, constants)
-          types_term <- c(types_term, "temporal re")
-        }
-      } else if (sm_args_iter$arg$type %in% c("ps","ns","bs")){
+        # Construct crossbasis
+        if(sm_args_iter$arg$type=="rw1"){
+          if(is.null(sm_args_iter$by)){
+            setup <- build_component_rw(setup, sm_args_iter, term, all_terms, constants,1)
+            types_term <- c(types_term, "RW1")
+          }else if (sm_args_iter$arg.by$type %in% c("ind","ICAR","Leroux")){
+            setup <- build_component_spatialrw(setup, sm_args_iter, term, all_terms, constants,1)
+            types_term <- c(types_term, "spatial RW1")
+          }
+        }else if (sm_args_iter$arg$type=="rw2"){
+          if(is.null(sm_args_iter$by)){
+            setup <- build_component_rw(setup, sm_args_iter, term, all_terms, constants,2)
+            types_term <- c(types_term, "RW2")
+          }else if (sm_args_iter$arg.by$type %in% c("ind","ICAR","Leroux")){
+            setup <- build_component_spatialrw(setup, sm_args_iter, term, all_terms, constants,2)
+            types_term <- c(types_term, "spatial RW2")
+          }
+        }else if (sm_args_iter$arg$type %in% c("ind","ICAR","Leroux","Convolution")){
+          if(is.null(sm_args_iter$by)){
+            setup <- build_component_re(setup, sm_args_iter, term, all_terms, constants)
+            types_term <- c(types_term, "re")
+          }else{
+            setup <-build_component_rwspatial(setup, sm_args_iter, term, all_terms, constants)
+            types_term <- c(types_term, "temporal re")
+          }
+        } else if (sm_args_iter$arg$type %in% c("ps","ns","bs")){
           setup <- build_component_spline(setup, sm_args_iter, term, all_terms,constants)
           types_term <- c(types_term, "spline")
-      } else if ("joint.crossbasis" %in% class(sm_args_iter$x)){
-        if(is.null(sm_args_iter$arg.by$type)){
-          setup <- build_component_2Ddlnm(setup, sm_args_iter, term, all_terms,constants)
-          types_term <- c(types_term, "joint DLNM")
-        }else if (sm_args_iter$arg.by$type %in% c("ind","ICAR","Leroux")){
-          setup<-build_component_spatial2Ddlnm(setup, sm_args_iter, term, all_terms,constants)
-          types_term <- c(types_term, "joint spatial DLNM")
-        } else{
-          setup<-build_component_modified2Ddlnm(setup, sm_args_iter, term, all_terms,constants)
-          types_term <- c(types_term, "joint modified DLNM")
+        } else if ("joint.crossbasis" %in% class(sm_args_iter$x)){
+          if(is.null(sm_args_iter$arg.by$type)){
+            setup <- build_component_2Ddlnm(setup, sm_args_iter, term, all_terms,constants)
+            types_term <- c(types_term, "joint DLNM")
+          }else if (sm_args_iter$arg.by$type %in% c("ind","ICAR","Leroux")){
+            setup<-build_component_spatial2Ddlnm(setup, sm_args_iter, term, all_terms,constants)
+            types_term <- c(types_term, "joint spatial DLNM")
+          } else{
+            setup<-build_component_modified2Ddlnm(setup, sm_args_iter, term, all_terms,constants)
+            types_term <- c(types_term, "joint modified DLNM")
+          }
+        }else if(sm_args_iter$arg$type == "crossbasis" ){
+          if(is.null(sm_args_iter$arg.by$type)){
+            setup<-build_component_dlnm(setup, sm_args_iter, term, all_terms,constants)
+            types_term <- c(types_term, "DLNM")
+          } else if (sm_args_iter$arg.by$type %in% c("ind","ICAR","Leroux")){
+            setup<-build_component_spatialdlnm(setup, sm_args_iter, term, all_terms,constants)
+            types_term <- c(types_term, "spatial DLNM")
+          } else{
+            setup<-build_component_modifieddlnm(setup, sm_args_iter, term, all_terms,constants)
+            types_term <- c(types_term, "modified DLNM")
+          }
         }
-      } else if(sm_args_iter$arg$type == "crossbasis" ){
-        if(is.null(sm_args_iter$arg.by$type)){
-          setup<-build_component_dlnm(setup, sm_args_iter, term, all_terms,constants)
-          types_term <- c(types_term, "DLNM")
-        } else if (sm_args_iter$arg.by$type %in% c("ind","ICAR","Leroux")){
-          setup<-build_component_spatialdlnm(setup, sm_args_iter, term, all_terms,constants)
-          types_term <- c(types_term, "spatial DLNM")
-        } else{
-          setup<-build_component_modifieddlnm(setup, sm_args_iter, term, all_terms,constants)
-          types_term <- c(types_term, "modified DLNM")
-        }
+      }else{
+        all_fixed_terms <- c(all_fixed_terms, all_terms[[term]])
+        types_term <- c(types_term, "fixed")
       }
-    }else{
-      setup <- build_component_fixed(model,setup, term, all_terms, constants)
-      types_term <- c(types_term, "fixed")
-    }
 
+    }
+    if(length(all_fixed_terms) != 0){
+      setup <- build_component_fixed(model,setup, all_fixed_terms, count_term, constants)
+
+    }
   }
+
 
   # Bind design matrix
   Wcb_blocks <- setup$Wcb
@@ -131,15 +154,24 @@ DLNM_LPS_NB <- function(model,
   sm_list <- setup$sm_list
 
   constraint_matrix <- setup$constraint
+  has_intercept <- !setup$has_no_intercept
   rm(setup)
 
 
   #Bind intercept
-  intercept_block <- Matrix::Matrix(matrix(1, nrow = length(y), ncol = 1), sparse = TRUE)
-  colnames(intercept_block) <- "(Intercept)"
-  Wcb <- Matrix::cbind2(intercept_block, Wcb)
-  constraint_matrix <- c(list(Matrix::Matrix(0,1,1)), constraint_matrix)
-  all_terms <- c(list(1), all_terms)
+  if(has_intercept){
+    intercept_block <- Matrix::Matrix(matrix(1, nrow = length(y), ncol = 1), sparse = TRUE)
+    colnames(intercept_block) <- "(Intercept)"
+    Wcb <- Matrix::cbind2(intercept_block, Wcb)
+    constraint_matrix <- c(list(Matrix::Matrix(0,1,1)), constraint_matrix)
+    all_terms <- c(list(1), all_terms)
+    logpv.fixed <- c(list(function(v) 0), logpv.fixed)
+    Pv.list <- c(list(function(v){
+      methods::as(Matrix::Diagonal(n = 1,
+                                   x = constants$zeta), "generalMatrix")
+
+    }), Pv.list)
+  }
 
 
   constraint_matrix <- methods::as(do.call(Matrix::bdiag, constraint_matrix), "CsparseMatrix")
@@ -151,12 +183,7 @@ DLNM_LPS_NB <- function(model,
     constraint_matrix <- NULL
   }
 
-  logpv.fixed <- c(list(function(v) 0), logpv.fixed)
-  Pv.list <- c(list(function(v){
-    methods::as(Matrix::Diagonal(n = 1,
-                        x = constants$zeta), "generalMatrix")
 
-  }), Pv.list)
 
 
 
@@ -168,7 +195,7 @@ DLNM_LPS_NB <- function(model,
 
 
   ind <- (Matrix::rowSums(is.na(Wcb)) + is.na(y) + is.na(offset)) == 0
-  Wcb <- Wcb[ind,]
+  Wcb <- Wcb[ind, , drop = FALSE]
   y <- y[ind]
   offset <- offset[ind]
   XtWcb <- Matrix::t(Wcb)
@@ -177,7 +204,7 @@ DLNM_LPS_NB <- function(model,
 
   #Precision matrix for parameter xi
   Qv <- function(v){
-    blocks <- lapply(seq_along(all_terms), function(terms_q) {
+    blocks <- lapply(seq_along(Pv.list), function(terms_q) {
       Pv.list[[terms_q]](v)
     })
     if (length(blocks) == 1L) {
@@ -189,7 +216,7 @@ DLNM_LPS_NB <- function(model,
 
   # Hyperparameters
     logpv.hyper <- function(v) {
-      sum(sapply(seq_along(all_terms),
+      sum(sapply(seq_along(Pv.list),
                  function(i) logpv.fixed[[i]](v)))
     }
 
