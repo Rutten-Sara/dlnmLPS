@@ -225,7 +225,7 @@ DLNM_LPS <- function(model,
     if(family == "Bernoulli"){
       Ntrials <-   rep(1, nrow(data))
     }else{
-      Ntrials <- eval(substitute(Ntrials), data, parent.frame())
+      Ntrials <- eval(substitute(Ntrials), data, base_env)
     }
     output = DLNM_LPS_binomial(model,
                                 data,
