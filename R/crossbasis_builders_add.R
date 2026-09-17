@@ -1,9 +1,7 @@
 # Building crossbasis special functions ----------------------------
 
-###########################################
-# COMPONENT RE
-###########################################
-
+#' Construction of random effect components
+#' @noRd
 build_component_re<-function(state, sm_args_iter, term, all_terms, constants){
 
   Wcb <- state$Wcb
@@ -119,10 +117,8 @@ build_component_re<-function(state, sm_args_iter, term, all_terms, constants){
 
 
 
-###########################################
-# COMPONENT RW
-###########################################
-
+#' Construction of random walk components
+#' @noRd
 build_component_rw<-function(state, sm_args_iter, term, all_terms, constants, penorder = 2){
 
   Wcb <- state$Wcb
@@ -212,11 +208,8 @@ build_component_rw<-function(state, sm_args_iter, term, all_terms, constants, pe
 }
 
 
-###########################################
-# COMPONENT SPLINE
-###########################################
-
-
+#' Construction of spline components
+#' @noRd
 build_component_spline<-function(state, sm_args_iter, term, all_terms, constants){
 
   Wcb <- state$Wcb
@@ -317,10 +310,8 @@ build_component_spline<-function(state, sm_args_iter, term, all_terms, constants
 
 
 
-###########################################
-# COMPONENT RW - spat
-###########################################
-
+#' Construction of spatially varying random walk components
+#' @noRd
 build_component_spatialrw<-function(state, sm_args_iter, term, all_terms, constants, penorder = 2){
 
   Wcb <- state$Wcb
@@ -535,11 +526,8 @@ build_component_spatialrw<-function(state, sm_args_iter, term, all_terms, consta
 
 
 
-
-###########################################
-# COMPONENT spat - rw
-###########################################
-
+#' Construction of time-varying (random walk) spatial components
+#' @noRd
 build_component_rwspatial<-function(state, sm_args_iter, term, all_terms, constants){
 
   Wcb <- state$Wcb
@@ -770,11 +758,8 @@ build_component_rwspatial<-function(state, sm_args_iter, term, all_terms, consta
 
 
 
-###########################################
-# COMPONENT FIXED
-###########################################
-
-
+#' Construction of fixed components
+#' @noRd
 build_component_fixed<-function(model, state,  all_fixed_terms, count_term, constants){
 
   Wcb <- state$Wcb

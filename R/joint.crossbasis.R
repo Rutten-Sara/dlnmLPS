@@ -132,7 +132,8 @@ joint.crossbasis <- function(x = NULL, lag=10, arglag = list(), argvar1 = list()
 
 
 
-
+#' Helpfunction for onebasis construction for joint crossbasis function
+#' @noRd
 joint.onebasis <- function(x = NULL, type = "lag", fun = "ns", lag, ...){
 
   # Check input specifications
@@ -153,8 +154,8 @@ joint.onebasis <- function(x = NULL, type = "lag", fun = "ns", lag, ...){
 }
 
 
-
-# Function to check input of lagbasis
+#' Checking input of lag basis
+#' @noRd
 checklagbasis <- function(fun, lag){
   if (!(fun %in% c("strata","ns","bs", "ps"))){
     stop("Invalid fun value.")
@@ -166,7 +167,8 @@ checklagbasis <- function(fun, lag){
 }
 
 
-# Function to check input of variable basis
+#' Checking input of variable basis
+#' @noRd
 checkvarbasis <- function(fun, x){
   if (!(fun %in% c("strata","ns","bs", "ps"))){
     stop("Invalid fun value.")
@@ -177,7 +179,8 @@ checkvarbasis <- function(fun, x){
   else return(TRUE)
 }
 
-# Check formals
+#' Checking formals
+#' @noRd
 f_formals <- function(fun) {tryCatch(
   get(fun, mode = "function"),
   error = function(e) utils::getFromNamespace(fun, "dlnm")

@@ -1,9 +1,7 @@
 # Building crossbasis DLNM functions ----------------------------
 
-###########################################
-# COMPONENT DLNM
-###########################################
-
+#' Construction of DLNM components
+#' @noRd
 build_component_dlnm<-function(state, sm_args_iter, term, all_terms, constants){
 
   Wcb <- state$Wcb
@@ -97,10 +95,8 @@ build_component_dlnm<-function(state, sm_args_iter, term, all_terms, constants){
 
 
 
-###########################################
-# COMPONENT SPATIAL DLNM
-###########################################
-
+#' Construction of spatially varying DLNM components
+#' @noRd
 build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, constants){
 
   Wcb <- state$Wcb
@@ -369,10 +365,8 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
 
 
 
-###########################################
-# COMPONENT MODIFIED DLNM
-###########################################
-
+#' Construction of effect modified DLNM components
+#' @noRd
 build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, constants){
 
   Wcb <- state$Wcb
@@ -615,11 +609,8 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
 }
 
 
-###########################################
-# COMPONENT JOINT
-###########################################
-
-
+#' Construction of joint DLNM components
+#' @noRd
 build_component_2Ddlnm<-function(state, sm_args_iter, term, all_terms, constants){
 
   Wcb <- state$Wcb
@@ -731,11 +722,8 @@ build_component_2Ddlnm<-function(state, sm_args_iter, term, all_terms, constants
 
 
 
-###########################################
-# COMPONENT INTERACTION (SPATIAL)
-###########################################
-
-
+#' Construction of spatially varying joint DLNM components
+#' @noRd
 build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, constants){
 
   Wcb <- state$Wcb
@@ -1084,10 +1072,8 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
 
 
 
-###########################################
-# COMPONENT MODIFICATION (joint)
-###########################################
-
+#' Construction of effect modified joint DLNM components
+#' @noRd
 build_component_modified2Ddlnm<-function(state, sm_args_iter, term, all_terms, constants){
 
   Wcb <- state$Wcb

@@ -1,3 +1,5 @@
+#' Fitting the model using LPS for binomial distribution
+#' @noRd
 DLNM_LPS_binomial <- function(model,
                   data,
                   offset,

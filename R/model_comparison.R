@@ -1,8 +1,7 @@
 # Helpers model comparison criteria   -----------------------------------------
 
-
-# DIC calculation
-
+#' Calculating DIC
+#' @noRd
 calculate_DIC_tot <- function(xi_mode,
                               Prec,
                               Qv_mode,
@@ -71,8 +70,8 @@ calculate_DIC_tot <- function(xi_mode,
 
 
 
-# Combine WAIC and CPO in one function such that samples only have to be calculated once
-# if both WAIC and CPO are requested.
+#' Calculating WAIC and/or CPO
+#' @noRd
 calculate_CPO_WAIC <- function(xi_mode,
                                Prec,
                                Qv_mode,

@@ -1,3 +1,5 @@
+#' Fitting the model using LPS for Gaussian distribution
+#' @noRd
 DLNM_LPS_Gaussian <- function(model,
                   data,
                   offset,

@@ -1,5 +1,7 @@
 # Helpers building crossbasis   ------------------------------------------------
 
+#' Construction of standardized list of smooth function elements
+#' @noRd
 normalize_sm_call <- function(call) {
   # Match argument and remove function name
   mc <- match.call(definition = sm, call = call, expand.dots = FALSE)
@@ -17,7 +19,8 @@ normalize_sm_call <- function(call) {
 
 
 
-# Add block to design matrix
+#' Construction of block of design matrix
+#' @noRd
 add_wcb_block <- function(Wcb, block) {
   if (is.null(block)) {
     return(Wcb)
@@ -27,7 +30,8 @@ add_wcb_block <- function(Wcb, block) {
 }
 
 
-# Construct neighbourhood matrix
+#' Construction of neighbourhood matrix
+#' @noRd
 build_neighbor_map <- function(map, connect = TRUE) {
   suppressWarnings(neig.map <- spdep::poly2nb(map))
 
@@ -54,6 +58,8 @@ build_neighbor_map <- function(map, connect = TRUE) {
   neig.map
 }
 
+#' Construction of precision matrix from neighbourhood matrix
+#' @noRd
 make_graph_precision <- function(neig.map, n) {
   deg <- lengths(neig.map)
   idx <- rep.int(seq_len(n), deg)
@@ -67,12 +73,15 @@ make_graph_precision <- function(neig.map, n) {
   )
 }
 
-
+#' Transformation of Leroux range parameter
+#' @noRd
 leroux_rho <- function(v) {
   exp_v <- exp(v)
   exp_v / (1 + exp_v)
 }
 
+#' Construction of Leroux precision matrix
+#' @noRd
 make_leroux_precision <- function(log_tau, logit_rho, n, Rn_term) {
   rho <- leroux_rho(logit_rho)
   exp(log_tau) * (Matrix::Diagonal(n = n, x = 1 - rho) + rho * Rn_term)

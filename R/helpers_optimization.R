@@ -131,7 +131,8 @@ sm <- function(x , arg = NULL, by = NULL, arg.by = NULL){
 
 }
 
-# Function to split the model formula in different terms
+#' Splitting the model formula in different terms
+#' @noRd
 split_terms <- function(expr) {
   if (is.call(expr) && identical(expr[[1]], as.name("+"))) {
     c(split_terms(expr[[2]]), split_terms(expr[[3]]))
@@ -140,14 +141,15 @@ split_terms <- function(expr) {
   }
 }
 
-
-# Function to verify whether term is a smooth function ('sm')
+#' Verifying whether term is a smooth function ('sm')
+#' @noRd
 is_sm <- function(term) {
   is.call(term) && identical(term[[1]], as.name("sm"))
 }
 
 
-# Function to evaluate expression
+#' Evaluating the expression
+#' @noRd
 eval_expression <- function(x_expr, data = NULL, env = globalenv()){
   if(is.symbol(x_expr) | is.language(x_expr)){
     x_name <- deparse(x_expr)
@@ -163,7 +165,8 @@ eval_expression <- function(x_expr, data = NULL, env = globalenv()){
 }
 
 
-
+#' Initializing the setup
+#' @noRd
 initialize_laplace_setup_constraint <- function(model, data, include_dispersion = FALSE) {
   rhs <- model[[3]]
   all_terms <- split_terms(rhs)
@@ -216,7 +219,8 @@ initialize_laplace_setup_constraint <- function(model, data, include_dispersion 
 
 }
 
-# Function to check validity of input
+#' Checking validitiy of the input
+#' @noRd
 check_sm_term_inputs <- function(sm_args_iter, data, env) {
 
   if (is.null(sm_args_iter$x)) {

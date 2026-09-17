@@ -103,7 +103,8 @@ plot.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NUL
 }
 
 
-
+#' Plotting one curve of nested graph
+#' @noRd
 DLNMLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, ptype = "overall", CI = FALSE,
                               xlim = NULL, ylim = NULL, zlim = NULL,cols = NULL, xlab = NULL,
                               ylab = NULL, zlab = NULL, ...){
@@ -219,7 +220,8 @@ contour.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = 
 
 
 
-
+#' Plotting one contour plot of nested graph
+#' @noRd
 DLNMLPS_contour_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, ptype = "overall",
                                  xlim = NULL, ylim = NULL, zlim = NULL,cols = NULL, xlab = NULL,
                                  ylab = NULL, zlab = NULL, ...){
@@ -259,7 +261,8 @@ DLNMLPS_contour_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = N
 
 
 
-
+#' Plotting overall cumulative RR curve for one-exposure DLNM
+#' @noRd
 plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, CI, ... ){
 
   if(is.null(xlab)){
@@ -320,7 +323,8 @@ plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, CI, ... ){
 
 
 
-
+#' Plotting overall cumulative RR curve for two-exposure DLNM (in 2D)
+#' @noRd
 plot_overall_2D <- function(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, CI, ... ){
 
 
@@ -484,7 +488,8 @@ plot_overall_2D <- function(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, C
 
 }
 
-
+#' Plotting overall cumulative RR curve for two-exposure DLNM (in 3D)
+#' @noRd
 plot_overall_3D <- function(x, xlim, ylim, zlim, cols, xlab, ylab, zlab, CI, contour = FALSE, ... ){
 
 
@@ -584,7 +589,8 @@ plot_overall_3D <- function(x, xlim, ylim, zlim, cols, xlab, ylab, zlab, CI, con
 
 
 
-
+#' Plotting exposure-lag-response curve
+#' @noRd
 plot_cross_3D <- function(x, xlim, ylim, zlim, cols, xlab, ylab, zlab, CI, contour = FALSE, ... ){
 
   if(is.null(xlab)){
@@ -683,7 +689,8 @@ plot_cross_3D <- function(x, xlim, ylim, zlim, cols, xlab, ylab, zlab, CI, conto
 }
 
 
-
+#' Plotting sliced RR-curve (in 3D)
+#' @noRd
 plot_slices3D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
                           CI = TRUE, xlim = NULL, ylim = NULL, zlim = NULL,
                           cols = NULL, xlab = NULL, ylab = NULL, zlab = NULL, contour = FALSE, ...) {
@@ -878,7 +885,8 @@ plot_slices3D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
 
 
 
-
+#' Plotting sliced RR-curve (in 2D)
+#' @noRd
 plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
                         CI = TRUE, xlim = NULL, ylim = NULL,
                         cols = NULL, xlab = NULL, ylab = NULL, ...) {
@@ -1206,7 +1214,8 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
 }
 
 
-# Credible intervals plot
+#' Plotting credible intervals
+#' @noRd
 fci <- function(x, high, low, ci.arg, plot.arg, noeff = NULL){
   polygon.arg <- utils::modifyList(list(col = grDevices::grey(0.9), border = NA),
                             ci.arg)
@@ -1216,7 +1225,8 @@ fci <- function(x, high, low, ci.arg, plot.arg, noeff = NULL){
 }
 
 
-
+#' Draws different curves on a graph
+#' @noRd
 draw_slice2D <- function(x, y, lower = NULL, upper = NULL,
                        col, CI = TRUE) {
 

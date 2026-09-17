@@ -539,7 +539,8 @@ data_pred_2d <- function(basis1, at_x, at_y, predlag, predvar, cen){
 }
 
 
-# Construction of data matrix
+#' Construction of data matrix
+#' @noRd
 data_pred_1d <- function(basis, at_x, predlag, cen){
   ################################################################################
   if (is.matrix(at_x)){
