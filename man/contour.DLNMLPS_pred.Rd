@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.DLNM_LPS.R
 \name{contour.DLNMLPS_pred}
 \alias{contour.DLNMLPS_pred}
-\title{Contour plots of predicted relative risks}
+\title{Contour plots of predicted outcomes}
 \usage{
 \method{contour}{DLNMLPS_pred}(
   x,
@@ -21,7 +21,7 @@
 )
 }
 \arguments{
-\item{x}{An object returned by \code{\link[=predRR]{predRR()}}.}
+\item{x}{An object returned by \code{\link[=pred_crossbasis]{pred_crossbasis()}}.}
 
 \item{slice_lag}{Lag value(s) at which to obtain slices. Integer or numeric
 vector.}
@@ -53,10 +53,14 @@ functions.}
 Produces a contour plot and returns \code{NULL} invisibly.
 }
 \description{
-Produce contour plots of predicted relative risks obtained from
-\code{\link[=predRR]{predRR()}}. In contrast to \code{\link[=plot.DLNMLPS_pred]{plot.DLNMLPS_pred()}}, this function only
+Produce contour plots of predicted outcomes obtained from
+\code{\link[=pred_crossbasis]{pred_crossbasis()}}. In contrast to \code{\link[=plot.DLNMLPS_pred]{plot.DLNMLPS_pred()}}, this function only
 produces contour plots of surfaces and therefore is only available for
-plot configurations that result in a three-dimensional surface.
+plot configurations that result in a three-dimensional surface. For Poisson or
+negative binomial models with a log link, relative risks (RRs) are plotted;
+for binomial models with a logit link, odds ratios (ORs) are plotted; and
+for Gaussian models with an identity link, additive differences in the
+outcome are plotted.
 }
 \details{
 This function provides contour representations of the three-dimensional
@@ -78,5 +82,5 @@ cumulative exposure-response curves or exposure/lag slices shown as
 multiple lines). Confidence intervals are therefore not supported.
 }
 \seealso{
-\code{\link[=plot.DLNMLPS_pred]{plot.DLNMLPS_pred()}}, \code{\link[=predRR]{predRR()}}
+\code{\link[=plot.DLNMLPS_pred]{plot.DLNMLPS_pred()}}, \code{\link[=pred_crossbasis]{pred_crossbasis()}}
 }

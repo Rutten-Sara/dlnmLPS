@@ -1,6 +1,6 @@
 #' Generate Predictions from a DLNMLPS Model
 #'
-#' This function generates relative risk (RR) predictions from a fitted
+#' This function generates predictions from a fitted
 #' [DLNM_LPS] model over a specified grid of exposure and lag values. Predictions
 #' are computed relative to a user-defined reference (centering) value.
 #'
@@ -30,7 +30,7 @@
 #' @param exc.prob Logical value indicating whether exceedance probabilities
 #'   should be calculated. Defaults to `FALSE`.
 #' @param threshold Numeric value defining the threshold used for exceedance
-#'   probability calculations. Defaults to `1`.
+#'   probability calculations (at scale of linear predictor). Defaults to `0`.
 #' @param mode Optional user-specified posterior mode.
 #' @param by Level or value of the `by` variable at which the DLNM relationship
 #'   is evaluated. For a continuous `by` variable, this is a (vector of) numeric
@@ -42,24 +42,199 @@
 #' components (structured by value of the `by`-variable, if specified):
 #'
 #' \describe{
-#'   \item{logpredX}{Matrix of estimated log relative risks (logRR) for the
+#'   \item{matfit}{Matrix of predictions for the
 #'   specified combinations of exposure and lag values.}
-#'   \item{Qlower_logpredX}{Matrix of lower credible interval bounds for the
-#'   logRR values in `logpredX`.}
-#'   \item{Qupper_logpredX}{Matrix of upper credible interval bounds for the
-#'   logRR values in `logpredX`.}
-#'   \item{pred_all}{Vector of estimated overall cumulative relative risks.}
-#'   \item{Qlower_all}{Vector of lower credible interval bounds for the overall
-#'   cumulative relative risks in `pred_all`.}
-#'   \item{Qupper_all}{Vector of upper credible interval bounds for the overall
-#'   cumulative relative risks in `pred_all`.}
+#'   \item{Qlower_matfit}{Matrix of lower credible interval bounds for the
+#'   values in `matfit`.}
+#'   \item{Qupper_matfit}{Matrix of upper credible interval bounds for the
+#'   values in `matfit`.}
+#'   \item{matRRfit}{Matrix of exponentiated associations from `matfit`.}
+#'   \item{Qlower_matRRfit}{Matrix of exponentiated bounds from `Qlower_matfit`.}
+#'   \item{Qupper_matRRfit}{Matrix of exponentiated bounds from `Qupper_matfit`.}
+#'   \item{allfit}{Vector of estimated overall cumulative predictions.}
+#'   \item{Qlower_allfit}{Vector of lower credible interval bounds for the overall
+#'   cumulative predictions in `allfit`.}
+#'   \item{Qupper_allfit}{Vector of upper credible interval bounds for the overall
+#'   cumulative predictions in `allfit`.}
+#'   \item{allRRfit}{Matrix of exponentiated associations from `allfit`.}
+#'   \item{Qlower_allRRfit}{Matrix of exponentiated bounds from `Qlower_allfit`.}
+#'   \item{Qupper_allRRfit}{Matrix of exponentiated bounds from `Qupper_allfit`.}
 #'   \item{exc_prob}{Vector of exceedance probabilities, if requested.}
 #' }
 #'
+#' @examples
+#' data(barcelona_temp)
+#' data(shapefile_bcn)
+#'
+#' # Examples of applications
+#'
+#' dataset <- barcelona_temp |>
+#'   dplyr::mutate(
+#'     dow = weekdays(date),
+#'     year = lubridate::year(date),
+#'     month = lubridate::month(date)
+#'   )
+#'
+#' group <- factor(paste0(dataset$District, "-", dataset$year))
+#'
+#'
+#' ### Example 1: Unpenalized and spatially varying DLNM
+#'
+#' # Create the (unpenalized) crossbasis
+#' knots_max <- quantile(dataset$Tmax, probs = c(0.10,0.50,0.90))
+#' knots_lag <- dlnm::logknots(0:14, nk = 2)
+#'
+#' basis.max_unpen <- dlnm::crossbasis(
+#'     dataset$Tmax,
+#'     argvar=list(fun = "ns", knots = knots_max),
+#'     arglag=list(fun="ns", knots = knots_lag),
+#'     lag=14,
+#'     group=group
+#' )
+#'
+#' # Fit model
+#' model_max_spat <- DLNM_LPS(
+#'     dtot ~ 1 + factor(dow) +
+#'     sm(month, arg = list(type = "ns", df = 3)) +
+#'     sm(year, arg = list(type = "rw1")) +
+#'     sm(basis.max_unpen, by = District,
+#'             arg.by = list(type = "Leroux", map = shapefile_bcn)) +
+#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+#'     data = dataset,
+#'     offset = log(pop),
+#'     model.comparison = list(DIC = TRUE),
+#'     family = "Poisson")
+#'
+#' summary(model_max_spat)
+#'
+#' # Make predictions
+#' pred_spat_max <- pred_crossbasis(
+#'     basis.max_unpen,
+#'     model_max_spat,
+#'     at_x = 22:30,
+#'     cen = 25,
+#'     lag = c(0,14),
+#'     CI = TRUE,
+#'     by = unique(dataset$District)
+#' )
+#'
+#' # Plot results (region-specific overal RR)
+#' plot(pred_spat_max, ptype = "overall", CI = TRUE, xlab = "temp", ylab = "RR", ylim = c(0.9,3.0))
+#'
+#'
+#' ### Example 2: Unpenalized and deprivation-varying DLNM
+#'
+#' # Fit model
+#' model_max_conf <- DLNM_LPS(
+#'     dtot ~ 1 + factor(dow) +
+#'     sm(month, arg = list(type = "ns", df = 3)) +
+#'     sm(year, arg = list(type = "rw1")) +
+#'     sm(depriv, arg = list(type = "ns", df = 3)) +
+#'     sm(basis.max_unpen, by = depriv,
+#'             arg.by = list(type = "ns", df = 3)) +
+#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+#'     data = dataset,
+#'     offset = log(pop),
+#'     model.comparison = list(DIC = TRUE),
+#'     family = "Poisson")
+#'
+#' # Make predictions
+#' pred_conf_max <- pred_crossbasis(
+#'     basis.max_unpen,
+#'     model_max_conf,
+#'     at_x = 22:30,
+#'     cen = 25,
+#'     lag = c(0,14),
+#'     CI = TRUE,
+#'     by = quantile(dataset$depriv,probs= c(0.10, 0.90))
+#' )
+#'
+#' # Plot results (contour plot exposure-lag-response)
+#' contour(pred_conf_max, ptype = "cross", cols = function(n) hcl.colors(n, "Inferno"))
+#'
+#'
+#' ### Example 3: Penalized and common DLNM
+#'
+#' # Create the (penalized) crossbasis
+#' basis.max <- dlnm::crossbasis(
+#'     dataset$Tmax,
+#'     argvar = list(df = 5, fun = "ps"),
+#'     arglag = list(df = 5, fun = "ps"),
+#'     lag = 14,
+#'     group = group
+#' )
+#'
+#' # Fit model
+#' model_max_common <- DLNM_LPS(
+#'     dtot ~ 1 + factor(dow) +
+#'     sm(month, arg = list(type = "ns", df = 3)) +
+#'     sm(year, arg = list(type = "rw1")) +
+#'     sm(basis.max, arg = list(pen= 2)) +
+#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+#'     data = dataset,
+#'     offset = log(pop),
+#'     model.comparison = list(DIC = TRUE),
+#'     family = "Poisson"
+#' )
+#'
+#' # Make predictions
+#' pred_max <- pred_crossbasis(
+#'      basis = basis.max,
+#'      model = model_max_common,
+#'      at_x = 22:30,
+#'      cen = 25,
+#'      lag = c(0,14),
+#'      CI = TRUE
+#' )
+#'
+#' # Plot results (lag-specific and overall RR)
+#' plot(pred_max, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, xlab = "temp", ylab = "RR")
+#' plot(pred_max, ptype = "overall", CI = TRUE, xlab = "temp", ylab = "RR")
+#'
+#'
+#' ### Example 4: Penalized and common joint DLNM
+#'
+#' # Create the (penalized) joint crossbasis
+#' basis.max_min <- joint.crossbasis(
+#'     cbind(dataset$Tmax, dataset$Tmin),
+#'     argvar1 = list(df = 5, fun = "ps"),
+#'     argvar2 = list(df = 5, fun = "ps"),
+#'     arglag = list(df = 5, fun = "ps"),
+#'     lag = 14,
+#'     group = group
+#' )
+#'
+#' # Fit model
+#' model_joint_common <- DLNM_LPS(
+#'     dtot ~ 1 + factor(dow) +
+#'     sm(month, arg = list(type = "ns", df = 3)) +
+#'     sm(year, arg = list(type = "rw1")) +
+#'     sm(basis.max_min, arg = list(pen= 2)) +
+#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+#'     data = dataset,
+#'     offset = log(pop),
+#'     model.comparison = list(DIC = TRUE),
+#'     family = "Poisson"
+#' )
+#'
+#' # Make predictions
+#' pred_max_min <- pred_crossbasis(
+#'      basis = basis.max_min,
+#'      model = model_joint_common,
+#'      at_x = c(29,29,29,30,30,30,31,31,31),
+#'      at_y = c(20,21,22,20,21,22,20,21,22),
+#'      cen = c(25,15),
+#'      lag = c(0,14),
+#'      CI = TRUE
+#' )
+#'
+#' # Plot results (contour plot overall RR)
+#' contour(pred_max_min, ptype = "overall", cols = function(n) hcl.colors(n, "Inferno"))
+#'
 #' @export
 
-predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all = FALSE, CI = FALSE,
-                   ci.level = 0.95, exc.prob = FALSE, threshold = 1, mode = NULL, by = NULL){
+pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all = FALSE, CI = FALSE,
+                   ci.level = 0.95, exc.prob = FALSE, threshold = 0, mode = NULL, by = NULL){
 
 
   constraint_matrix <- model$constraints
@@ -162,6 +337,9 @@ predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all
   if(is.null(by)){
 
   logpredX <- as.numeric(Xpred %*% xi_mode_cb)
+  matRRfit <-exp(logpredX)
+
+
 
   if(CI){
     if(is.null(constraint_matrix)){
@@ -173,14 +351,18 @@ predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all
     quantiles <- mapply(function(mean_val, sd_val) {
       stats::qnorm(p = c((1-ci.level)/2, (1+ci.level)/2), mean = mean_val, sd = sd_val)
     }, logpredX, sd_logpredX)
-    Qlower_logpredX <- quantiles[1,]
-    Qupper_logpredX <- quantiles[2,]
+    Qlower_matfit <- quantiles[1,]
+    Qupper_matfit <- quantiles[2,]
 
-    Qlower_logpredX <- matrix(Qlower_logpredX, nrow = length(predvar), byrow = FALSE)
-    Qupper_logpredX <- matrix(Qupper_logpredX, nrow = length(predvar), byrow = FALSE)
+    Qlower_matfit <- matrix(Qlower_matfit, nrow = length(predvar), byrow = FALSE)
+    Qupper_matfit <- matrix(Qupper_matfit, nrow = length(predvar), byrow = FALSE)
+
+    Qlower_matRRfit <- exp(Qlower_matfit)
+    Qupper_matRRfit <- exp(Qupper_matfit)
+
 
   }else{
-    sd_logpredX <- Qlower_logpredX <- Qupper_logpredX <- NULL
+    sd_logpredX <- Qlower_matfit <- Qupper_matfit <- Qlower_matRRfit <- Qupper_matRRfit <- NULL
 
   }
 
@@ -195,8 +377,8 @@ predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all
   }
 
 
-  pred_all <- exp(as.numeric(Xpredall %*% xi_mode_cb))
-
+  pred_all <- as.numeric(Xpredall %*% xi_mode_cb)
+  allRRfit <- exp(pred_all)
 
   if(CI | CI.all){
     if(is.null(constraint_matrix)){
@@ -207,35 +389,45 @@ predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all
 
     quantiles_all <- mapply(function(mean_val, sd_val) {
       stats::qnorm(p = c((1-ci.level)/2, (1+ci.level)/2), mean = mean_val, sd = sd_val)
-    }, log(pred_all), sd_all)
-    Qlower_all = exp(quantiles_all[1,])
-    Qupper_all = exp(quantiles_all[2,])
+    }, pred_all, sd_all)
+    Qlower_allfit = quantiles_all[1,]
+    Qupper_allfit = quantiles_all[2,]
+
+    Qlower_allRRfit <- exp(Qlower_allfit)
+    Qupper_allRRfit <- exp(Qupper_allfit)
+
   }else{
-    sd_all <- Qlower_all <- Qupper_all <- NULL
+    sd_all <- Qlower_allfit <- Qupper_allfit <- Qlower_allRRfit <- Qupper_allRRfit <- NULL
   }
 
 
   if(exc.prob){
     prob_all <- mapply(function(mean_val, sd_val) {
-      stats::pnorm(log(threshold), mean = mean_val, sd = sd_val, lower.tail = FALSE)
-    }, log(pred_all), sd_all)
+      stats::pnorm(threshold, mean = mean_val, sd = sd_val, lower.tail = FALSE)
+    }, pred_all, sd_all)
     exc.prob_res = prob_all
   }else{
     exc.prob_res = NULL
   }
 
-
-
-  output <- list("logpredX" = matrix(logpredX, nrow = length(predvar), byrow = FALSE),
-                 "Qlower_logpredX" =  Qlower_logpredX,
-                 "Qupper_logpredX" =  Qupper_logpredX,
-                 "Qlower_all" = Qlower_all,
-                 "Qupper_all" = Qupper_all,
-                 "pred_all" = pred_all,
+  output <- list("matfit" = matrix(logpredX, nrow = length(predvar), byrow = FALSE),
+                 "Qlower_matfit" =  Qlower_matfit,
+                 "Qupper_matfit" =  Qupper_matfit,
+                 "Qlower_allfit" = Qlower_allfit,
+                 "Qupper_allfit" = Qupper_allfit,
+                 "allfit" = pred_all,
+                 "matRRfit" = matrix(matRRfit, nrow = length(predvar), byrow = FALSE),
+                 "Qlower_matRRfit" =  Qlower_matRRfit,
+                 "Qupper_matRRfit" =  Qupper_matRRfit,
+                 "Qlower_allRRfit" = Qlower_allRRfit,
+                 "Qupper_allRRfit" = Qupper_allRRfit,
+                 "allRRfit" = allRRfit,
                  "exc.prob" = exc.prob_res,
                  "x" = at_x,
                  "y" = at_y,
-                 "lag" = lag)
+                 "lag" = lag,
+                 "family" = model$family)
+
   } else if (kind_term %in% c("spatial DLNM", "joint spatial DLNM")){
     if(is.null(by)){stop("Specify at least one region ID")}
 
@@ -266,16 +458,20 @@ predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all
 
       ##########################
       logpredX <- as.numeric(Xpred_full %*% c(xi_mode_cb, xi_mode_cb_spat_i))
+      matRRfit <- exp(logpredX)
 
-      pred_all <- exp(as.numeric(Xpredall %*% c(xi_mode_cb, xi_mode_cb_spat_i)))
+      pred_all <- as.numeric(Xpredall %*% c(xi_mode_cb, xi_mode_cb_spat_i))
+      allRRfit <- exp(pred_all)
 
-      output[[i]] <- list("logpredX" = matrix(logpredX, nrow = length(predvar), byrow = FALSE),
-                          "pred_all" = pred_all,
+      output[[i]] <- list("matfit" = matrix(logpredX, nrow = length(predvar), byrow = FALSE),
+                          "allfit" = pred_all,
+                          "matRRfit" = matrix(matRRfit, nrow = length(predvar), byrow = FALSE),
+                          "allRRfit" = allRRfit,
                           "by" = i,
                           "x" = at_x,
                           "y" = at_y,
-                          "lag" = lag)
-
+                          "lag" = lag,
+                          "family" = model$family)
 
     }
 
@@ -291,14 +487,16 @@ predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all
       for(i in 1:length(by)){
         quantiles_all <- mapply(function(mean_val, sd_val) {
           stats::qnorm(p = c((1-ci.level)/2, (1+ci.level)/2), mean = mean_val, sd = sd_val)
-        }, log(output[[i]]$pred_all), sd_all[i,])
-        output[[i]]$Qlower_all = exp(quantiles_all[1,])
-        output[[i]]$Qupper_all = exp(quantiles_all[2,])
+        }, output[[i]]$allfit, sd_all[i,])
+        output[[i]]$Qlower_allfit = quantiles_all[1,]
+        output[[i]]$Qupper_allfit = quantiles_all[2,]
+        output[[i]]$Qlower_allRRfit = exp(quantiles_all[1,])
+        output[[i]]$Qupper_allRRfit = exp(quantiles_all[2,])
 
         if(exc.prob){
           prob_all <- mapply(function(mean_val, sd_val) {
-            stats::pnorm(log(threshold), mean = mean_val, sd = sd_val, lower.tail = FALSE)
-          }, log(output[[i]]$pred_all), sd_all[i,])
+            stats::pnorm(threshold, mean = mean_val, sd = sd_val, lower.tail = FALSE)
+          }, output[[i]]$allfit, sd_all[i,])
           output[[i]]$exc.prob = prob_all
         }
       }
@@ -316,9 +514,11 @@ predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all
       for(i in 1:length(by)){
         quantiles <- mapply(function(mean_val, sd_val) {
           stats::qnorm(p = c((1-ci.level)/2, (1+ci.level)/2), mean = mean_val, sd = sd_val)
-        }, output[[i]]$logpredX, sd_logpredX[i,])
-        output[[i]]$Qlower_logpredX <- matrix(quantiles[1,], nrow = length(predvar), byrow = FALSE)
-        output[[i]]$Qupper_logpredX <- matrix(quantiles[2,], nrow = length(predvar), byrow = FALSE)
+        }, output[[i]]$matfit, sd_logpredX[i,])
+        output[[i]]$Qlower_matfit <- matrix(quantiles[1,], nrow = length(predvar), byrow = FALSE)
+        output[[i]]$Qupper_matfit <- matrix(quantiles[2,], nrow = length(predvar), byrow = FALSE)
+        output[[i]]$Qlower_matRRfit <- matrix(exp(quantiles[1,]), nrow = length(predvar), byrow = FALSE)
+        output[[i]]$Qupper_matRRfit <- matrix(exp(quantiles[2,]), nrow = length(predvar), byrow = FALSE)
       }
 
     }
@@ -383,6 +583,7 @@ predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all
 
     ##########################
     logpredX <- as.numeric(Xpred_full %*% mode_cb)
+    matRRfit <- exp(logpredX)
 
     if( CI ){
       if(is.null(constraint_matrix)){
@@ -395,19 +596,22 @@ predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all
         stats::qnorm(p = c((1-ci.level)/2, (1+ci.level)/2), mean = mean_val, sd = sd_val)
       }, logpredX, sd_logpredX)
 
-      Qlower_logpredX <- quantiles[1,]
-      Qupper_logpredX <- quantiles[2,]
+      Qlower_matfit <- quantiles[1,]
+      Qupper_matfit <- quantiles[2,]
 
-      Qlower_logpredX <- matrix(Qlower_logpredX, nrow = length(predvar), byrow = FALSE)
-      Qupper_logpredX <- matrix(Qupper_logpredX, nrow = length(predvar), byrow = FALSE)
+      Qlower_matRRfit <- matrix(exp(Qlower_matfit), nrow = length(predvar), byrow = FALSE)
+      Qupper_matRRfit <- matrix(exp(Qupper_matfit), nrow = length(predvar), byrow = FALSE)
+      Qlower_matfit <- matrix(Qlower_matfit, nrow = length(predvar), byrow = FALSE)
+      Qupper_matfit <- matrix(Qupper_matfit, nrow = length(predvar), byrow = FALSE)
+
 
     }else{
-      Qlower_logpredX = NULL
-      Qupper_logpredX = NULL
+      Qlower_matfit <- Qupper_matfit <- Qlower_matRRfit <- Qupper_matRRfit <- NULL
     }
 
 
-    pred_all <- exp(as.numeric(Xpredall %*% mode_cb))
+    pred_all <- as.numeric(Xpredall %*% mode_cb)
+    allRRfit <- exp(pred_all)
 
     if(CI | CI.all){
       if(is.null(constraint_matrix)){
@@ -418,34 +622,43 @@ predRR <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all
       }
       quantiles_all <- mapply(function(mean_val, sd_val) {
         stats::qnorm(p = c((1-ci.level)/2, (1+ci.level)/2), mean = mean_val, sd = sd_val)
-      }, log(pred_all), sd_all)
-      Qlower_all = exp(quantiles_all[1,])
-      Qupper_all = exp(quantiles_all[2,])
+      }, pred_all, sd_all)
+      Qlower_allfit = quantiles_all[1,]
+      Qupper_allfit = quantiles_all[2,]
+      Qlower_allRRfit = exp(quantiles_all[1,])
+      Qupper_allRRfit = exp(quantiles_all[2,])
+
     }else{
-      Qlower_all = NULL
-      Qupper_all = NULL
+      Qlower_allfit <- Qupper_allfit <- Qlower_allRRfit <- Qupper_allRRfit <- NULL
     }
 
     if(exc.prob){
       prob_all <- mapply(function(mean_val, sd_val) {
-        stats::pnorm(log(threshold), mean = mean_val, sd = sd_val, lower.tail = FALSE)
-      }, log(pred_all), sd_all)
+        stats::pnorm(threshold, mean = mean_val, sd = sd_val, lower.tail = FALSE)
+      }, pred_all, sd_all)
       exc.prob_res = prob_all
     }else{
       exc.prob_res = NULL
     }
 
-    output[[by.value]] <- list("logpredX" = matrix(logpredX, nrow = length(predvar), byrow = FALSE),
-                   "Qlower_logpredX" = Qlower_logpredX,
-                   "Qupper_logpredX" = Qupper_logpredX,
-                   "Qlower_all" = Qlower_all,
-                   "Qupper_all" = Qupper_all,
-                   "pred_all" = pred_all,
+    output[[by.value]] <- list("matfit" = matrix(logpredX, nrow = length(predvar), byrow = FALSE),
+                   "Qlower_matfit" = Qlower_matfit,
+                   "Qupper_matfit" = Qupper_matfit,
+                   "Qlower_allfit" = Qlower_allfit,
+                   "Qupper_allfit" = Qupper_allfit,
+                   "allfit" = pred_all,
+                   "matRRfit" = matrix(matRRfit, nrow = length(predvar), byrow = FALSE),
+                   "Qlower_matRRfit" =  Qlower_matRRfit,
+                   "Qupper_matRRfit" =  Qupper_matRRfit,
+                   "Qlower_allRRfit" = Qlower_allRRfit,
+                   "Qupper_allRRfit" = Qupper_allRRfit,
+                   "allRRfit" = allRRfit,
                    "exc.prob" = exc.prob_res,
                    "x" = at_x,
                    "y" = at_y,
                    "lag" = lag,
-                   "by" = by[by.value])
+                   "by" = by[by.value],
+                   "family" = model$family)
     }
 
   }

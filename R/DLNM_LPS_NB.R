@@ -515,7 +515,8 @@ DLNM_LPS_NB <- function(model,
                    "pd WAIC" = pd_WAIC_result,
                    "CPO" = CPO_result,
                    "constraints" = constraint_matrix,
-                   "types" = types_term)
+                   "types" = types_term,
+                   "family" = "NB")
 
     class(output) <- "DLNMLPS"
     return(output)

@@ -71,6 +71,8 @@ build_component_dlnm<-function(state, sm_args_iter, term, all_terms, constants){
     pen_dlnm[term+1] <- pen_dlnm[term+1]+3
 
     v_init <- c(v_init, rep(5, 3))
+    names(v_init) <- c(names(v_init)[1:(length(v_init)-3)],
+                       paste("Penalty DLNM",deparse1(all_terms[[term]]), 1:3))
 
   }else{
     logpv.fixed[[term]] <- function(v) 0
@@ -194,6 +196,8 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
     pen_dlnm[term+1] = pen_dlnm[term+1]+3
 
     v_init <- c(v_init, rep(1, 3))
+    names(v_init) <- c(names(v_init)[1:(length(v_init)-3)],
+                       paste("Penalty common DLNM",deparse1(all_terms[[term]]), 1:3))
 
 
     # Spatial interaction
@@ -214,6 +218,8 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
       Pv.list[[term]] <- function(v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
 
       v_init <- c(v_init, rep(3, 3))
+      names(v_init) <- c(names(v_init)[1:(length(v_init)-3)],
+                         paste("Penalty spatial DLNM",deparse1(all_terms[[term]]), 1:3))
 
       pen_dlnm[term+1] = pen_dlnm[term+1]+3
 
@@ -237,6 +243,8 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
 
       pen_dlnm[term+1] = pen_dlnm[term+1]+3
       v_init <- c(v_init, rep(3,3))
+      names(v_init) <- c(names(v_init)[1:(length(v_init)-3)],
+                         paste("Penalty spatial DLNM",deparse1(all_terms[[term]]), 1:3))
 
       ncol_Wcb <- ncol(Wcb_part)
       constraint_matrix[[term]] <-  Matrix::sparseMatrix(i = rep(1:ncol_Wcb, each = q.rand),
@@ -270,6 +278,10 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
       Pv.list[[term]] <- function( v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
 
       v_init <- c(v_init, c(rep(3,3),1))
+      names(v_init) <- c(names(v_init)[1:(length(v_init)-4)],
+                         paste("Penalty DLNM",deparse1(all_terms[[term]]), 1:3),
+                         paste("Rho DLNM",deparse1(all_terms[[term]])))
+
       pen_dlnm[term+1] <- pen_dlnm[term+1]+4
 
       constraint_matrix[[term]] <- Matrix::Matrix(0,1,ncol(Wcb_part)*(1+q.rand))
@@ -292,6 +304,8 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
           (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start+1])))
 
         v_init <- c(v_init, 5)
+        names(v_init) <- c(names(v_init)[1:(length(v_init)-1)],
+                           paste("Precision spatial DLNM",deparse1(all_terms[[term]])))
 
         logpv.fixed[[term]] <- function( v) logpv1( v) + logpv2(v)
         Pv.list[[term]] <- function( v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
@@ -311,6 +325,8 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
           (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start+1])))
 
         v_init <- c(v_init, 5)
+        names(v_init) <- c(names(v_init)[1:(length(v_init)-1)],
+                           paste("Precision spatial DLNM",deparse1(all_terms[[term]])))
 
         logpv.fixed[[term]] <- function(v) logpv1(v) + logpv2(v)
         Pv.list[[term]] <- function(v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
@@ -346,6 +362,10 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
         Pv.list[[term]] <- function(v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
 
         v_init <- c(v_init, c(5,1))
+        names(v_init) <- c(names(v_init)[1:(length(v_init)-2)],
+                           paste("Precision spatial DLNM",deparse1(all_terms[[term]])),
+                           paste("Rho DLNM",deparse1(all_terms[[term]])))
+
         pen_dlnm[term+1] <- pen_dlnm[term+1]+2
 
         constraint_matrix[[term]] <- Matrix::Matrix(0,1,ncol(Wcb_part)*(1+q.rand))
@@ -516,7 +536,8 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
 
     v_init <- c(v_init, rep(2, 3))
 
-
+    names(v_init) <- c(names(v_init)[1:(length(v_init)-3)],
+                       paste("Penalty common DLNM",deparse1(all_terms[[term]]), 1:3))
 
     if(sm_args_iter$arg.by$type == "ps"){
       Pv2_term <- function(v) exp(v[pen_start+4])*(Px%x%Matrix::Diagonal(n = vl*vz, x = NULL)) +
@@ -535,6 +556,9 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
 
       pen_dlnm[term+1] = pen_dlnm[term+1] + 4
       v_init <- c(v_init, rep(2, 4))
+      names(v_init) <- c(names(v_init)[1:(length(v_init)-4)],
+                         paste("Penalty modified DLNM",deparse1(all_terms[[term]]), 1:4))
+
 
     }else{
       Pv2_term <- function(v) exp(v[pen_start+4])*(Px%x%Matrix::Diagonal(n = vl*vz, x = NULL)) +
@@ -552,6 +576,8 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
 
       pen_dlnm[term+1] = pen_dlnm[term+1] + 3
       v_init <- c(v_init, rep(2, 3))
+      names(v_init) <- c(names(v_init)[1:(length(v_init)-3)],
+                         paste("Penalty modified DLNM",deparse1(all_terms[[term]]), 1:3))
     }
 
 
@@ -579,6 +605,8 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
 
       pen_dlnm[term+1] = pen_dlnm[term+1] + 1
       v_init <- c(v_init, 2)
+      names(v_init) <- c(names(v_init)[1:(length(v_init)-1)],
+                         paste("Penalty modified DLNM",deparse1(all_terms[[term]])))
 
     }else{
 
@@ -697,6 +725,8 @@ build_component_2Ddlnm<-function(state, sm_args_iter, term, all_terms, constants
     pen_dlnm[term+1] <- pen_dlnm[term+1]+4
 
     v_init <- c(v_init, rep(5, 4))
+    names(v_init) <- c(names(v_init)[1:(length(v_init)-4)],
+                       paste("Penalty DLNM",deparse1(all_terms[[term]]), 1:4))
 
   }else{
     logpv.fixed[[term]] <- function(v) 0
@@ -842,7 +872,8 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
     pen_dlnm[term+1] = pen_dlnm[term+1]+4
 
     v_init <- c(v_init, rep(1, 4))
-
+    names(v_init) <- c(names(v_init)[1:(length(v_init)-4)],
+                       paste("Penalty DLNM",deparse1(all_terms[[term]]), 1:4))
 
     # Spatial interaction
     if (sm_args_iter$arg.by$type == "ind"){
@@ -873,6 +904,8 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
       Pv.list[[term]] <- function(v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
 
       v_init <- c(v_init, rep(3, 4))
+      names(v_init) <- c(names(v_init)[1:(length(v_init)-4)],
+                         paste("Penalty spatial DLNM",deparse1(all_terms[[term]]), 1:4))
 
       pen_dlnm[term+1] = pen_dlnm[term+1]+4
 
@@ -909,6 +942,8 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
 
       pen_dlnm[term+1] = pen_dlnm[term+1]+4
       v_init <- c(v_init, rep(3,4))
+      names(v_init) <- c(names(v_init)[1:(length(v_init)-4)],
+                         paste("Penalty spatial DLNM",deparse1(all_terms[[term]]), 1:4))
 
       ncol_Wcb <- ncol(Wcb_part)
       constraint_matrix[[term]] <-  Matrix::sparseMatrix(i = rep(1:ncol_Wcb, each = q.rand),
@@ -957,6 +992,10 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
       Pv.list[[term]] <- function(v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
 
       v_init <- c(v_init, c(rep(3,4),1))
+      names(v_init) <- c(names(v_init)[1:(length(v_init)-5)],
+                         paste("Penalty spatial DLNM",deparse1(all_terms[[term]]), 1:4),
+                         paste("Rho DLNM",deparse1(all_terms[[term]])))
+
       pen_dlnm[term+1] <- pen_dlnm[term+1]+5
 
       constraint_matrix[[term]] <- Matrix::Matrix(0,1,ncol(Wcb_part)*(1+q.rand))
@@ -986,6 +1025,8 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
           (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start+1])))
 
         v_init <- c(v_init, 5)
+        names(v_init) <- c(names(v_init)[1:(length(v_init)-1)],
+                           paste("Precision spatial DLNM",deparse1(all_terms[[term]])))
 
         logpv.fixed[[term]] <- function(v) logpv1(v) + logpv2(v)
         Pv.list[[term]] <- function(v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
@@ -1011,6 +1052,8 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
           (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start+1])))
 
         v_init <- c(v_init, 5)
+        names(v_init) <- c(names(v_init)[1:(length(v_init)-1)],
+                           paste("Precision spatial DLNM",deparse1(all_terms[[term]])))
 
         logpv.fixed[[term]] <- function(v) logpv1(v) + logpv2(v)
         Pv.list[[term]] <- function(v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
@@ -1052,6 +1095,10 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
         Pv.list[[term]] <- function(v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
 
         v_init <- c(v_init, c(5,1))
+        names(v_init) <- c(names(v_init)[1:(length(v_init)-2)],
+                           paste("Precision spatial DLNM",deparse1(all_terms[[term]])),
+                           paste("Rho DLNM",deparse1(all_terms[[term]])))
+
         pen_dlnm[term+1] <- pen_dlnm[term+1]+2
 
         constraint_matrix[[term]] <- Matrix::Matrix(0,1,ncol(Wcb_part)*(1+q.rand))
@@ -1244,6 +1291,8 @@ build_component_modified2Ddlnm<-function(state, sm_args_iter, term, all_terms, c
     pen_dlnm[term+1] = pen_dlnm[term+1]+4
 
     v_init <- c(v_init, rep(2, 4))
+    names(v_init) <- c(names(v_init)[1:(length(v_init)-4)],
+                       paste("Penalty common DLNM",deparse1(all_terms[[term]]), 1:4))
 
 
 
@@ -1280,6 +1329,8 @@ build_component_modified2Ddlnm<-function(state, sm_args_iter, term, all_terms, c
 
       pen_dlnm[term+1] = pen_dlnm[term+1] + 5
       v_init <- c(v_init, rep(2, 5))
+      names(v_init) <- c(names(v_init)[1:(length(v_init)-5)],
+                         paste("Penalty modified DLNM",deparse1(all_terms[[term]]), 1:5))
 
     }else{
       if(attributes(sm_args_iter$x)$is_identifiable){
@@ -1310,6 +1361,8 @@ build_component_modified2Ddlnm<-function(state, sm_args_iter, term, all_terms, c
 
       pen_dlnm[term+1] = pen_dlnm[term+1] + 4
       v_init <- c(v_init, rep(2, 4))
+      names(v_init) <- c(names(v_init)[1:(length(v_init)-4)],
+                         paste("Penalty modified DLNM",deparse1(all_terms[[term]]), 1:4))
     }
 
 
@@ -1342,6 +1395,8 @@ build_component_modified2Ddlnm<-function(state, sm_args_iter, term, all_terms, c
 
       pen_dlnm[term+1] = pen_dlnm[term+1] + 1
       v_init <- c(v_init, 2)
+      names(v_init) <- c(names(v_init)[1:(length(v_init)-1)],
+                         paste("Penalty modified DLNM",deparse1(all_terms[[term]])))
 
     }else{
 

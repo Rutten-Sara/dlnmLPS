@@ -29,9 +29,9 @@ Possible elements are \code{DIC}, \code{WAIC}, and \code{CPO}, each taking a log
 (\code{TRUE} or \code{FALSE}). All criteria default to \code{FALSE}.}
 
 \item{family}{The distribution family used for the response model. Currently
-supported options are \code{poisson} for the poisson distribution,
+supported options are \code{Poisson} for the Poisson distribution,
 \code{NB} for the negative binomial distribution, \code{Gaussian} for the normal
-distribution (default) or \code{Bernoulli}/\code{binomial} for binary data.}
+distribution (default) or \code{Bernoulli}/\code{Binomial} for binary data.}
 
 \item{Ntrials}{Number of trials per observation (for \code{family}=binomial).}
 
@@ -93,11 +93,12 @@ model_max_spat <- DLNM_LPS(
     data = dataset,
     offset = log(pop),
     model.comparison = list(DIC = TRUE),
-    family = "poisson")
+    family = "Poisson")
 
+summary(model_max_spat)
 
 # Make predictions
-pred_spat_max <- predRR(
+pred_spat_max <- pred_crossbasis(
     basis.max_unpen,
     model_max_spat,
     at_x = 22:30,
@@ -125,10 +126,10 @@ model_max_conf <- DLNM_LPS(
     data = dataset,
     offset = log(pop),
     model.comparison = list(DIC = TRUE),
-    family = "poisson")
+    family = "Poisson")
 
 # Make predictions
-pred_conf_max <- predRR(
+pred_conf_max <- pred_crossbasis(
     basis.max_unpen,
     model_max_conf,
     at_x = 22:30,
@@ -163,11 +164,11 @@ model_max_common <- DLNM_LPS(
     data = dataset,
     offset = log(pop),
     model.comparison = list(DIC = TRUE),
-    family = "poisson"
+    family = "Poisson"
 )
 
 # Make predictions
-pred_max <- predRR(
+pred_max <- pred_crossbasis(
      basis = basis.max,
      model = model_max_common,
      at_x = 22:30,
@@ -203,11 +204,11 @@ model_joint_common <- DLNM_LPS(
     data = dataset,
     offset = log(pop),
     model.comparison = list(DIC = TRUE),
-    family = "poisson"
+    family = "Poisson"
 )
 
 # Make predictions
-pred_max_min <- predRR(
+pred_max_min <- pred_crossbasis(
      basis = basis.max_min,
      model = model_joint_common,
      at_x = c(29,29,29,30,30,30,31,31,31),

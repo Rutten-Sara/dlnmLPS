@@ -1,11 +1,14 @@
-#' Plot predicted relative risks
+#' Plot predicted outcomes
 #'
-#' Plot predicted relative risks obtained from [predRR()]. Depending on
-#' `ptype`, the function produces overall exposure-response curves,
-#' exposure-lag-response surfaces, or slices through the exposure-lag-response
-#' surface.
+#' Plot predicted outcomes obtained from [pred_crossbasis()]. For Poisson or
+#' negative binomial models with a log link, relative risks (RRs) are plotted;
+#' for binomial models with a logit link, odds ratios (ORs) are plotted; and
+#' for Gaussian models with an identity link, additive differences in the
+#' outcome are plotted. Depending on `ptype`, the function produces overall
+#' exposure-response curves, exposure-lag-response surfaces, or slices
+#' through the exposure-lag-response surface.
 #'
-#' @param x An object returned by [predRR()].
+#' @param x An object returned by [pred_crossbasis()].
 #' @param slice_lag Lag value(s) at which to obtain slices. Integer or numeric
 #' vector.
 #' @param slice_x Exposure values of the first exposure variable at which to
@@ -68,7 +71,177 @@
 #' Produces a plot. The function is called for its side effects and returns
 #' `NULL` invisibly.
 #'
-#' @seealso [contour.DLNMLPS_pred()],[predRR()]
+#' @seealso [contour.DLNMLPS_pred()],[pred_crossbasis()]
+#'
+#' @examples
+#' data(barcelona_temp)
+#' data(shapefile_bcn)
+#'
+#' # Examples of applications
+#'
+#' dataset <- barcelona_temp |>
+#'   dplyr::mutate(
+#'     dow = weekdays(date),
+#'     year = lubridate::year(date),
+#'     month = lubridate::month(date)
+#'   )
+#'
+#' group <- factor(paste0(dataset$District, "-", dataset$year))
+#'
+#'
+#' ### Example 1: Unpenalized and spatially varying DLNM
+#'
+#' # Create the (unpenalized) crossbasis
+#' knots_max <- quantile(dataset$Tmax, probs = c(0.10,0.50,0.90))
+#' knots_lag <- dlnm::logknots(0:14, nk = 2)
+#'
+#' basis.max_unpen <- dlnm::crossbasis(
+#'     dataset$Tmax,
+#'     argvar=list(fun = "ns", knots = knots_max),
+#'     arglag=list(fun="ns", knots = knots_lag),
+#'     lag=14,
+#'     group=group
+#' )
+#'
+#' # Fit model
+#' model_max_spat <- DLNM_LPS(
+#'     dtot ~ 1 + factor(dow) +
+#'     sm(month, arg = list(type = "ns", df = 3)) +
+#'     sm(year, arg = list(type = "rw1")) +
+#'     sm(basis.max_unpen, by = District,
+#'             arg.by = list(type = "Leroux", map = shapefile_bcn)) +
+#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+#'     data = dataset,
+#'     offset = log(pop),
+#'     model.comparison = list(DIC = TRUE),
+#'     family = "Poisson")
+#'
+#' summary(model_max_spat)
+#'
+#' # Make predictions
+#' pred_spat_max <- pred_crossbasis(
+#'     basis.max_unpen,
+#'     model_max_spat,
+#'     at_x = 22:30,
+#'     cen = 25,
+#'     lag = c(0,14),
+#'     CI = TRUE,
+#'     by = unique(dataset$District)
+#' )
+#'
+#' # Plot results (region-specific overal RR)
+#' plot(pred_spat_max, ptype = "overall", CI = TRUE, xlab = "temp", ylab = "RR", ylim = c(0.9,3.0))
+#'
+#'
+#' ### Example 2: Unpenalized and deprivation-varying DLNM
+#'
+#' # Fit model
+#' model_max_conf <- DLNM_LPS(
+#'     dtot ~ 1 + factor(dow) +
+#'     sm(month, arg = list(type = "ns", df = 3)) +
+#'     sm(year, arg = list(type = "rw1")) +
+#'     sm(depriv, arg = list(type = "ns", df = 3)) +
+#'     sm(basis.max_unpen, by = depriv,
+#'             arg.by = list(type = "ns", df = 3)) +
+#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+#'     data = dataset,
+#'     offset = log(pop),
+#'     model.comparison = list(DIC = TRUE),
+#'     family = "Poisson")
+#'
+#' # Make predictions
+#' pred_conf_max <- pred_crossbasis(
+#'     basis.max_unpen,
+#'     model_max_conf,
+#'     at_x = 22:30,
+#'     cen = 25,
+#'     lag = c(0,14),
+#'     CI = TRUE,
+#'     by = quantile(dataset$depriv,probs= c(0.10, 0.90))
+#' )
+#'
+#' # Plot results (contour plot exposure-lag-response)
+#' contour(pred_conf_max, ptype = "cross", cols = function(n) hcl.colors(n, "Inferno"))
+#'
+#'
+#' ### Example 3: Penalized and common DLNM
+#'
+#' # Create the (penalized) crossbasis
+#' basis.max <- dlnm::crossbasis(
+#'     dataset$Tmax,
+#'     argvar = list(df = 5, fun = "ps"),
+#'     arglag = list(df = 5, fun = "ps"),
+#'     lag = 14,
+#'     group = group
+#' )
+#'
+#' # Fit model
+#' model_max_common <- DLNM_LPS(
+#'     dtot ~ 1 + factor(dow) +
+#'     sm(month, arg = list(type = "ns", df = 3)) +
+#'     sm(year, arg = list(type = "rw1")) +
+#'     sm(basis.max, arg = list(pen= 2)) +
+#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+#'     data = dataset,
+#'     offset = log(pop),
+#'     model.comparison = list(DIC = TRUE),
+#'     family = "Poisson"
+#' )
+#'
+#' # Make predictions
+#' pred_max <- pred_crossbasis(
+#'      basis = basis.max,
+#'      model = model_max_common,
+#'      at_x = 22:30,
+#'      cen = 25,
+#'      lag = c(0,14),
+#'      CI = TRUE
+#' )
+#'
+#' # Plot results (lag-specific and overall RR)
+#' plot(pred_max, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, xlab = "temp", ylab = "RR")
+#' plot(pred_max, ptype = "overall", CI = TRUE, xlab = "temp", ylab = "RR")
+#'
+#'
+#' ### Example 4: Penalized and common joint DLNM
+#'
+#' # Create the (penalized) joint crossbasis
+#' basis.max_min <- joint.crossbasis(
+#'     cbind(dataset$Tmax, dataset$Tmin),
+#'     argvar1 = list(df = 5, fun = "ps"),
+#'     argvar2 = list(df = 5, fun = "ps"),
+#'     arglag = list(df = 5, fun = "ps"),
+#'     lag = 14,
+#'     group = group
+#' )
+#'
+#' # Fit model
+#' model_joint_common <- DLNM_LPS(
+#'     dtot ~ 1 + factor(dow) +
+#'     sm(month, arg = list(type = "ns", df = 3)) +
+#'     sm(year, arg = list(type = "rw1")) +
+#'     sm(basis.max_min, arg = list(pen= 2)) +
+#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+#'     data = dataset,
+#'     offset = log(pop),
+#'     model.comparison = list(DIC = TRUE),
+#'     family = "Poisson"
+#' )
+#'
+#' # Make predictions
+#' pred_max_min <- pred_crossbasis(
+#'      basis = basis.max_min,
+#'      model = model_joint_common,
+#'      at_x = c(29,29,29,30,30,30,31,31,31),
+#'      at_y = c(20,21,22,20,21,22,20,21,22),
+#'      cen = c(25,15),
+#'      lag = c(0,14),
+#'      CI = TRUE
+#' )
+#'
+#' # Plot results (contour plot overall RR)
+#' contour(pred_max_min, ptype = "overall", cols = function(n) hcl.colors(n, "Inferno"))
+#'
 #' @export
 
 plot.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, ptype = "overall", CI = FALSE,
@@ -77,7 +250,7 @@ plot.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NUL
 
   mar = c(5.1, 4.1, 4.1, 2.1)
 
-  nested <- !("pred_all" %in% names(x))
+  nested <- !("allfit" %in% names(x))
 
   if(nested){
     graphics::par( mar = mar, mfrow = if(length(x)==1) c(1,1) else
@@ -151,12 +324,17 @@ DLNMLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
 
 
 
-#' Contour plots of predicted relative risks
+#' Contour plots of predicted outcomes
 #'
-#' Produce contour plots of predicted relative risks obtained from
-#' [predRR()]. In contrast to [plot.DLNMLPS_pred()], this function only
+#' Produce contour plots of predicted outcomes obtained from
+#' [pred_crossbasis()]. In contrast to [plot.DLNMLPS_pred()], this function only
 #' produces contour plots of surfaces and therefore is only available for
-#' plot configurations that result in a three-dimensional surface.
+#' plot configurations that result in a three-dimensional surface. For Poisson or
+#' negative binomial models with a log link, relative risks (RRs) are plotted;
+#' for binomial models with a logit link, odds ratios (ORs) are plotted; and
+#' for Gaussian models with an identity link, additive differences in the
+#' outcome are plotted.
+#'
 #'
 #' @inheritParams plot.DLNMLPS_pred
 #'
@@ -182,7 +360,7 @@ DLNMLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
 #' @returns
 #' Produces a contour plot and returns `NULL` invisibly.
 #'
-#' @seealso [plot.DLNMLPS_pred()], [predRR()]
+#' @seealso [plot.DLNMLPS_pred()], [pred_crossbasis()]
 #' @export
 
 contour.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, ptype = "overall",
@@ -191,7 +369,7 @@ contour.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = 
 
   mar = c(5.1, 4.1, 4.1, 2.1)
 
-  nested <- !("pred_all" %in% names(x))
+  nested <- !("allfit" %in% names(x))
 
   if(nested){
     graphics::par(mar = mar, mfrow = if(length(x)==1) c(1,1) else
@@ -270,7 +448,13 @@ plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, CI, ... ){
   }
 
   if(is.null(ylab)){
-    ylab = "RR"
+    if(x$family == "Poisson"){
+      ylab = "RR"
+    }else if (x$family == "Binomial"){
+      ylab = "OR"
+    }else{
+      ylab = "difference in outcome"
+    }
   }
 
   if (is.null(xlim))
@@ -280,13 +464,24 @@ plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, CI, ... ){
   if (is.null(ylim)) {
 
     if (CI) {
+      if(x$family != "Gaussian"){
+        ylim <- range(c(
+          x$allRRfit,
+          x$Qlower_allRRfit,
+          x$Qupper_allRRfit
+        ), na.rm = TRUE)
+      }
       ylim <- range(c(
-        x$pred_all,
-        x$Qlower_all,
-        x$Qupper_all
+        x$allfit,
+        x$Qlower_allfit,
+        x$Qupper_allfit
       ), na.rm = TRUE)
     } else {
-      ylim <- range(unlist(x$pred_all), na.rm = TRUE)
+      if(x$family != "Gaussian"){
+      ylim <- range(unlist(x$allRRfit), na.rm = TRUE)
+      }else{
+        ylim <- range(unlist(x$allfit), na.rm = TRUE)
+      }
     }
   }
 
@@ -295,9 +490,10 @@ plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, CI, ... ){
   }
 
 
+  if(x$family != "Gaussian"){
   plot(
     x$x,
-    x$pred_all,
+    x$allRRfit,
     type = "l",
     col = cols,
     xlim = xlim,
@@ -309,13 +505,34 @@ plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, CI, ... ){
 
   draw_slice2D(
       x$x,
-      x$pred_all,
-      if (CI) x$Qlower_all,
-      if (CI) x$Qupper_all,
+      x$allRRfit,
+      if (CI) x$Qlower_allRRfit,
+      if (CI) x$Qupper_allRRfit,
       cols,
       CI
     )
+  }else{
+    plot(
+      x$x,
+      x$allfit,
+      type = "l",
+      col = cols,
+      xlim = xlim,
+      ylim = ylim,
+      xlab = xlab,
+      ylab = ylab,
+      ...
+    )
 
+    draw_slice2D(
+      x$x,
+      x$allfit,
+      if (CI) x$Qlower_allfit,
+      if (CI) x$Qupper_allfit,
+      cols,
+      CI
+    )
+}
 
 
 
@@ -327,9 +544,14 @@ plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, CI, ... ){
 #' @noRd
 plot_overall_2D <- function(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, CI, ... ){
 
-
   if(is.null(ylab)){
-    ylab = "RR"
+    if(x$family == "Poisson"){
+      ylab = "RR"
+    }else if (x$family == "Binomial"){
+      ylab = "OR"
+    }else{
+      ylab = "difference in outcome"
+    }
   }
 
 
@@ -359,13 +581,21 @@ plot_overall_2D <- function(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, C
 
       plot_x[[i]] <- x$y[idx_x]
 
-      plot_y[[i]] <- x$pred_all[idx_x]
+      if(x$family != "Gaussian"){
+      plot_y[[i]] <- x$allRRfit[idx_x]
+      }else{
+        plot_y[[i]] <- x$allfit[idx_x]
+      }
 
 
       if (CI) {
-
-        plot_lower[[i]] <- x$Qlower_all[idx_x]
-        plot_upper[[i]] <- x$Qupper_all[idx_x]
+        if(x$family != "Gaussian"){
+        plot_lower[[i]] <- x$Qlower_allRRfit[idx_x]
+        plot_upper[[i]] <- x$Qupper_allRRfit[idx_x]
+        }else{
+          plot_lower[[i]] <- x$Qlower_allfit[idx_x]
+          plot_upper[[i]] <- x$Qupper_allfit[idx_x]
+        }
 
       }
     }
@@ -386,8 +616,13 @@ plot_overall_2D <- function(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, C
     plot_y <- vector("list", ncurve)
 
     if (CI) {
-      plot_lower <- vector("list", ncurve)
-      plot_upper <- vector("list", ncurve)
+      if(x$family != "Gaussian"){
+        plot_lower[[i]] <- x$Qlower_allRRfit[idx_x]
+        plot_upper[[i]] <- x$Qupper_allRRfit[idx_x]
+      }else{
+        plot_lower[[i]] <- x$Qlower_allfit[idx_x]
+        plot_upper[[i]] <- x$Qupper_allfit[idx_x]
+      }
     }
 
     for (i in seq_len(ncurve)) {
@@ -399,13 +634,21 @@ plot_overall_2D <- function(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, C
 
       plot_x[[i]] <- x$x[idx_x]
 
-      plot_y[[i]] <- x$pred_all[idx_x]
+      if(x$family != "Gaussian"){
+        plot_y[[i]] <- x$allRRfit[idx_x]
+      }else{
+        plot_y[[i]] <- x$allfit[idx_x]
+      }
 
 
       if (CI) {
-
-        plot_lower[[i]] <- x$Qlower_all[idx_x]
-        plot_upper[[i]] <- x$Qupper_all[idx_x]
+        if(x$family != "Gaussian"){
+        plot_lower[[i]] <- x$Qlower_allRRfit[idx_x]
+        plot_upper[[i]] <- x$Qupper_allRRfit[idx_x]
+        }else{
+          plot_lower[[i]] <- x$Qlower_allfit[idx_x]
+          plot_upper[[i]] <- x$Qupper_allfit[idx_x]
+        }
 
       }
     }
@@ -502,7 +745,13 @@ plot_overall_3D <- function(x, xlim, ylim, zlim, cols, xlab, ylab, zlab, CI, con
   }
 
   if(is.null(zlab)){
-    zlab = "RR"
+    if(x$family == "Poisson"){
+      zlab = "RR"
+    }else if (x$family == "Binomial"){
+      zlab = "OR"
+    }else{
+      zlab = "difference in outcome"
+    }
   }
 
 
@@ -529,7 +778,11 @@ plot_overall_3D <- function(x, xlim, ylim, zlim, cols, xlab, ylab, zlab, CI, con
     ix <- match(x$x[i], xvals)
     iy <- match(x$y[i], yvals)
 
-    z[ix, iy] <- x$pred_all[i]
+    if(x$family != "Gaussian"){
+    z[ix, iy] <- x$allRRfit[i]
+    }else{
+      z[ix, iy] <- x$allfit[i]
+    }
   }
 
 
@@ -602,7 +855,13 @@ plot_cross_3D <- function(x, xlim, ylim, zlim, cols, xlab, ylab, zlab, CI, conto
   }
 
   if(is.null(zlab)){
-    zlab = "RR"
+    if(x$family == "Poisson"){
+      zlab = "RR"
+    }else if (x$family == "Binomial"){
+      zlab = "OR"
+    }else{
+      zlab = "difference in outcome"
+    }
   }
 
   nx <- length(unique(x$lag))
@@ -624,7 +883,11 @@ plot_cross_3D <- function(x, xlim, ylim, zlim, cols, xlab, ylab, zlab, CI, conto
     ix <- match(x$lag[j], xvals)
     iy <- match(x$x[i], yvals)
 
-    z[ix, iy] <- exp(x$logpredX[iy,ix])
+    if(x$family != "Gaussian"){
+    z[ix, iy] <- exp(x$matRRfit[iy,ix])
+    }else{
+      z[ix, iy] <- exp(x$matfit[iy,ix])
+    }
     }
   }
 
@@ -697,7 +960,13 @@ plot_slices3D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
 
 
   if(is.null(zlab)){
-    zlab = "RR"
+    if(x$family == "Poisson"){
+      zlab = "RR"
+    }else if (x$family == "Binomial"){
+      zlab = "OR"
+    }else{
+      zlab = "difference in outcome"
+    }
   }
 
   if (is.matrix(x$x)) {
@@ -735,7 +1004,11 @@ plot_slices3D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
       if (length(idx)==0)
         stop("Slice x must be present in predictions.")
 
-      z <- t(exp(x$logpredX[idx, ]))
+      if(x$family != "Gaussian"){
+      z <- t(exp(x$matRRfit[idx, ]))
+      }else{
+        z <- t(exp(x$matfit[idx, ]))
+      }
 
       yvals <- yvals[ord]
       z <- z[, ord , drop = FALSE]
@@ -766,7 +1039,11 @@ plot_slices3D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
       if (length(idx)==0)
         stop("Slice y must be present in predictions.")
 
-      z <- t(exp(x$logpredX[idx, ]))
+      if(x$family != "Gaussian"){
+        z <- t(exp(x$matRRfit[idx, ]))
+      }else{
+        z <- t(exp(x$matfit[idx, ]))
+      }
 
       yvals <- yvals[ord]
       z <- z[, ord , drop = FALSE]
@@ -815,7 +1092,12 @@ plot_slices3D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
         ix <- match(x$x[i], xvals)
         iy <- match(x$y[i], yvals)
 
-        z[ix, iy] <- exp(x$logpredX[i, idx_lag])
+        if(x$family != "Gaussian"){
+          z[ix, iy]  <-exp(x$matRRfit[i, idx_lag])
+        }else{
+          z[ix, iy] <- exp(x$matfit[i, idx_lag])
+        }
+
       }
 
 
@@ -893,7 +1175,13 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
 
 
   if(is.null(ylab)){
-    ylab = "RR"
+    if(x$family == "Poisson"){
+      ylab = "RR"
+    }else if (x$family == "Binomial"){
+      ylab = "OR"
+    }else{
+      ylab = "difference in outcome"
+    }
   }
 
 
@@ -928,16 +1216,24 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
       if (anyNA(idx))
         stop("Slice lag must be present in predictions.")
 
-      plot_y <- exp(x$logpredX[, idx, drop = FALSE])
+      if(x$family != "Gaussian"){
+      plot_y <- exp(x$matRRfit[, idx, drop = FALSE])
+      }else{
+        plot_y <- exp(x$matfit[, idx, drop = FALSE])
+      }
 
       plot_y <- lapply(seq_len(ncol(plot_y)),
                        function(i) plot_y[, i])
       plot_x <- rep(list(x$x), length(plot_y))
 
       if (CI) {
-        plot_lower <- exp(x$Qlower_logpredX[, idx, drop = FALSE])
-        plot_upper <- exp(x$Qupper_logpredX[, idx, drop = FALSE])
-
+        if(x$family != "Gaussian"){
+        plot_lower <- exp(x$Qlower_matRRfit[, idx, drop = FALSE])
+        plot_upper <- exp(x$Qupper_matRRfit[, idx, drop = FALSE])
+        }else{
+          plot_lower <- exp(x$Qlower_matfit[, idx, drop = FALSE])
+          plot_upper <- exp(x$Qupper_matfit[, idx, drop = FALSE])
+        }
         plot_lower <- lapply(seq_len(ncol(plot_lower)),
                              function(i) plot_lower[, i])
 
@@ -959,15 +1255,24 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
       if (anyNA(idx))
         stop("Slice exposure must be present in predictions")
 
-      plot_y <- exp(x$logpredX[idx, , drop = FALSE])
+      if(x$family != "Gaussian"){
+      plot_y <- exp(x$matRRfit[idx, , drop = FALSE])
+      }else{
+        plot_y <- exp(x$matfit[idx, , drop = FALSE])
+      }
       plot_y <- lapply(seq_len(nrow(plot_y)),
                        function(i) plot_y[i, ])
       plot_x <- rep(list(x$lag), length(plot_y))
 
 
       if (CI) {
-        plot_lower <- exp(x$Qlower_logpredX[idx, , drop = FALSE])
-        plot_upper <- exp(x$Qupper_logpredX[idx, , drop = FALSE])
+        if(x$family != "Gaussian"){
+        plot_lower <- exp(x$Qlower_matRRfit[idx, , drop = FALSE])
+        plot_upper <- exp(x$Qupper_matRRfit[idx, , drop = FALSE])
+        }else{
+          plot_lower <- exp(x$Qlower_matfit[idx, , drop = FALSE])
+          plot_upper <- exp(x$Qupper_matfit[idx, , drop = FALSE])
+        }
 
         plot_lower <- lapply(seq_len(nrow(plot_lower)),
                              function(i) plot_lower[i, ])
@@ -1004,14 +1309,24 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
 
       idx <- unlist(idx)
 
-      plot_y <- exp(x$logpredX[idx, , drop = FALSE])
+      if(x$family != "Gaussian"){
+        plot_y <- exp(x$matRRfit[idx, , drop = FALSE])
+      }else{
+        plot_y <- exp(x$matfit[idx, , drop = FALSE])
+      }
+
       plot_y <- lapply(seq_len(nrow(plot_y)),
                        function(i) plot_y[i, ])
       plot_x <- rep(list(x$lag), length(plot_y))
 
       if (CI) {
-        plot_lower <- exp(x$Qlower_logpredX[idx, , drop = FALSE])
-        plot_upper <- exp(x$Qupper_logpredX[idx, , drop = FALSE])
+        if(x$family != "Gaussian"){
+        plot_lower <- exp(x$Qlower_matRRfit[idx, , drop = FALSE])
+        plot_upper <- exp(x$Qupper_matRRfit[idx, , drop = FALSE])
+        }else{
+          plot_lower <- exp(x$Qlower_matfit[idx, , drop = FALSE])
+          plot_upper <- exp(x$Qupper_matfit[idx, , drop = FALSE])
+        }
 
         plot_lower <- lapply(seq_len(nrow(plot_lower)),
                              function(i) plot_lower[i, ])
@@ -1061,20 +1376,35 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
         # free dimension is y
         plot_x[[i]] <- x$y[idx_x]
 
+        if(x$family != "Gaussian"){
         plot_y[[i]] <- exp(
-          x$logpredX[idx_x, idx_lag]
+          x$matRRfit[idx_x, idx_lag]
         )
+        }else{
+          plot_y[[i]] <- exp(
+            x$matfit[idx_x, idx_lag]
+          )
+        }
 
 
         if (CI) {
-
+          if(x$family != "Gaussian"){
           plot_lower[[i]] <- exp(
-            x$Qlower_logpredX[idx_x, idx_lag]
+            x$Qlower_matRRfit[idx_x, idx_lag]
           )
 
           plot_upper[[i]] <- exp(
-            x$Qupper_logpredX[idx_x, idx_lag]
+            x$Qupper_matRRfit[idx_x, idx_lag]
           )
+          }else{
+            plot_lower[[i]] <- exp(
+              x$Qlower_matfit[idx_x, idx_lag]
+            )
+
+            plot_upper[[i]] <- exp(
+              x$Qupper_matfit[idx_x, idx_lag]
+            )
+          }
         }
       }
 
@@ -1120,20 +1450,35 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
         # free dimension is x
         plot_x[[i]] <- x$x[idx_y]
 
+        if(x$family != "Gaussian"){
         plot_y[[i]] <- exp(
-          x$logpredX[idx_y, idx_lag]
+          x$matRRfit[idx_y, idx_lag]
         )
+        }else{
+          plot_y[[i]] <- exp(
+            x$matfit[idx_y, idx_lag]
+          )
+        }
 
 
         if (CI) {
-
+          if(x$family != "Gaussian"){
           plot_lower[[i]] <- exp(
-            x$Qlower_logpredX[idx_y, idx_lag]
+            x$Qlower_matRRfit[idx_y, idx_lag]
           )
 
           plot_upper[[i]] <- exp(
-            x$Qupper_logpredX[idx_y, idx_lag]
+            x$Qupper_matRRfit[idx_y, idx_lag]
           )
+          }else{
+            plot_lower[[i]] <- exp(
+              x$Qlower_matfit[idx_y, idx_lag]
+            )
+
+            plot_upper[[i]] <- exp(
+              x$Qupper_matfit[idx_y, idx_lag]
+            )
+          }
         }
       }
 

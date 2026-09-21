@@ -435,7 +435,8 @@ DLNM_LPS_binomial <- function(model,
                    "pd WAIC" = pd_WAIC_result,
                    "CPO" = CPO_result,
                    "constraints" = constraint_matrix,
-                   "types" = types_term)
+                   "types" = types_term,
+                   "family" = "Binomial")
 
     class(output) <- "DLNMLPS"
     return(output)

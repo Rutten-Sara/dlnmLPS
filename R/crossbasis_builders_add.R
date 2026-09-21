@@ -39,6 +39,8 @@ build_component_re<-function(state, sm_args_iter, term, all_terms, constants){
 
     pen_dlnm[term+1] <- pen_dlnm[term+1]+1
     v_init <- c(v_init, 0)
+    names(v_init) <- c(names(v_init)[1:(length(v_init)-1)],
+                       paste("Precision independent re",deparse1(all_terms[[term]])))
 
     constraint_matrix[[term]] <- Matrix::Matrix(0,1,q.rand)
 
@@ -53,6 +55,8 @@ build_component_re<-function(state, sm_args_iter, term, all_terms, constants){
 
     pen_dlnm[term+1] <- pen_dlnm[term+1]+1
     v_init <- c(v_init, 0)
+    names(v_init) <- c(names(v_init)[1:(length(v_init)-1)],
+                       paste("Precision ICAR re",deparse1(all_terms[[term]])))
 
     constraint_matrix[[term]] <-  Matrix::Matrix(1, 1, q.rand)
 
@@ -72,6 +76,10 @@ build_component_re<-function(state, sm_args_iter, term, all_terms, constants){
 
     pen_dlnm[term+1] <- pen_dlnm[term+1]+2
     v_init <- c(v_init, 0,1)
+    names(v_init) <- c(names(v_init)[1:(length(v_init)-2)],
+                       paste("Precision BYM re spat",deparse1(all_terms[[term]])),
+                       paste("Precision BYM re ind",deparse1(all_terms[[term]])))
+
 
 
   } else if (sm_args_iter$arg$type == "Leroux"){
@@ -93,6 +101,9 @@ build_component_re<-function(state, sm_args_iter, term, all_terms, constants){
 
     pen_dlnm[term+1] <- pen_dlnm[term+1]+2
     v_init <- c(v_init, 0,1)
+    names(v_init) <- c(names(v_init)[1:(length(v_init)-2)],
+                       paste("Precision Leroux re",deparse1(all_terms[[term]])),
+                       paste("Rho Leroux re",deparse1(all_terms[[term]])))
 
     constraint_matrix[[term]] <- Matrix::Matrix(0,1,q.rand)
 
@@ -189,6 +200,8 @@ build_component_rw<-function(state, sm_args_iter, term, all_terms, constants, pe
 
   pen_dlnm[term+1] <- pen_dlnm[term+1]+1
   v_init <- c(v_init, 0)
+  names(v_init) <- c(names(v_init)[1:(length(v_init)-1)],
+                     paste("Precision RW",deparse1(all_terms[[term]])))
 
 
   # Global design matrix
@@ -254,6 +267,8 @@ build_component_spline<-function(state, sm_args_iter, term, all_terms, constants
 
     pen_dlnm[term+1] <- pen_dlnm[term+1] + 1
     v_init <- c(v_init,5)
+    names(v_init) <- c(names(v_init)[1:(length(v_init)-1)],
+                       paste("Penalty ps",deparse1(all_terms[[term]])))
 
   }else if (sm_args_iter$arg$type == "ns"){
     sm_list[[term]] <- splines::ns(sm_args_iter$x,
@@ -414,6 +429,9 @@ build_component_spatialrw<-function(state, sm_args_iter, term, all_terms, consta
       (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start + 1])))
 
     v_init <- c(v_init, 0)
+    names(v_init) <- c(names(v_init)[1:(length(v_init)-1)],
+                       paste("Precision RW",deparse1(all_terms[[term]])))
+
 
     pen_dlnm[term+1] = pen_dlnm[term+1]+1
 
@@ -446,6 +464,8 @@ build_component_spatialrw<-function(state, sm_args_iter, term, all_terms, consta
 
     pen_dlnm[term+1] = pen_dlnm[term+1]+1
     v_init <- c(v_init, 0)
+    names(v_init) <- c(names(v_init)[1:(length(v_init)-1)],
+                       paste("Precision RW",deparse1(all_terms[[term]])))
 
     if(penorder == 1){
       constraint_matrix[[term]] <-
@@ -490,6 +510,10 @@ build_component_spatialrw<-function(state, sm_args_iter, term, all_terms, consta
 
 
     v_init <- c(v_init, c(0,1))
+    names(v_init) <- c(names(v_init)[1:(length(v_init)-2)],
+                       paste("Precision RW",deparse1(all_terms[[term]])),
+                       paste("Rho RW",deparse1(all_terms[[term]])))
+
     pen_dlnm[term+1] <- pen_dlnm[term+1]+2
 
     if(penorder == 1){
@@ -629,6 +653,8 @@ build_component_rwspatial<-function(state, sm_args_iter, term, all_terms, consta
       (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start + 1])))
 
     v_init <- c(v_init, 0)
+    names(v_init) <- c(names(v_init)[1:(length(v_init)-1)],
+                       paste("Precision independent re",deparse1(all_terms[[term]])))
 
     pen_dlnm[term+1] = pen_dlnm[term+1]+1
 
@@ -665,6 +691,8 @@ build_component_rwspatial<-function(state, sm_args_iter, term, all_terms, consta
 
     pen_dlnm[term+1] <- pen_dlnm[term+1]+1
     v_init <- c(v_init, 0)
+    names(v_init) <- c(names(v_init)[1:(length(v_init)-1)],
+                       paste("Precision ICAR re",deparse1(all_terms[[term]])))
 
     if (sm_args_iter$arg.by$type == "ind"){
       constraint_matrix[[term]] <-  Matrix::sparseMatrix(i = rep(1:q.rand, each = q.rand_spat),
@@ -719,6 +747,9 @@ build_component_rwspatial<-function(state, sm_args_iter, term, all_terms, consta
 
     pen_dlnm[term+1] <- pen_dlnm[term+1]+2
     v_init <- c(v_init, 0,1)
+    names(v_init) <- c(names(v_init)[1:(length(v_init)-2)],
+                       paste("Precision Leroux re",deparse1(all_terms[[term]])),
+                       paste("Rho Leroux re",deparse1(all_terms[[term]])))
 
     if (sm_args_iter$arg.by$type == "ind"){
       constraint_matrix[[term]] <-  Matrix::Matrix(0,1,q.rand*q.rand_spat)
@@ -787,7 +818,8 @@ build_component_fixed<-function(model, state,  all_fixed_terms, count_term, cons
     mod <- stats::model.frame(other_formula, data = data, na.action = stats::na.pass)
     na_ind = (Matrix::rowSums(is.na(mod))>0)
 
-    Z.linear_part <- Matrix::sparse.model.matrix(mod, data = data, drop.unused.levels = T)
+    Z.linear_part <- stats::model.matrix(mod, data = data)
+
     Z.linear <- Matrix::sparseMatrix(
       i = rep(which(!na_ind), times = ncol(Z.linear_part)),
       j = rep(seq_len(ncol(Z.linear_part)), each = length(which(!na_ind))),
@@ -835,7 +867,7 @@ build_component_fixed<-function(model, state,  all_fixed_terms, count_term, cons
 
     na_ind = (Matrix::rowSums(is.na(mod))>0)
 
-    Z.linear_part <- Matrix::sparse.model.matrix(mod, drop.unused.levels = T)
+    Z.linear_part <- stats::model.matrix(mod)
     Z.linear <- Matrix::sparseMatrix(
       i = rep(which(!na_ind), times = ncol(Z.linear_part)),
       j = rep(seq_len(ncol(Z.linear_part)), each = length(which(!na_ind))),

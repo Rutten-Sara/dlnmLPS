@@ -184,22 +184,26 @@ initialize_laplace_setup_constraint <- function(model, data, include_dispersion 
 
   all_terms <- all_terms[!is_intercept_term]
 
-  is_sm <- vapply(all_terms, is_sm, logical(1))
-  all_fixed_terms <- all_terms[!is_sm]
-  all_sm_terms    <- all_terms[is_sm]
+  is_sm_res <- vapply(all_terms, is_sm, logical(1))
+  all_fixed_terms <- all_terms[!is_sm_res]
+  all_sm_terms    <- all_terms[is_sm_res]
 
   all_terms <- c(all_sm_terms, all_fixed_terms )
 
 
   if(!is.null(data)){
-    mod <- stats::model.frame( paste(model[[2]],model[[1]],1), data = data, na.action = stats::na.pass)
+    mod <- stats::model.frame( paste(deparse1(model[[2]], backtick = TRUE),model[[1]],1),
+                               data = data, na.action = stats::na.pass)
   }else{
-    mod <- stats::model.frame( paste(model[[2]],model[[1]],1), na.action = stats::na.pass)
+    mod <- stats::model.frame( paste(deparse1(model[[2]], backtick = TRUE),model[[1]],1),
+                               na.action = stats::na.pass)
   }
 
   n_terms <- length(all_terms)
   y <- as.numeric(stats::model.extract(mod, "response"))
 
+  v_init <- if (include_dispersion) 0 else NULL
+  names(v_init) <- if (include_dispersion) "scale" else NULL
   output <- list(
     all_terms = all_terms,
     y = y, # response,
@@ -207,7 +211,7 @@ initialize_laplace_setup_constraint <- function(model, data, include_dispersion 
     pen_dlnm = if (include_dispersion) 1 else 0,
     Pv.list = list(),
     logpv.fixed = list(),
-    v_init = if (include_dispersion) 0 else NULL,
+    v_init = v_init,
     sm_list = vector("list", n_terms),
     constraint = NULL,
     has_no_intercept = has_no_intercept,
