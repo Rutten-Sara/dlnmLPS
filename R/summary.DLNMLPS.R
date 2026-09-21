@@ -5,7 +5,9 @@
 #' approximate 95% credible intervals based on the Laplace approximation.
 #' @param model A fitted `"DLNMLPS"` model.
 #' @param ... Additional arguments to be passed.
-#' @return An object of class \code{"summary.DLNMLPS"}.
+#' @returns An object of class \code{"summary.DLNMLPS"}.
+#' @export
+#'
 summary.DLNMLPS <- function(model,...){
 
   constraint_matrix <- model$constraints
@@ -63,6 +65,7 @@ summary.DLNMLPS <- function(model,...){
 #'
 #' @param x An object of class \code{"summary.DLNMLPS"}.
 #' @param ... Additional arguments to be passed.
+#' @export
 print.summary.DLNMLPS <- function(x, ...) {
 
   cat("\nCall:\n\n")

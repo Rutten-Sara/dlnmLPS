@@ -470,13 +470,13 @@ plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, CI, ... ){
           x$Qlower_allRRfit,
           x$Qupper_allRRfit
         ), na.rm = TRUE)
-      }
+      }else{
       ylim <- range(c(
         x$allfit,
         x$Qlower_allfit,
         x$Qupper_allfit
       ), na.rm = TRUE)
-    } else {
+    }} else {
       if(x$family != "Gaussian"){
       ylim <- range(unlist(x$allRRfit), na.rm = TRUE)
       }else{
