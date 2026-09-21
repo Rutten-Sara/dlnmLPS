@@ -2,6 +2,8 @@
 
 S3method(contour,DLNMLPS_pred)
 S3method(plot,DLNMLPS_pred)
+S3method(print,summary.DLNMLPS)
+S3method(summary,DLNMLPS)
 export(DLNM_LPS)
 export(joint.crossbasis)
 export(pred_crossbasis)

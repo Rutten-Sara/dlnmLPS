@@ -95,7 +95,7 @@ cumulative predictions in \code{allfit}.}
 }
 }
 \description{
-This function generates relative risk (RR) predictions from a fitted
+This function generates predictions from a fitted
 \link{DLNM_LPS} model over a specified grid of exposure and lag values. Predictions
 are computed relative to a user-defined reference (centering) value.
 }
