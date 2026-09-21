@@ -6,7 +6,7 @@
 #' @param model A fitted `"DLNMLPS"` model.
 #' @param ... Additional arguments to be passed.
 #' @returns An object of class \code{"summary.DLNMLPS"}.
-#' @export
+#' @exportS3Method summary DLNMLPS
 #'
 summary.DLNMLPS <- function(model,...){
 
@@ -65,7 +65,7 @@ summary.DLNMLPS <- function(model,...){
 #'
 #' @param x An object of class \code{"summary.DLNMLPS"}.
 #' @param ... Additional arguments to be passed.
-#' @export
+#' @exportS3Method print summary.DLNMLPS
 print.summary.DLNMLPS <- function(x, ...) {
 
   cat("\nCall:\n\n")
