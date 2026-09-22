@@ -215,15 +215,15 @@ DLNM_LPS <- function(model,
   offset <- eval(substitute(offset), data, base_env)
 
 
-  if(family == "Poisson"){
+  if(family %in% c("Poisson", "poisson")){
     output = DLNM_LPS_pois(model,
                               data,
                               offset,
                               model.comparison,
                               refit,
                               base_env)
-  }else if (family == "Binomial" | family == "Bernoulli"){
-    if(family == "Bernoulli"){
+  }else if (family %in%  c("Binomial", "binomial", "Bernoulli", "bernoulli")){
+    if(family %in% c("Bernoulli", "bernoulli")){
       Ntrials <-   rep(1, nrow(data))
     }else{
       Ntrials <- eval(substitute(Ntrials), data, base_env)
@@ -236,7 +236,7 @@ DLNM_LPS <- function(model,
                                 refit,
                                 base_env)
 
-  }else if (family =="NB"){
+  }else if (family %in% c("NB","nb")){
     output = DLNM_LPS_NB(model,
                              data,
                              offset,
@@ -244,7 +244,7 @@ DLNM_LPS <- function(model,
                              refit,
                              base_env)
 
-  }else if (family =="Gaussian"){
+  }else if (family %in% c("Gaussian", "gaussian")){
     output = DLNM_LPS_Gaussian(model,
                          data,
                          offset,
