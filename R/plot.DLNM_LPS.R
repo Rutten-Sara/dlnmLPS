@@ -618,7 +618,7 @@ plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, CI, ... ){
   }
 
   if(is.null(ylab)){
-    if(x$family == "Poisson"){
+    if(x$family == "Poisson" | x$family == "NB"){
       ylab = "RR"
     }else if (x$family == "Binomial"){
       ylab = "OR"
@@ -715,7 +715,7 @@ plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, CI, ... ){
 plot_overall_2D <- function(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, CI, ... ){
 
   if(is.null(ylab)){
-    if(x$family == "Poisson"){
+    if(x$family == "Poisson" | x$family == "NB"){
       ylab = "RR"
     }else if (x$family == "Binomial"){
       ylab = "OR"
@@ -915,7 +915,7 @@ plot_overall_3D <- function(x, xlim, ylim, zlim, cols, xlab, ylab, zlab, CI, con
   }
 
   if(is.null(zlab)){
-    if(x$family == "Poisson"){
+    if(x$family == "Poisson" | x$family == "NB"){
       zlab = "RR"
     }else if (x$family == "Binomial"){
       zlab = "OR"
@@ -1025,7 +1025,7 @@ plot_cross_3D <- function(x, xlim, ylim, zlim, cols, xlab, ylab, zlab, CI, conto
   }
 
   if(is.null(zlab)){
-    if(x$family == "Poisson"){
+    if(x$family == "Poisson" | x$family == "NB"){
       zlab = "RR"
     }else if (x$family == "Binomial"){
       zlab = "OR"
@@ -1130,7 +1130,7 @@ plot_slices3D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
 
 
   if(is.null(zlab)){
-    if(x$family == "Poisson"){
+    if(x$family == "Poisson" | x$family == "NB"){
       zlab = "RR"
     }else if (x$family == "Binomial"){
       zlab = "OR"
@@ -1345,7 +1345,7 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
 
 
   if(is.null(ylab)){
-    if(x$family == "Poisson"){
+    if(x$family == "Poisson" | x$family == "NB"){
       ylab = "RR"
     }else if (x$family == "Binomial"){
       ylab = "OR"
