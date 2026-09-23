@@ -273,7 +273,7 @@ DLNM_LPS_Gaussian <- function(model,
                              fn = log_pv,
                              xi = xi_init,
                              error_y = error_y_init,
-                             method="BFGS",
+                             method="Nelder-Mead",
                              control = list(fnscale = -1, reltol = 1e-8))$par
 
       # Estimate of xi (regression parameter)

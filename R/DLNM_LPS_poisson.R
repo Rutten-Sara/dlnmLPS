@@ -333,7 +333,7 @@ DLNM_LPS_pois <- function(model,
       v_mode <- stats::optim(par = v_init,
                              fn = log_pv,
                              xi = xi_init,
-                             method="BFGS",
+                             method="Nelder-Mead",
                              control = list(fnscale = -1, reltol = 1e-8))$par
 
       # Estimate of xi (regression parameter)
