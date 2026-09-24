@@ -4,10 +4,10 @@
 \alias{summary.DLNMLPS}
 \title{Summarize a DLNMLPS model}
 \usage{
-\method{summary}{DLNMLPS}(model, ...)
+\method{summary}{DLNMLPS}(object, ...)
 }
 \arguments{
-\item{model}{A fitted \code{"DLNMLPS"} model.}
+\item{object}{A fitted \code{"DLNMLPS"} model.}
 
 \item{...}{Additional arguments to be passed.}
 }

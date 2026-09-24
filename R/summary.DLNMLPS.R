@@ -3,17 +3,17 @@
 #' Computes a summary of the fixed effects of a fitted `"DLNMLPS"` model.
 #' The summary includes posterior means (modes), standard deviations, and
 #' approximate 95% credible intervals based on the Laplace approximation.
-#' @param model A fitted `"DLNMLPS"` model.
+#' @param object A fitted `"DLNMLPS"` model.
 #' @param ... Additional arguments to be passed.
 #' @returns An object of class \code{"summary.DLNMLPS"}.
 #' @export
 #'
-summary.DLNMLPS <- function(model,...){
+summary.DLNMLPS <- function(object,...){
 
-  constraint_matrix <- model$constraints
+  constraint_matrix <- object$constraints
 
-  mode <- model$xi_mode
-  Prec <- model$Prec
+  mode <- object$xi_mode
+  Prec <- object$Prec
 
   Xpred <- Matrix::diag(1, nrow = length(mode))
 
@@ -39,22 +39,22 @@ summary.DLNMLPS <- function(model,...){
 
   rownames(summary_fixed) <- names(mode)
 
-  if(!is.null(model$v_mode)){
-    hyperparameters <- make_summary_hyper(model$v_mode)
+  if(!is.null(object$v_mode)){
+    hyperparameters <- make_summary_hyper(object$v_mode)
   }else{
     hyperparameters <- NULL
   }
 
   structure(
     list(
-      call = model$model,
+      call = object$model,
       summary.coef = summary_fixed,
       hyperparameters = hyperparameters,
-      dic = model$DIC,
-      pd.dic = model$`pd DIC`,
-      waic = model$WAIC,
-      pd.waic = model$`pd WAIC`,
-      cpo = model$CPO
+      dic = object$DIC,
+      pd.dic = object$`pd DIC`,
+      waic = object$WAIC,
+      pd.waic = object$`pd WAIC`,
+      cpo = object$CPO
     ),
     class = "summary.DLNMLPS"
   )

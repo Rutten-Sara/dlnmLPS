@@ -89,7 +89,86 @@
 #' group <- factor(paste0(dataset$District, "-", dataset$year))
 #'
 #'
-#' ### Example 1: Unpenalized and spatially varying DLNM
+#' ### Example 1: Penalized and common DLNM
+#'
+#' # Create the (penalized) crossbasis
+#' basis.max <- dlnm::crossbasis(
+#'     dataset$Tmax,
+#'     argvar = list(df = 5, fun = "ps"),
+#'     arglag = list(df = 5, fun = "ps"),
+#'     lag = 14,
+#'     group = group
+#' )
+#'
+#' # Fit model
+#' model_max_common <- DLNM_LPS(
+#'     dtot ~ 1 + factor(dow) +
+#'     sm(month, arg = list(type = "ns", df = 3)) +
+#'     sm(year, arg = list(type = "rw1")) +
+#'     sm(basis.max, arg = list(pen= 2)) +
+#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+#'     data = dataset,
+#'     offset = log(pop),
+#'     model.comparison = list(DIC = TRUE),
+#'     family = "Poisson"
+#' )
+#'
+#' # Make predictions
+#' pred_max <- pred_crossbasis(
+#'      basis = basis.max,
+#'      model = model_max_common,
+#'      at_x = 22:30,
+#'      cen = 25,
+#'      lag = c(0,14),
+#'      CI = TRUE
+#' )
+#'
+#' # Plot results (lag-specific and overall RR)
+#' plot(pred_max, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, xlab = "temp", ylab = "RR")
+#' plot(pred_max, ptype = "overall", CI = TRUE, xlab = "temp", ylab = "RR")
+#'
+#'
+#' ### Example 2: Penalized and common joint DLNM
+#'
+#' # Create the (penalized) joint crossbasis
+#' basis.max_min <- joint.crossbasis(
+#'     cbind(dataset$Tmax, dataset$Tmin),
+#'     argvar1 = list(df = 5, fun = "ps"),
+#'     argvar2 = list(df = 5, fun = "ps"),
+#'     arglag = list(df = 5, fun = "ps"),
+#'     lag = 14,
+#'     group = group
+#' )
+#'
+#' # Fit model
+#' model_joint_common <- DLNM_LPS(
+#'     dtot ~ 1 + factor(dow) +
+#'     sm(month, arg = list(type = "ns", df = 3)) +
+#'     sm(year, arg = list(type = "rw1")) +
+#'     sm(basis.max_min, arg = list(pen= 2)) +
+#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+#'     data = dataset,
+#'     offset = log(pop),
+#'     model.comparison = list(DIC = TRUE),
+#'     family = "Poisson"
+#' )
+#'
+#' # Make predictions
+#' pred_max_min <- pred_crossbasis(
+#'      basis = basis.max_min,
+#'      model = model_joint_common,
+#'      at_x = c(29,29,29,30,30,30,31,31,31),
+#'      at_y = c(20,21,22,20,21,22,20,21,22),
+#'      cen = c(25,15),
+#'      lag = c(0,14),
+#'      CI = TRUE
+#' )
+#'
+#' # Plot results (contour plot overall RR)
+#' contour(pred_max_min, ptype = "overall", cols = function(n) hcl.colors(n, "Inferno"))
+#'
+#'
+#' ### Example 3: Unpenalized and spatially varying DLNM
 #'
 #' # Create the (unpenalized) crossbasis
 #' knots_max <- quantile(dataset$Tmax, probs = c(0.10,0.50,0.90))
@@ -133,7 +212,7 @@
 #' plot(pred_spat_max, ptype = "overall", CI = TRUE, xlab = "temp", ylab = "RR", ylim = c(0.9,3.0))
 #'
 #'
-#' ### Example 2: Unpenalized and deprivation-varying DLNM
+#' ### Example 4: Unpenalized and deprivation-varying DLNM
 #'
 #' # Fit model
 #' model_max_conf <- DLNM_LPS(
@@ -163,84 +242,6 @@
 #' # Plot results (contour plot exposure-lag-response)
 #' contour(pred_conf_max, ptype = "cross", cols = function(n) hcl.colors(n, "Inferno"))
 #'
-#'
-#' ### Example 3: Penalized and common DLNM
-#'
-#' # Create the (penalized) crossbasis
-#' basis.max <- dlnm::crossbasis(
-#'     dataset$Tmax,
-#'     argvar = list(df = 5, fun = "ps"),
-#'     arglag = list(df = 5, fun = "ps"),
-#'     lag = 14,
-#'     group = group
-#' )
-#'
-#' # Fit model
-#' model_max_common <- DLNM_LPS(
-#'     dtot ~ 1 + factor(dow) +
-#'     sm(month, arg = list(type = "ns", df = 3)) +
-#'     sm(year, arg = list(type = "rw1")) +
-#'     sm(basis.max, arg = list(pen= 2)) +
-#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
-#'     data = dataset,
-#'     offset = log(pop),
-#'     model.comparison = list(DIC = TRUE),
-#'     family = "Poisson"
-#' )
-#'
-#' # Make predictions
-#' pred_max <- pred_crossbasis(
-#'      basis = basis.max,
-#'      model = model_max_common,
-#'      at_x = 22:30,
-#'      cen = 25,
-#'      lag = c(0,14),
-#'      CI = TRUE
-#' )
-#'
-#' # Plot results (lag-specific and overall RR)
-#' plot(pred_max, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, xlab = "temp", ylab = "RR")
-#' plot(pred_max, ptype = "overall", CI = TRUE, xlab = "temp", ylab = "RR")
-#'
-#'
-#' ### Example 4: Penalized and common joint DLNM
-#'
-#' # Create the (penalized) joint crossbasis
-#' basis.max_min <- joint.crossbasis(
-#'     cbind(dataset$Tmax, dataset$Tmin),
-#'     argvar1 = list(df = 5, fun = "ps"),
-#'     argvar2 = list(df = 5, fun = "ps"),
-#'     arglag = list(df = 5, fun = "ps"),
-#'     lag = 14,
-#'     group = group
-#' )
-#'
-#' # Fit model
-#' model_joint_common <- DLNM_LPS(
-#'     dtot ~ 1 + factor(dow) +
-#'     sm(month, arg = list(type = "ns", df = 3)) +
-#'     sm(year, arg = list(type = "rw1")) +
-#'     sm(basis.max_min, arg = list(pen= 2)) +
-#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
-#'     data = dataset,
-#'     offset = log(pop),
-#'     model.comparison = list(DIC = TRUE),
-#'     family = "Poisson"
-#' )
-#'
-#' # Make predictions
-#' pred_max_min <- pred_crossbasis(
-#'      basis = basis.max_min,
-#'      model = model_joint_common,
-#'      at_x = c(29,29,29,30,30,30,31,31,31),
-#'      at_y = c(20,21,22,20,21,22,20,21,22),
-#'      cen = c(25,15),
-#'      lag = c(0,14),
-#'      CI = TRUE
-#' )
-#'
-#' # Plot results (contour plot overall RR)
-#' contour(pred_max_min, ptype = "overall", cols = function(n) hcl.colors(n, "Inferno"))
 #'
 #' @export
 
