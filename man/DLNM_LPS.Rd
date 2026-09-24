@@ -188,7 +188,8 @@ pred_spat_max <- pred_crossbasis(
 )
 
 # Plot results (region-specific overal RR)
-plot(pred_spat_max, ptype = "overall", CI = TRUE, xlab = "temp", ylab = "RR", ylim = c(0.9,3.0))
+plot(pred_spat_max, ptype = "overall", CI = FALSE, xlab = "temp", ylab = "RR", ylim = c(0.9,3.0),
+    multiple.plots = FALSE)
 
 
 ### Example 4: Unpenalized and deprivation-varying DLNM

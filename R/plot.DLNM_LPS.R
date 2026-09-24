@@ -22,7 +22,9 @@
 #'   univariate exposures).}
 #'   \item{`"slices"`}{Slices through the exposure-lag-response surface.}
 #' }
-#' @param CI Logical. Should confidence intervals be displayed (defaults = FALSE)? Confidence
+#' @param multiple.plots Logical. Should the results of different by-levels be plotted in
+#' different windows (default = TRUE)?
+#' @param CI Logical. Should confidence intervals be displayed (default = FALSE)? Confidence
 #' intervals are only available for two-dimensional plots.
 #' @param xlim,ylim,zlim Numeric vectors of length two giving axis limits.
 #' @param cols Colours used for lines, surfaces or contours.
@@ -209,7 +211,8 @@
 #' )
 #'
 #' # Plot results (region-specific overal RR)
-#' plot(pred_spat_max, ptype = "overall", CI = TRUE, xlab = "temp", ylab = "RR", ylim = c(0.9,3.0))
+#' plot(pred_spat_max, ptype = "overall", CI = FALSE, xlab = "temp", ylab = "RR", ylim = c(0.9,3.0),
+#'     multiple.plots = FALSE)
 #'
 #'
 #' ### Example 4: Unpenalized and deprivation-varying DLNM
@@ -245,32 +248,40 @@
 #'
 #' @export
 
-plot.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, ptype = "overall", CI = FALSE,
-                          xlim = NULL, ylim = NULL, zlim = NULL,cols = NULL, xlab = NULL,
-                          ylab = NULL, zlab = NULL, ...){
+plot.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, ptype = "overall",
+                              multiple.plots = TRUE, CI = FALSE,
+                              xlim = NULL, ylim = NULL, zlim = NULL,cols = NULL, xlab = NULL,
+                              ylab = NULL, zlab = NULL, ...){
 
   mar = c(5.1, 4.1, 4.1, 2.1)
 
   nested <- !("allfit" %in% names(x))
 
   if(nested){
+    if(multiple.plots){
     graphics::par( mar = mar, mfrow = if(length(x)==1) c(1,1) else
       if(length(x)==2) c(1,2) else
         if(length(x)==3) c(1,3) else
           c(2,2))
 
     for (xi in 1:length(x)){
-      DLNMLPS_plot_ind(x[[xi]], slice_lag, slice_x , slice_y , ptype , CI ,
+      DLNMLPS_plot_ind(x[[xi]], slice_lag, slice_x , slice_y , ptype , FALSE, CI ,
                        xlim , ylim , zlim ,cols , xlab ,
                        ylab , zlab , main = paste('By = ', x[[xi]]$by), ...)
     }
 
 
     graphics::par(mar = mar, mfrow = c(1,1))
+    }else{
+      graphics::par(mar = mar, mfrow = c(1,1))
+      DLNMLPS_plot_ind(x, slice_lag , slice_x , slice_y, ptype , TRUE, CI ,
+                       xlim , ylim , zlim ,cols , xlab ,
+                       ylab , zlab, ...)
+    }
 
   }else{
     graphics::par(mar = mar, mfrow = c(1,1))
-    DLNMLPS_plot_ind(x, slice_lag , slice_x , slice_y, ptype , CI ,
+    DLNMLPS_plot_ind(x, slice_lag , slice_x , slice_y, ptype , FALSE, CI ,
      xlim , ylim , zlim ,cols , xlab ,
      ylab , zlab, ...)
   }
@@ -279,14 +290,15 @@ plot.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NUL
 
 #' Plotting one curve of nested graph
 #' @noRd
-DLNMLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, ptype = "overall", CI = FALSE,
-                              xlim = NULL, ylim = NULL, zlim = NULL,cols = NULL, xlab = NULL,
-                              ylab = NULL, zlab = NULL, ...){
+DLNMLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, ptype = "overall",
+                             multiple.plots = FALSE, CI = FALSE,
+                             xlim = NULL, ylim = NULL, zlim = NULL,cols = NULL, xlab = NULL,
+                             ylab = NULL, zlab = NULL, ...){
 
 
   if(ptype == "slices"){
     if(is.null(x$y) | sum(!sapply(list(slice_lag, slice_x, slice_y), is.null)) == 2 ){
-      plot_slices2D(x, slice_lag, slice_x, slice_y, CI, xlim, ylim, cols, xlab, ylab, ...)
+      plot_slices2D(x, slice_lag, slice_x, slice_y, multiple.plots, CI, xlim, ylim, cols, xlab, ylab, ...)
     } else if (!is.null(x$y) & sum(!sapply(list(slice_lag, slice_x, slice_y), is.null))==1){
       plot_slices3D(x, slice_lag, slice_x, slice_y, CI, xlim, ylim, zlim, cols, xlab, ylab, zlab,FALSE, ...)
     } else{
@@ -294,7 +306,7 @@ DLNMLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
     }
   } else if (ptype == "overall"){
     if(is.null(x$y)){
-      plot_overall_uni(x, xlim, ylim, cols, xlab, ylab, CI, ...)
+      plot_overall_uni(x, xlim, ylim, cols, xlab, ylab,multiple.plots, CI, ...)
       if(sum(!sapply(list(slice_lag, slice_x, slice_y), is.null)) >0){
         warning("No slices for overall RR with univariate exposure")
       }
@@ -302,7 +314,7 @@ DLNMLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
       if(sum(sapply(list(slice_lag, slice_x, slice_y), is.null)) == 3){
         plot_overall_3D(x, xlim, ylim, zlim, cols, xlab, ylab, zlab, CI, FALSE, ...)
       } else if(!is.null(slice_x) | !is.null(slice_y)){
-        plot_overall_2D(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, CI, ...)
+        plot_overall_2D(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, multiple.plots,CI, ...)
       } else{
         stop("Overall RR cannot be calculated for sliced lag")
       }
@@ -612,11 +624,130 @@ DLNMLPS_contour_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = N
 
 #' Plotting overall cumulative RR curve for one-exposure DLNM
 #' @noRd
-plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, CI, ... ){
+plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, multiple.plots, CI, ... ){
 
   if(is.null(xlab)){
     xlab = "exposure"
   }
+
+
+
+  if (multiple.plots) {
+    ncurve <- length(x)
+
+    if (is.null(cols))
+      cols <- grDevices::hcl.colors(ncurve, "Dark 3")
+
+    if (is.null(xlim)) {
+      xlim <- range( unlist(lapply(x, function(z) z$x)), na.rm = TRUE )
+    }
+
+
+    if (is.null(ylim)) {
+      if (x[[1]]$family != "Gaussian") {
+        vals <- unlist(lapply(x, function(z) {
+          if (CI) {
+            c(z$allRRfit, z$Qlower_allRRfit, z$Qupper_allRRfit)
+          } else {
+            z$allRRfit
+          }
+        }))
+      } else {
+          vals <- unlist(lapply(x, function(z) {
+            if (CI) {
+              c(z$allfit, z$Qlower_allfit, z$Qupper_allfit)
+            } else {
+              z$allfit
+            }
+          }))
+      }
+
+      ylim <- range(vals, na.rm = TRUE)
+
+    }
+
+    if (is.null(ylab)) {
+      if (x[[1]]$family %in% c("Poisson", "NB")) {
+        ylab <- "RR"
+      } else if (x[[1]]$family == "Binomial") {
+        ylab <- "OR"
+      } else {
+        ylab <- "difference in outcome"
+      }
+    }
+
+
+    # ---- First plot ----
+    plot_labels <- paste("by = ",  unlist(unname(lapply(x, function(x_by) x_by$by))))
+    z <- x[[1]]
+    if (z$family != "Gaussian") {
+      plot(
+        z$x,
+        z$allRRfit,
+        type = "l",
+        col = cols[1],
+        xlim = xlim,
+        ylim = ylim,
+        xlab = xlab,
+        ylab = ylab,
+        ...
+      )
+
+      for (i in seq_len(ncurve)) {
+        z <- x[[i]]
+        draw_slice2D(
+          z$x,
+          z$allRRfit,
+          if (CI) z$Qlower_allRRfit,
+          if (CI) z$Qupper_allRRfit,
+          cols[i],
+          CI
+        )
+      }
+
+
+
+    }else{
+      plot(
+        z$x,
+        z$allfit,
+        type = "l",
+        col = cols[1],
+        xlim = xlim,
+        ylim = ylim,
+        xlab = xlab,
+        ylab = ylab,
+        ...
+      )
+
+
+        for (i in seq_len(ncurve)) {
+          z <- x[[i]]
+          draw_slice2D(
+            z$x,
+            z$allfit,
+            if (CI) z$Qlower_allfit,
+            if (CI) z$Qupper_allfit,
+            cols[i],
+            CI
+          )
+      }
+    }
+
+
+
+
+    graphics::legend(
+      "top",
+      legend = plot_labels,
+      col = cols,
+      lty = 1,
+      bty = "n"
+    )
+
+
+  }else{
+
 
   if(is.null(ylab)){
     if(x$family == "Poisson" | x$family == "NB"){
@@ -704,7 +835,7 @@ plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, CI, ... ){
       CI
     )
 }
-
+}
 
 
 }
@@ -713,18 +844,38 @@ plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, CI, ... ){
 
 #' Plotting overall cumulative RR curve for two-exposure DLNM (in 2D)
 #' @noRd
-plot_overall_2D <- function(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, CI, ... ){
+plot_overall_2D <- function(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, multiple.plots, CI, ... ){
 
-  if(is.null(ylab)){
-    if(x$family == "Poisson" | x$family == "NB"){
-      ylab = "RR"
-    }else if (x$family == "Binomial"){
-      ylab = "OR"
-    }else{
-      ylab = "difference in outcome"
-    }
+  if(multiple.plots & (length(slice_x)>1 | length(slice_y)>1)){
+    warning("Multiple plots for different by-values required when slice is a vector")
+    multiple.plots = FALSE
   }
 
+  if(multiple.plots){
+    ncurve <- length(x)
+
+
+    if (is.null(ylab)) {
+      if (x[[1]]$family %in% c("Poisson", "NB")) {
+        ylab <- "RR"
+      } else if (x[[1]]$family == "Binomial") {
+        ylab <- "OR"
+      } else {
+        ylab <- "difference in outcome"
+      }
+    }
+
+  plot_labels <- paste("by = ",  unlist(unname(lapply(x, function(x_by) x_by$by))))
+
+
+
+  plot_x <- vector("list", ncurve)
+  plot_y <- vector("list", ncurve)
+
+  if (CI) {
+    plot_lower <- vector("list", ncurve)
+    plot_upper <- vector("list", ncurve)
+  }
 
   if(!is.null(slice_x)){
 
@@ -733,47 +884,33 @@ plot_overall_2D <- function(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, C
     }
 
 
-    ncurve <- length(slice_x)
-
-    plot_x <- vector("list", ncurve)
-    plot_y <- vector("list", ncurve)
-
-    if (CI) {
-      plot_lower <- vector("list", ncurve)
-      plot_upper <- vector("list", ncurve)
-    }
-
     for (i in seq_len(ncurve)) {
-
-      idx_x <- which(x$x == slice_x[i])
+      z <- x[[i]]
+      idx_x <- which(z$x == slice_x)
 
       if (length(idx_x) == 0 )
         stop("Some slicing values are not present in predictions.")
 
-      plot_x[[i]] <- x$y[idx_x]
+      plot_x[[i]] <- z$y[idx_x]
 
-      if(x$family != "Gaussian"){
-      plot_y[[i]] <- x$allRRfit[idx_x]
+      if(z$family != "Gaussian"){
+      plot_y[[i]] <- z$allRRfit[idx_x]
       }else{
-        plot_y[[i]] <- x$allfit[idx_x]
+        plot_y[[i]] <- z$allfit[idx_x]
       }
 
 
       if (CI) {
-        if(x$family != "Gaussian"){
-        plot_lower[[i]] <- x$Qlower_allRRfit[idx_x]
-        plot_upper[[i]] <- x$Qupper_allRRfit[idx_x]
+        if(z$family != "Gaussian"){
+        plot_lower[[i]] <- z$Qlower_allRRfit[idx_x]
+        plot_upper[[i]] <- z$Qupper_allRRfit[idx_x]
         }else{
-          plot_lower[[i]] <- x$Qlower_allfit[idx_x]
-          plot_upper[[i]] <- x$Qupper_allfit[idx_x]
+          plot_lower[[i]] <- z$Qlower_allfit[idx_x]
+          plot_upper[[i]] <- z$Qupper_allfit[idx_x]
         }
 
       }
     }
-
-    plot_labels <- paste0(
-      "x=", slice_x
-    )
 
   }else{
 
@@ -781,56 +918,153 @@ plot_overall_2D <- function(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, C
       xlab = "x-exposure"
     }
 
-    ncurve <- length(slice_y)
 
-    plot_x <- vector("list", ncurve)
-    plot_y <- vector("list", ncurve)
-
-    if (CI) {
-      if(x$family != "Gaussian"){
-        plot_lower[[i]] <- x$Qlower_allRRfit[idx_x]
-        plot_upper[[i]] <- x$Qupper_allRRfit[idx_x]
-      }else{
-        plot_lower[[i]] <- x$Qlower_allfit[idx_x]
-        plot_upper[[i]] <- x$Qupper_allfit[idx_x]
-      }
-    }
 
     for (i in seq_len(ncurve)) {
-
-      idx_x <- which(x$y == slice_y[i])
+      z <- x[[i]]
+      idx_x <- which(z$y == slice_y[i])
 
       if (length(idx_x) == 0 )
         stop("Some slice values are not present in predictions.")
 
-      plot_x[[i]] <- x$x[idx_x]
+      plot_x[[i]] <- z$x[idx_x]
 
-      if(x$family != "Gaussian"){
-        plot_y[[i]] <- x$allRRfit[idx_x]
+      if(z$family != "Gaussian"){
+        plot_y[[i]] <- z$allRRfit[idx_x]
       }else{
-        plot_y[[i]] <- x$allfit[idx_x]
+        plot_y[[i]] <- z$allfit[idx_x]
       }
 
 
       if (CI) {
-        if(x$family != "Gaussian"){
-        plot_lower[[i]] <- x$Qlower_allRRfit[idx_x]
-        plot_upper[[i]] <- x$Qupper_allRRfit[idx_x]
+        if(z$family != "Gaussian"){
+        plot_lower[[i]] <- z$Qlower_allRRfit[idx_x]
+        plot_upper[[i]] <- z$Qupper_allRRfit[idx_x]
         }else{
-          plot_lower[[i]] <- x$Qlower_allfit[idx_x]
-          plot_upper[[i]] <- x$Qupper_allfit[idx_x]
+          plot_lower[[i]] <- z$Qlower_allfit[idx_x]
+          plot_upper[[i]] <- z$Qupper_allfit[idx_x]
         }
 
       }
     }
 
 
-    plot_labels <- paste0(
-      "y=", slice_y
-    )
-
 }
 
+
+  }else{
+    if(is.null(ylab)){
+      if(x$family == "Poisson" | x$family == "NB"){
+        ylab = "RR"
+      }else if (x$family == "Binomial"){
+        ylab = "OR"
+      }else{
+        ylab = "difference in outcome"
+      }
+    }
+
+
+    if(!is.null(slice_x)){
+
+      if(is.null(xlab)){
+        xlab = "y-exposure"
+      }
+
+
+      ncurve <- length(slice_x)
+
+      plot_x <- vector("list", ncurve)
+      plot_y <- vector("list", ncurve)
+
+      if (CI) {
+        plot_lower <- vector("list", ncurve)
+        plot_upper <- vector("list", ncurve)
+      }
+
+      for (i in seq_len(ncurve)) {
+
+        idx_x <- which(x$x == slice_x[i])
+
+        if (length(idx_x) == 0 )
+          stop("Some slicing values are not present in predictions.")
+
+        plot_x[[i]] <- x$y[idx_x]
+
+        if(x$family != "Gaussian"){
+          plot_y[[i]] <- x$allRRfit[idx_x]
+        }else{
+          plot_y[[i]] <- x$allfit[idx_x]
+        }
+
+
+        if (CI) {
+          if(x$family != "Gaussian"){
+            plot_lower[[i]] <- x$Qlower_allRRfit[idx_x]
+            plot_upper[[i]] <- x$Qupper_allRRfit[idx_x]
+          }else{
+            plot_lower[[i]] <- x$Qlower_allfit[idx_x]
+            plot_upper[[i]] <- x$Qupper_allfit[idx_x]
+          }
+
+        }
+      }
+
+      plot_labels <- paste0(
+        "x=", slice_x
+      )
+
+    }else{
+
+      if(is.null(xlab)){
+        xlab = "x-exposure"
+      }
+
+      ncurve <- length(slice_y)
+
+      plot_x <- vector("list", ncurve)
+      plot_y <- vector("list", ncurve)
+
+      if (CI) {
+        plot_lower <- vector("list", ncurve)
+        plot_upper <- vector("list", ncurve)
+      }
+
+      for (i in seq_len(ncurve)) {
+
+        idx_x <- which(x$y == slice_y[i])
+
+        if (length(idx_x) == 0 )
+          stop("Some slice values are not present in predictions.")
+
+        plot_x[[i]] <- x$x[idx_x]
+
+        if(x$family != "Gaussian"){
+          plot_y[[i]] <- x$allRRfit[idx_x]
+        }else{
+          plot_y[[i]] <- x$allfit[idx_x]
+        }
+
+
+        if (CI) {
+          if(x$family != "Gaussian"){
+            plot_lower[[i]] <- x$Qlower_allRRfit[idx_x]
+            plot_upper[[i]] <- x$Qupper_allRRfit[idx_x]
+          }else{
+            plot_lower[[i]] <- x$Qlower_allfit[idx_x]
+            plot_upper[[i]] <- x$Qupper_allfit[idx_x]
+          }
+
+        }
+      }
+
+
+      plot_labels <- paste0(
+        "y=", slice_y
+      )
+
+    }
+
+}
 
 
   # -------------------------------
@@ -896,9 +1130,6 @@ plot_overall_2D <- function(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, C
     lty = 1,
     bty = "n"
   )
-
-
-
 
 }
 
@@ -1341,9 +1572,290 @@ plot_slices3D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
 #' Plotting sliced RR-curve (in 2D)
 #' @noRd
 plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
-                        CI = TRUE, xlim = NULL, ylim = NULL,
+                        multiple.plots = TRUE, CI = TRUE, xlim = NULL, ylim = NULL,
                         cols = NULL, xlab = NULL, ylab = NULL, ...) {
 
+  if(multiple.plots & (length(slice_x)>1 | length(slice_y)>1 | length(slice_lag)>1)){
+    warning("Multiple plots for different by-values required when slice is a vector")
+    multiple.plots = FALSE
+  }
+
+  if (is.null(slice_lag) && is.null(slice_x) && is.null(slice_y)) {
+    stop("Specify a slicing variable")
+  }
+
+  if(multiple.plots){
+    ncurve <- length(x)
+
+
+    if (is.null(ylab)) {
+      if (x[[1]]$family %in% c("Poisson", "NB")) {
+        ylab <- "RR"
+      } else if (x[[1]]$family == "Binomial") {
+        ylab <- "OR"
+      } else {
+        ylab <- "difference in outcome"
+      }
+    }
+
+    plot_labels <- paste("by = ",  unlist(unname(lapply(x, function(x_by) x_by$by))))
+
+    if (is.matrix(x[[1]]$x)) {
+      stop("Slices can only be plotted for a vector of constant exposures")
+    }
+
+
+    plot_x <- vector("list", ncurve)
+    plot_y <- vector("list", ncurve)
+
+    if (CI) {
+      plot_lower <- vector("list", ncurve)
+      plot_upper <- vector("list", ncurve)
+    }
+
+
+    if (is.null(x[[1]]$y)) {
+
+      if (!is.null(slice_y)) {
+        stop("Can only slice on y if predictions are made for y")
+      }
+      if (!is.null(slice_lag)) {
+
+        if(is.null(xlab)){
+          xlab = "exposure"
+        }
+
+        idx <- match(slice_lag, x[[1]]$lag)
+
+        if (anyNA(idx))
+          stop("Slice lag must be present in predictions.")
+
+        for (i in seq_len(ncurve)) {
+        z = x[[i]]
+        if(z$family != "Gaussian"){
+          plot_y[[i]] <- exp(z$matRRfit[, idx, drop = TRUE])
+        }else{
+          plot_y[[i]] <- exp(z$matfit[, idx, drop = TRUE])
+        }
+        plot_x[[i]] <- z$x
+
+
+        if (CI) {
+          if(z$family != "Gaussian"){
+            plot_lower[[i]] <- exp(z$Qlower_matRRfit[, idx, drop = TRUE])
+            plot_upper[[i]] <- exp(z$Qupper_matRRfit[, idx, drop = TRUE])
+          }else{
+            plot_lower[[i]] <- exp(z$Qlower_matfit[, idx, drop = TRUE])
+            plot_upper[[i]] <- exp(z$Qupper_matfit[, idx, drop = TRUE])
+          }
+
+        }
+
+
+        }
+
+      }else{
+        if(is.null(xlab)){
+          xlab = "lag"
+        }
+
+
+        idx <- unlist(lapply(slice_x, function(s) which(x[[1]]$x == s)))
+
+        if (anyNA(idx))
+          stop("Slice exposure must be present in predictions")
+
+        for (i in seq_len(ncurve)) {
+          z = x[[i]]
+          if(z$family != "Gaussian"){
+            plot_y[[i]] <- exp(z$matRRfit[idx, , drop = TRUE])
+          }else{
+            plot_y[[i]] <- exp(z$matfit[idx, , drop = TRUE])
+          }
+          plot_x[[i]] <- z$lag
+
+
+          if (CI) {
+            if(z$family != "Gaussian"){
+              plot_lower[[i]] <- exp(z$Qlower_matRRfit[idx, , drop = TRUE])
+              plot_upper[[i]] <- exp(z$Qupper_matRRfit[idx, , drop = TRUE])
+            }else{
+              plot_lower[[i]] <- exp(z$Qlower_matfit[idx, , drop = TRUE])
+              plot_upper[[i]] <- exp(z$Qupper_matfit[idx, , drop = TRUE])
+            }
+
+          }
+
+        }
+
+
+
+      }
+
+    }else{
+      if (!is.null(slice_x) && !is.null(slice_y)) {
+
+
+        if(is.null(xlab)){
+          xlab = "lag"
+        }
+
+        idx <- mapply(function(xi, yi) {
+          which(x[[1]]$x == xi & x[[1]]$y == yi)
+        }, slice_x, slice_y)
+
+        if (any(lengths(idx) == 0))
+          stop("Some x-y slices are not present in predictions.")
+
+        idx <- unlist(idx)
+
+
+        for (i in seq_len(ncurve)) {
+          z <- x[[i]]
+        if(z$family != "Gaussian"){
+          plot_y[[i]] <- exp(z$matRRfit[idx, , drop = TRUE])
+        }else{
+          plot_y[[i]] <- exp(z$matfit[idx, , drop = TRUE])
+        }
+
+
+         plot_x[[i]] <- z$lag
+
+        if (CI) {
+          if(z$family != "Gaussian"){
+            plot_lower <- exp(z$Qlower_matRRfit[idx, , drop = TRUE])
+            plot_upper <- exp(z$Qupper_matRRfit[idx, , drop = TRUE])
+          }else{
+            plot_lower <- exp(z$Qlower_matfit[idx, , drop = TRUE])
+            plot_upper <- exp(z$Qupper_matfit[idx, , drop = TRUE])
+          }
+
+        }
+
+        }
+
+      } else if (!is.null(slice_x) && !is.null(slice_lag)) {
+
+
+        if(is.null(xlab)){
+          xlab = "y-exposure"
+        }
+
+
+        if (length(slice_x) != length(slice_lag))
+          stop("slice_x and slice_lag must have the same length.")
+
+
+        idx_x <- which(x[[1]]$x == slice_x)
+        idx_lag <- match(slice_lag, x[[1]]$lag)
+
+
+        if (length(idx_x) == 0 || is.na(idx_lag))
+          stop("Some slice values are not present in predictions.")
+
+
+        for (i in seq_len(ncurve)) {
+          z <- x[[i]]
+
+
+          # free dimension is y
+          plot_x[[i]] <- z$y[idx_x]
+
+          if(z$family != "Gaussian"){
+            plot_y[[i]] <- exp(
+              z$matRRfit[idx_x, idx_lag]
+            )
+          }else{
+            plot_z[[i]] <- exp(
+              z$matfit[idx_x, idx_lag]
+            )
+          }
+
+
+          if (CI) {
+            if(z$family != "Gaussian"){
+              plot_lower[[i]] <- exp(
+                z$Qlower_matRRfit[idx_x, idx_lag]
+              )
+
+              plot_upper[[i]] <- exp(
+                z$Qupper_matRRfit[idx_x, idx_lag]
+              )
+            }else{
+              plot_lower[[i]] <- exp(
+                z$Qlower_matfit[idx_x, idx_lag]
+              )
+
+              plot_upper[[i]] <- exp(
+                z$Qupper_matfit[idx_x, idx_lag]
+              )
+            }
+          }
+        }
+
+
+      }else if (!is.null(slice_y) && !is.null(slice_lag)) {
+
+
+        if(is.null(xlab)){
+          xlab = "x-exposure"
+        }
+
+
+        if (length(slice_y) != length(slice_lag))
+          stop("slice_y and slice_lag must have the same length.")
+
+
+        idx_y <- which(x[[1]]$y == slice_y)
+        idx_lag <- match(slice_lag, x[[1]]$lag)
+
+        if (length(idx_y) == 0 || is.na(idx_lag))
+          stop("Some slice values are not present in predictions.")
+
+        for (i in seq_len(ncurve)) {
+          z <- x[[i]]
+
+          # free dimension is x
+          plot_x[[i]] <- z$x[idx_y]
+
+          if(z$family != "Gaussian"){
+            plot_y[[i]] <- exp(
+              z$matRRfit[idx_y, idx_lag]
+            )
+          }else{
+            plot_y[[i]] <- exp(
+              z$matfit[idx_y, idx_lag]
+            )
+          }
+
+
+          if (CI) {
+            if(z$family != "Gaussian"){
+              plot_lower[[i]] <- exp(
+                z$Qlower_matRRfit[idx_y, idx_lag]
+              )
+
+              plot_upper[[i]] <- exp(
+                z$Qupper_matRRfit[idx_y, idx_lag]
+              )
+            }else{
+              plot_lower[[i]] <- exp(
+                z$Qlower_matfit[idx_y, idx_lag]
+              )
+
+              plot_upper[[i]] <- exp(
+                z$Qupper_matfit[idx_y, idx_lag]
+              )
+            }
+          }
+        }
+
+      }
+    }
+
+
+
+  }else{
 
   if(is.null(ylab)){
     if(x$family == "Poisson" | x$family == "NB"){
@@ -1356,9 +1868,6 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
   }
 
 
-  if (is.null(slice_lag) && is.null(slice_x) && is.null(slice_y)) {
-    stop("Specify a slicing variable")
-  }
 
   if (is.matrix(x$x)) {
     stop("Slices can only be plotted for a vector of constant exposures")
@@ -1662,7 +2171,7 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
     }
   }
 
-
+}
 
   # -------------------------------
   # Plot

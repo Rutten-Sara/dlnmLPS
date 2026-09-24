@@ -10,6 +10,7 @@
   slice_x = NULL,
   slice_y = NULL,
   ptype = "overall",
+  multiple.plots = TRUE,
   CI = FALSE,
   xlim = NULL,
   ylim = NULL,
@@ -41,7 +42,10 @@ univariate exposures).}
 \item{\code{"slices"}}{Slices through the exposure-lag-response surface.}
 }}
 
-\item{CI}{Logical. Should confidence intervals be displayed (defaults = FALSE)? Confidence
+\item{multiple.plots}{Logical. Should the results of different by-levels be plotted in
+different windows (default = TRUE)?}
+
+\item{CI}{Logical. Should confidence intervals be displayed (default = FALSE)? Confidence
 intervals are only available for two-dimensional plots.}
 
 \item{xlim, ylim, zlim}{Numeric vectors of length two giving axis limits.}
@@ -239,7 +243,8 @@ pred_spat_max <- pred_crossbasis(
 )
 
 # Plot results (region-specific overal RR)
-plot(pred_spat_max, ptype = "overall", CI = TRUE, xlab = "temp", ylab = "RR", ylim = c(0.9,3.0))
+plot(pred_spat_max, ptype = "overall", CI = FALSE, xlab = "temp", ylab = "RR", ylim = c(0.9,3.0),
+    multiple.plots = FALSE)
 
 
 ### Example 4: Unpenalized and deprivation-varying DLNM

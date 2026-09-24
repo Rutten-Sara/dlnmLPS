@@ -22,11 +22,14 @@ Imports:
     utils
 Suggests:
     dplyr,
-    lubridate
+    knitr,
+    lubridate,
+    rmarkdown
 LinkingTo: 
     Rcpp,
     RcppEigen
 License: GPL (>= 3)
 Depends: 
-    R (>= 3.5)
+    R (>= 4.1.0)
 LazyData: true
+VignetteBuilder: knitr
