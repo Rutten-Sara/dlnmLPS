@@ -1,0 +1,19 @@
+---
+title: "Effect-modified DLNMs"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Effect-modified DLNMs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(DLNMLPS)
+```

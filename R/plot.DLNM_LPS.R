@@ -24,6 +24,7 @@
 #' }
 #' @param multiple.plots Logical. Should the results of different by-levels be plotted in
 #' different windows (default = TRUE)?
+#' @param show.legend Logical. Should the legend appear on the plot (default = TRUE)?
 #' @param CI Logical. Should confidence intervals be displayed (default = FALSE)? Confidence
 #' intervals are only available for two-dimensional plots.
 #' @param xlim,ylim,zlim Numeric vectors of length two giving axis limits.
@@ -249,7 +250,7 @@
 #' @export
 
 plot.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, ptype = "overall",
-                              multiple.plots = TRUE, CI = FALSE,
+                              multiple.plots = TRUE, show.legend = TRUE, CI = FALSE,
                               xlim = NULL, ylim = NULL, zlim = NULL,cols = NULL, xlab = NULL,
                               ylab = NULL, zlab = NULL, ...){
 
@@ -265,7 +266,7 @@ plot.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NUL
           c(2,2))
 
     for (xi in 1:length(x)){
-      DLNMLPS_plot_ind(x[[xi]], slice_lag, slice_x , slice_y , ptype , FALSE, CI ,
+      DLNMLPS_plot_ind(x[[xi]], slice_lag, slice_x , slice_y , ptype , FALSE, show.legend, CI ,
                        xlim , ylim , zlim ,cols , xlab ,
                        ylab , zlab , main = paste('By = ', x[[xi]]$by), ...)
     }
@@ -274,14 +275,14 @@ plot.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NUL
     graphics::par(mar = mar, mfrow = c(1,1))
     }else{
       graphics::par(mar = mar, mfrow = c(1,1))
-      DLNMLPS_plot_ind(x, slice_lag , slice_x , slice_y, ptype , TRUE, CI ,
+      DLNMLPS_plot_ind(x, slice_lag , slice_x , slice_y, ptype , TRUE, show.legend, CI ,
                        xlim , ylim , zlim ,cols , xlab ,
                        ylab , zlab, ...)
     }
 
   }else{
     graphics::par(mar = mar, mfrow = c(1,1))
-    DLNMLPS_plot_ind(x, slice_lag , slice_x , slice_y, ptype , FALSE, CI ,
+    DLNMLPS_plot_ind(x, slice_lag , slice_x , slice_y, ptype , FALSE, show.legend, CI ,
      xlim , ylim , zlim ,cols , xlab ,
      ylab , zlab, ...)
   }
@@ -291,14 +292,14 @@ plot.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NUL
 #' Plotting one curve of nested graph
 #' @noRd
 DLNMLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, ptype = "overall",
-                             multiple.plots = FALSE, CI = FALSE,
+                             multiple.plots = FALSE, show.legend = TRUE, CI = FALSE,
                              xlim = NULL, ylim = NULL, zlim = NULL,cols = NULL, xlab = NULL,
                              ylab = NULL, zlab = NULL, ...){
 
 
   if(ptype == "slices"){
     if(is.null(x$y) | sum(!sapply(list(slice_lag, slice_x, slice_y), is.null)) == 2 ){
-      plot_slices2D(x, slice_lag, slice_x, slice_y, multiple.plots, CI, xlim, ylim, cols, xlab, ylab, ...)
+      plot_slices2D(x, slice_lag, slice_x, slice_y, multiple.plots, show.legend, CI, xlim, ylim, cols, xlab, ylab, ...)
     } else if (!is.null(x$y) & sum(!sapply(list(slice_lag, slice_x, slice_y), is.null))==1){
       plot_slices3D(x, slice_lag, slice_x, slice_y, CI, xlim, ylim, zlim, cols, xlab, ylab, zlab,FALSE, ...)
     } else{
@@ -306,7 +307,7 @@ DLNMLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
     }
   } else if (ptype == "overall"){
     if(is.null(x$y)){
-      plot_overall_uni(x, xlim, ylim, cols, xlab, ylab,multiple.plots, CI, ...)
+      plot_overall_uni(x, xlim, ylim, cols, xlab, ylab,multiple.plots, show.legend, CI, ...)
       if(sum(!sapply(list(slice_lag, slice_x, slice_y), is.null)) >0){
         warning("No slices for overall RR with univariate exposure")
       }
@@ -314,7 +315,7 @@ DLNMLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
       if(sum(sapply(list(slice_lag, slice_x, slice_y), is.null)) == 3){
         plot_overall_3D(x, xlim, ylim, zlim, cols, xlab, ylab, zlab, CI, FALSE, ...)
       } else if(!is.null(slice_x) | !is.null(slice_y)){
-        plot_overall_2D(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, multiple.plots,CI, ...)
+        plot_overall_2D(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, multiple.plots,show.legend,CI, ...)
       } else{
         stop("Overall RR cannot be calculated for sliced lag")
       }
@@ -624,7 +625,7 @@ DLNMLPS_contour_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = N
 
 #' Plotting overall cumulative RR curve for one-exposure DLNM
 #' @noRd
-plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, multiple.plots, CI, ... ){
+plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, multiple.plots,show.legend, CI, ... ){
 
   if(is.null(xlab)){
     xlab = "exposure"
@@ -736,7 +737,7 @@ plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, multiple.plots, CI
 
 
 
-
+  if(show.legend){
     graphics::legend(
       "top",
       legend = plot_labels,
@@ -744,6 +745,7 @@ plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, multiple.plots, CI
       lty = 1,
       bty = "n"
     )
+  }
 
 
   }else{
@@ -844,7 +846,8 @@ plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, multiple.plots, CI
 
 #' Plotting overall cumulative RR curve for two-exposure DLNM (in 2D)
 #' @noRd
-plot_overall_2D <- function(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, multiple.plots, CI, ... ){
+plot_overall_2D <- function(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, multiple.plots,
+                            show.legend, CI, ... ){
 
   if(multiple.plots & (length(slice_x)>1 | length(slice_y)>1)){
     warning("Multiple plots for different by-values required when slice is a vector")
@@ -1123,6 +1126,7 @@ plot_overall_2D <- function(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, m
   }
 
 
+  if(show.legend){
   graphics::legend(
     "top",
     legend = plot_labels,
@@ -1130,6 +1134,7 @@ plot_overall_2D <- function(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, m
     lty = 1,
     bty = "n"
   )
+  }
 
 }
 
@@ -1572,7 +1577,8 @@ plot_slices3D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
 #' Plotting sliced RR-curve (in 2D)
 #' @noRd
 plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
-                        multiple.plots = TRUE, CI = TRUE, xlim = NULL, ylim = NULL,
+                        multiple.plots = TRUE, show.legend = TRUE,
+                        CI = TRUE, xlim = NULL, ylim = NULL,
                         cols = NULL, xlab = NULL, ylab = NULL, ...) {
 
   if(multiple.plots & (length(slice_x)>1 | length(slice_y)>1 | length(slice_lag)>1)){
@@ -2229,6 +2235,7 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
   }
 
 
+  if(show.legend){
   graphics::legend(
     "top",
     legend = plot_labels,
@@ -2236,6 +2243,7 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
     lty = 1,
     bty = "n"
   )
+  }
 }
 
 

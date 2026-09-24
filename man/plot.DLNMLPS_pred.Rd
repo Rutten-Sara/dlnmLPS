@@ -11,6 +11,7 @@
   slice_y = NULL,
   ptype = "overall",
   multiple.plots = TRUE,
+  show.legend = TRUE,
   CI = FALSE,
   xlim = NULL,
   ylim = NULL,
@@ -44,6 +45,8 @@ univariate exposures).}
 
 \item{multiple.plots}{Logical. Should the results of different by-levels be plotted in
 different windows (default = TRUE)?}
+
+\item{show.legend}{Logical. Should the legend appear on the plot (default = TRUE)?}
 
 \item{CI}{Logical. Should confidence intervals be displayed (default = FALSE)? Confidence
 intervals are only available for two-dimensional plots.}
