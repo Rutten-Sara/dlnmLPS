@@ -28,9 +28,13 @@ The main functionality includes distributed lag nonlinear models (DLNMs), with s
 More specifically, `DLNMLPS` can be used to model:
 
 - **distributed lag nonlinear associations**, allowing nonlinear exposure-response relationships over      multiple time lags. DLNMs can be unpenalized (natural splines or B-splines) or penalized (P-splines);
+
 - **random effects**, including independent random effects and spatially structured random effects (ICAR, BYM or Leroux). These random effects can possibly vary over time (according to an independent or random walk structure);
+
 - **temporal random effects**, including first- and second-order random-walk structures. These temporal effects can possibly depend on location (according to an independent, ICAR or Leroux structure);
+
 - **smooth exposure effects**, using natural splines (`ns`), B-splines (`bs`), or P-splines (`ps`); and
+
 - **more complex DLNM extensions**, including effect modification, spatially varying DLNMs, and models with bivariate exposures.
 
 The different components can be combined to construct models that account simultaneously for nonlinear exposure-response relationships, distributed lag effects, and spatial or temporal dependence.
@@ -39,7 +43,7 @@ The different components can be combined to construct models that account simult
 This vignette provides an introduction to the basic functionality of `DLNMLPS`. We first demonstrate how to install and load the package, then fit a basic DLNM without penalization. We subsequently show how
 the same type of model can be fitted using penalized splines.
 
-The more advanced modelling options are demonstrated in separate vignettes.
+The more advanced modelling options are demonstrated in separate vignettes (see `vignette("Spatially varying DLNMs")`).
 
 # Installation
 

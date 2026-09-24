@@ -1,0 +1,189 @@
+---
+title: "Spatially varying DLNMs"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Spatially varying DLNMs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(DLNMLPS)
+```
+
+# Introduction
+
+A standard distributed lag non-linear model (DLNM) assumes that the exposure-lag-response curve is common across all locations. While this assumption can be useful, it may be too restrictive. In many settings, the association between exposure and response may vary across space. For example, the relationship between temperature and mortality may differ between regions due to differences in population characteristics, climate, land use or other local factors. 
+
+`DLNMLPS` provides methods for fitting spatially varying distributed lag non-linear models, allowing the exposure-response association to differ between spatial locations. This provides a flexible framework for investigating both the exposure-response relationship, as well as geographical variation.  
+
+In this vignette, we demonstrate how to fit spatially varying DLNMs using `DLNMLPS`. We subsequently show how to obtain and visualize the estimated spatially varying exposure-lag-response curves.
+
+The basic functionality of `DLNMLPS`is introduced in `vignette("Introduction to DLNMLPS")`.
+
+# Spatially varying DLNMs
+
+## Example data
+For illustration, we use the following simulated example data:
+
+```{r}
+# Example data
+data(barcelona_temp)
+```
+
+This simulated data set contains daily minimum, maximum and mean temperature in all 10 districts of Barcelona during the summer period (1 June--30 September) between 2007 and 2011. The population size, deprivation index and daily number of deaths are included for every district. For this example, we will investigate the effect of maximum temperature on mortality. The outcome and exposure variable can then be inspected:
+
+```{r}
+# Inspect the data
+head(barcelona_temp)
+```
+
+We can extract some additional information from the date such as the day of the week, year and month.
+```{r}
+# Extract date information
+dataset <- barcelona_temp |>
+  dplyr::mutate(
+    dow = weekdays(date),
+    year = lubridate::year(date),
+    month = lubridate::month(date)
+  )
+```
+
+
+## Fitting a spatially varying DLNM
+In this example, we use the data from `vignette("Introduction to DLNMLPS")`. We fit four different types of models:
+
+- **Type I**, unpenalized, spatially independent DLNMs;
+
+- **Type II**, penalized, spatially independent DLNMs;
+
+- **Type III**, unpenalized, Leroux-structured DLNMs; and
+
+- **Type IV**, penalized, Leroux-structured DLNMs.
+
+We include month as natural splines with 3 degrees of freedom, year as a random walk of order one, day of the week as a factor and District as a random effect.
+
+Fitting all of these models is very similar. First of all, we can fit models of Type I and Type III, by using an unpenalized crossbasis and let it vary by District. Spatially-independent DLNMs can be requested using *fun* = "ind", while Leroux-varying DLNMs can be specified using *fun* = "Leroux". For the latter, a map containing the neighbourhood structure needs to be provided as well. 
+
+```{r}
+# Fit a spatially varying unpenalized DLNM
+data(shapefile_bcn)
+
+knots_temp <- quantile(dataset$Tmax, probs = c(0.10,0.50,0.90))
+knots_lag <- dlnm::logknots(0:14, nk = 2)
+group <- factor(paste0(dataset$District, "-", dataset$year))
+
+basis.max <- dlnm::crossbasis(
+  dataset$Tmax,
+  argvar = list(fun = "ns", knots = knots_temp),
+  arglag = list(fun = "ns", knots = knots_lag),
+  lag = 14,
+  group = group
+)
+
+model_typeI <- DLNM_LPS(dtot ~ factor(dow) + 
+                               sm(basis.max,
+                                  by = District, arg.by = list(type = "ind")) +
+                               sm(month, arg = list(type = "ns", df = 3)) +
+                               sm(year, arg = list(type = "rw1")) +
+                               sm(District, arg = list(type = "ind")),
+                              data = dataset,
+                              offset = log(pop),
+                              model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                              family = "Poisson")
+
+model_typeIII <- DLNM_LPS(dtot ~ factor(dow) + 
+                               sm(basis.max,
+                                  by = District, arg.by = list(type = "Leroux", map = shapefile_bcn)) +
+                               sm(month, arg = list(type = "ns", df = 3)) +
+                               sm(year, arg = list(type = "rw1")) +
+                               sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+                              data = dataset,
+                              offset = log(pop),
+                              model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                              family = "Poisson")
+```
+
+Similarly, models of Type II and Type IV can be fitted using a penalized DLNM, and providing the order of the penalty in *arg*:
+
+```{r}
+# Fit a spatially varying penalized DLNM
+basis.max_pen <- dlnm::crossbasis(
+  dataset$Tmax,
+  argvar = list(fun = "ps", df = 8),
+  arglag = list(fun = "ps", df = 8),
+  lag = 14,
+  group = group
+)
+
+model_typeII <- DLNM_LPS(dtot ~ factor(dow) + 
+                               sm(basis.max_pen, arg = list(pen = 2),
+                                  by = District, arg.by = list(type = "ind")) +
+                               sm(month, arg = list(type = "ns", df = 3)) +
+                               sm(year, arg = list(type = "rw1")) +
+                               sm(District, arg = list(type = "ind")),
+                              data = dataset,
+                              offset = log(pop),
+                              model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                              family = "Poisson")
+
+model_typeIV <- DLNM_LPS(dtot ~ factor(dow) + 
+                               sm(basis.max_pen, arg = list(pen = 2),
+                                  by = District, arg.by = list(type = "Leroux", map = shapefile_bcn)) +
+                               sm(month, arg = list(type = "ns", df = 3)) +
+                               sm(year, arg = list(type = "rw1")) +
+                               sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+                              data = dataset,
+                              offset = log(pop),
+                              model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                              family = "Poisson")
+```
+
+We can compare the performance of the four models using model comparison criteria DIC, WAIC and CPO:
+
+```{r}
+# Compare the estimated associations
+model_typeI$DIC; model_typeI$WAIC; -sum(log(model_typeI$CPO))
+model_typeII$DIC; model_typeII$WAIC; -sum(log(model_typeII$CPO))
+model_typeIII$DIC; model_typeIII$WAIC; -sum(log(model_typeIII$CPO))
+model_typeIV$DIC; model_typeIV$WAIC; -sum(log(model_typeIV$CPO))
+```
+
+Model Type IV is preferred based on all model selection criteria. We can visualize the results of this model for the first five districts as:
+
+```{r, fig.width = 6, fig.height = 8}
+pred_penalized <- pred_crossbasis(
+  basis = basis.max_pen,
+  model = model_typeIV,
+  at_x = 22:30,
+  cen = 25,
+  lag = c(0,14),
+  CI = TRUE,
+  by = unique(dataset$District)[1:5]
+)
+
+plot(pred_penalized, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, xlab = "temp", ylab = "RR")
+contour(pred_penalized, ptype = "cross")
+
+```
+
+The option multiple.plots = FALSE allows visualizing the results for different districts on one plot.
+
+```{r, fig.width = 6, fig.height = 4}
+plot(pred_penalized, slice_x = 30, ptype = "slices", CI = TRUE, xlab = "temp", ylab = "RR",
+     multiple.plots = FALSE)
+plot(pred_penalized, ptype = "overall", CI = FALSE, xlab = "temp", ylab = "RR", multiple.plots = FALSE)
+
+```
+
+# Summary
+
+In this vignette, we introduced the spatially varying functionality of `DLNMLPS`. We demonstrated how to fit four different types of spatially-varying DLNMs, differing in penalization and spatial structure.
+
