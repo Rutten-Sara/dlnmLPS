@@ -34,7 +34,8 @@ summary.DLNMLPS <- function(object,...){
     `0.025quant` = quantiles[1,],
     `0.5quant`   =mode,
     `0.975quant` = quantiles[3,],
-    mode       = mode
+    mode       = mode,
+    check.names  = FALSE
   )
 
   rownames(summary_fixed) <- names(mode)
