@@ -150,12 +150,13 @@ In this example, we requested predictions of the relative risk (RR) of temperatu
 
 The estimated exposure-lag-response association can then be visualized using:
 
-```{r}
+```{r, fig.width = 6, fig.height = 4}
 plot(pred_unpenalized, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, xlab = "temp", ylab = "RR")
 plot(pred_unpenalized, slice_x = 30, ptype = "slices", CI = TRUE, xlab = "temp", ylab = "RR")
 plot(pred_unpenalized, ptype = "overall", CI = TRUE, xlab = "temp", ylab = "RR")
 contour(pred_unpenalized, ptype = "cross")
 ```
+
 The first plot visualizes the temperature-mortality relationships at different lags, while the second plot visualizes the lag-mortality relationship at a temperature level of 30. The third plot visualizes the overall cumulative temperature-mortality relationship (over the entire lag period). The option CI = TRUE requests credible intervals to appear on the plot as well. The last plot shows a contour plot of the exposure-lag-response relationship.
 
 
@@ -184,7 +185,7 @@ model_penalized <- DLNM_LPS(dtot ~ factor(dow) + sm(basis.max_pen, arg = list(pe
 
 Predictions can similarly be visualized:
 
-```{r}
+```{r, fig.width = 6, fig.height = 4}
 pred_penalized <- pred_crossbasis(
   basis = basis.max_pen,
   model = model_penalized,
