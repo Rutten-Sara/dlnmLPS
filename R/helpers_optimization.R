@@ -264,9 +264,17 @@ check_sm_term_inputs <- function(sm_args_iter, data, env) {
       list(type = "crossbasis", pen = NULL, map = NULL),
       sm_args_iter$arg
     )
-  } else {
+  } else if (sm_args_iter$arg$type == "ps"){
     sm_args_iter$arg <- utils::modifyList(
       list(type = "ps", pen = 2, df = 10,
+           knots = NULL, intercept = FALSE,
+           Boundary.knots = range(sm_args_iter$x, na.rm = TRUE),
+           degree = 3),
+      sm_args_iter$arg
+    )
+  }else{
+    sm_args_iter$arg <- utils::modifyList(
+      list(type = "ns", df = NULL,
            knots = NULL, intercept = FALSE,
            Boundary.knots = range(sm_args_iter$x, na.rm = TRUE),
            degree = 3),
@@ -308,9 +316,16 @@ check_sm_term_inputs <- function(sm_args_iter, data, env) {
 
     }else if (sm_args_iter$arg.by$type == "factor"){
       sm_args_iter$arg.by <- list(type = "factor")
-    }else{
+    }else if (sm_args_iter$arg.by$type == "ps"){
       sm_args_iter$arg.by <- utils::modifyList(
         list(type = "ps", pen = 2, df = 10,
+             knots = NULL, intercept = TRUE, Boundary.knots = range(sm_args_iter$by, na.rm = TRUE),
+             degree = 3),
+        sm_args_iter$arg.by
+      )
+    }else{
+      sm_args_iter$arg.by <- utils::modifyList(
+        list(type = "ns", df = NULL,
              knots = NULL, intercept = TRUE, Boundary.knots = range(sm_args_iter$by, na.rm = TRUE),
              degree = 3),
         sm_args_iter$arg.by
