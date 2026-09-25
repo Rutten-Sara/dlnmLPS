@@ -38,7 +38,7 @@ For illustration, we use the following simulated example data:
 data(barcelona_temp)
 ```
 
-This simulated data set contains daily minimum, maximum and mean temperature in all 10 districts of Barcelona during the summer period (1 June--30 September) between 2007 and 2011. The population size, deprivation index and daily number of deaths are included for every district. For this example, we will investigate the effect of maximum temperature on mortality. The outcome and exposure variable can then be inspected:
+This simulated data set contains daily minimum, maximum and mean temperature in all 10 districts of Barcelona during the summer period (1 June--30 September) between 2007 and 2011. The population size, deprivation index and daily number of deaths are included for every district.size, deprivation index and daily number of deaths are included for every district. For this example, we will investigate how the effect of maximum temperature on mortality spatially varies. The outcome and exposure variable can then be inspected:
 
 ```{r}
 # Inspect the data
@@ -58,7 +58,7 @@ dataset <- barcelona_temp |>
 
 
 ## Fitting a spatially varying DLNM
-In this example, we use the data from `vignette("Introduction to DLNMLPS")`. We fit four different types of models:
+In this example, we fit four different types of models:
 
 - **Type I**, unpenalized, spatially independent DLNMs;
 
@@ -89,15 +89,15 @@ basis.max <- dlnm::crossbasis(
 )
 
 model_typeI <- DLNM_LPS(dtot ~ factor(dow) + 
-                               sm(basis.max,
+                             sm(basis.max,
                                   by = District, arg.by = list(type = "ind")) +
-                               sm(month, arg = list(type = "ns", df = 3)) +
-                               sm(year, arg = list(type = "rw1")) +
-                               sm(District, arg = list(type = "ind")),
-                              data = dataset,
-                              offset = log(pop),
-                              model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
-                              family = "Poisson")
+                             sm(month, arg = list(type = "ns", df = 3)) +
+                             sm(year, arg = list(type = "rw1")) +
+                             sm(District, arg = list(type = "ind")),
+                        data = dataset,
+                        offset = log(pop),
+                        model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                        family = "Poisson")
 
 model_typeIII <- DLNM_LPS(dtot ~ factor(dow) + 
                                sm(basis.max,
@@ -105,10 +105,10 @@ model_typeIII <- DLNM_LPS(dtot ~ factor(dow) +
                                sm(month, arg = list(type = "ns", df = 3)) +
                                sm(year, arg = list(type = "rw1")) +
                                sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
-                              data = dataset,
-                              offset = log(pop),
-                              model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
-                              family = "Poisson")
+                          data = dataset,
+                          offset = log(pop),
+                          model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                          family = "Poisson")
 ```
 
 Similarly, models of Type II and Type IV can be fitted using a penalized DLNM, and providing the order of the penalty in *arg*:
@@ -124,26 +124,26 @@ basis.max_pen <- dlnm::crossbasis(
 )
 
 model_typeII <- DLNM_LPS(dtot ~ factor(dow) + 
-                               sm(basis.max_pen, arg = list(pen = 2),
+                              sm(basis.max_pen, arg = list(pen = 2),
                                   by = District, arg.by = list(type = "ind")) +
-                               sm(month, arg = list(type = "ns", df = 3)) +
-                               sm(year, arg = list(type = "rw1")) +
-                               sm(District, arg = list(type = "ind")),
-                              data = dataset,
-                              offset = log(pop),
-                              model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
-                              family = "Poisson")
+                              sm(month, arg = list(type = "ns", df = 3)) +
+                              sm(year, arg = list(type = "rw1")) +
+                              sm(District, arg = list(type = "ind")),
+                         data = dataset,
+                         offset = log(pop),
+                         model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                         family = "Poisson")
 
 model_typeIV <- DLNM_LPS(dtot ~ factor(dow) + 
-                               sm(basis.max_pen, arg = list(pen = 2),
+                              sm(basis.max_pen, arg = list(pen = 2),
                                   by = District, arg.by = list(type = "Leroux", map = shapefile_bcn)) +
-                               sm(month, arg = list(type = "ns", df = 3)) +
-                               sm(year, arg = list(type = "rw1")) +
-                               sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
-                              data = dataset,
-                              offset = log(pop),
-                              model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
-                              family = "Poisson")
+                              sm(month, arg = list(type = "ns", df = 3)) +
+                              sm(year, arg = list(type = "rw1")) +
+                              sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+                         data = dataset,
+                         offset = log(pop),
+                         model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                         family = "Poisson")
 ```
 
 We can compare the performance of the four models using model comparison criteria DIC, WAIC and CPO:
@@ -162,7 +162,7 @@ Model Type IV is preferred based on all model selection criteria. We can visuali
 pred_penalized <- pred_crossbasis(
   basis = basis.max_pen,
   model = model_typeIV,
-  at_x = 22:30,
+  at_x = seq(22,30,length = 50),
   cen = 25,
   lag = c(0,14),
   CI = TRUE,
@@ -182,6 +182,8 @@ plot(pred_penalized, slice_x = 30, ptype = "slices", CI = TRUE, xlab = "temp", y
 plot(pred_penalized, ptype = "overall", CI = FALSE, xlab = "temp", ylab = "RR", multiple.plots = FALSE)
 
 ```
+
+Differences between the different municipalities in the temperature-mortality relationship seem relatively small.
 
 # Summary
 

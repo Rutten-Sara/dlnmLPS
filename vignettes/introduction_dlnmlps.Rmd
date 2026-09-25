@@ -43,7 +43,7 @@ The different components can be combined to construct models that account simult
 This vignette provides an introduction to the basic functionality of `DLNMLPS`. We first demonstrate how to install and load the package, then fit a basic DLNM without penalization. We subsequently show how
 the same type of model can be fitted using penalized splines.
 
-The more advanced modelling options are demonstrated in separate vignettes (see `vignette("Spatially varying DLNMs")`).
+The more advanced modelling options are demonstrated in separate vignettes (see `vignette("Spatially varying DLNMs")`, `vignette("Effect-modified DLNMs")` and `vignette("Bivariate (joint) DLNMs")`).
 
 # Installation
 
@@ -124,7 +124,7 @@ We can include additional covariates to the model. Smooth covariates need to be 
 ```{r}
 # Fit an unpenalized DLNM
 model_unpenalized2 <- DLNM_LPS(dtot ~ factor(dow) + sm(basis.max) +
-                                      sm(month, arg = list(type = "ns", df = 3)),
+                                    sm(month, arg = list(type = "ns", df = 3)),
                               data = dataset,
                               offset = log(pop),
                               model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
@@ -143,7 +143,7 @@ The exposure-lag-response curve can be predicted for different levels of the exp
 pred_unpenalized <- pred_crossbasis(
   basis = basis.max,
   model = model_unpenalized2,
-  at_x = 22:30,
+  at_x = seq(22,30,length = 50),
   cen = 25,
   lag = c(0,14),
   CI = TRUE
@@ -161,7 +161,7 @@ plot(pred_unpenalized, ptype = "overall", CI = TRUE, xlab = "temp", ylab = "RR")
 contour(pred_unpenalized, ptype = "cross")
 ```
 
-The first plot visualizes the temperature-mortality relationships at different lags, while the second plot visualizes the lag-mortality relationship at a temperature level of 30. The third plot visualizes the overall cumulative temperature-mortality relationship (over the entire lag period). The option CI = TRUE requests credible intervals to appear on the plot as well. The last plot shows a contour plot of the exposure-lag-response relationship.
+The first plot visualizes the temperature-mortality relationships at different lags (0, 3 and 8), while the second plot visualizes the lag-mortality relationship at a temperature level of 30. The third plot visualizes the overall cumulative temperature-mortality relationship (over the entire lag period). The option CI = TRUE requests credible intervals to appear on the plot as well. The last plot shows a contour plot of the exposure-lag-response relationship.
 
 
 ## Fitting a penalized DLNM
@@ -180,11 +180,11 @@ basis.max_pen <- dlnm::crossbasis(
 )
 
 model_penalized <- DLNM_LPS(dtot ~ factor(dow) + sm(basis.max_pen, arg = list(pen = 2)) +
-                                      sm(month, arg = list(type = "ns", df = 3)),
-                              data = dataset,
-                              offset = log(pop),
-                              model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
-                              family = "Poisson")
+                                 sm(month, arg = list(type = "ns", df = 3)),
+                            data = dataset,
+                            offset = log(pop),
+                            model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                            family = "Poisson")
 ```
 
 Predictions can similarly be visualized:
@@ -193,7 +193,7 @@ Predictions can similarly be visualized:
 pred_penalized <- pred_crossbasis(
   basis = basis.max_pen,
   model = model_penalized,
-  at_x = 22:30,
+  at_x = seq(22,30,length = 50),
   cen = 25,
   lag = c(0,14),
   CI = TRUE
@@ -231,26 +231,26 @@ A model with a year-specific random walk of order one and a district-specific Le
 # Fit a penalized DLNM with spatial and temporal RW
 data(shapefile_bcn)
 model_penalized2 <- DLNM_LPS(dtot ~ factor(dow) + sm(basis.max_pen, arg = list(pen = 2)) +
-                                      sm(month, arg = list(type = "ns", df = 3)) +
-                                      sm(year, arg = list(type = "rw1")) +
-                                      sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
-                              data = dataset,
-                              offset = log(pop),
-                              model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
-                              family = "Poisson")
+                                  sm(month, arg = list(type = "ns", df = 3)) +
+                                  sm(year, arg = list(type = "rw1")) +
+                                  sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+                             data = dataset,
+                             offset = log(pop),
+                             model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                             family = "Poisson")
 ```
 
 A model with an independently year-varying Leroux random effect on District, can for example be fitted as:
 ```{r}
 # Fit a penalized DLNM with temporally varying spatial effect
 model_penalized3 <- DLNM_LPS(dtot ~ factor(dow) + sm(basis.max_pen, arg = list(pen = 2)) +
-                                      sm(month, arg = list(type = "ns", df = 3)) +
-                                      sm(District, arg = list(type = "Leroux", map = shapefile_bcn),
+                                  sm(month, arg = list(type = "ns", df = 3)) +
+                                  sm(District, arg = list(type = "Leroux", map = shapefile_bcn),
                                          by = year, arg.by = list(type = "ind")),
-                              data = dataset,
-                              offset = log(pop),
-                              model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
-                              family = "Poisson")
+                             data = dataset,
+                             offset = log(pop),
+                             model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                             family = "Poisson")
 ```
 
 # Summary
@@ -264,6 +264,6 @@ We demonstrated how to:
 3. fit a penalized DLNM using Laplacian P-splines; and
 4. add spatial and temporal random effects.
 
-The next vignettes provide examples of more advanced applications of `DLNMLPS`, including spatially varying DLNMs, effect-modified DLNMs, and DLNMs with bivariate exposures.
+The next vignettes provide examples of more advanced applications of `DLNMLPS`, including spatially varying DLNMs (see `vignette("Spatially varying DLNMs")`), effect-modified DLNMs (see `vignette("Effect-modified DLNMs")`), and DLNMs with bivariate exposures (see `vignette("Bivariate (joint) DLNMs")`).
 
 

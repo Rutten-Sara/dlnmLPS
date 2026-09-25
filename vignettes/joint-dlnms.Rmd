@@ -1,0 +1,177 @@
+---
+title: "Bivariate (joint) DLNMs"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Bivariate (joint) DLNMs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(DLNMLPS)
+```
+
+# Introduction
+
+Traditionally, distributed lag non-linear models (DLNMs) are used to model the effect of one, possibly delayed and non-linear, exposure on an outcome. However, interest might be in the joint effect of two (bivariate) exposures. For example, the effect of maximum and minimum temperature on mortality might be synergistic, requiring a joint modelling strategy.
+
+`DLNMLPS` provides methods for modelling the delayed and non-linear effect of two exposures jointly. In this vignette, we demonstrate how to fit and visualize these bivariate DLNMs using the `DLNMLPS` framework.
+
+The basic functionality of `DLNMLPS`is introduced in `vignette("Introduction to DLNMLPS")`.
+
+# Joint DLNMs
+
+## Example data
+For illustration, we use the following simulated example data:
+
+```{r}
+# Example data
+data(barcelona_temp)
+```
+
+This simulated data set contains daily minimum, maximum and mean temperature in all 10 districts of Barcelona during the summer period (1 June--30 September) between 2007 and 2011. The population size, deprivation index and daily number of deaths are included for every district. For this example, we will investigate how maximum and minimum temperature jointly impact mortality. The outcome and exposure variable can then be inspected:
+
+```{r}
+# Inspect the data
+head(barcelona_temp)
+```
+
+We can extract some additional information from the date such as the day of the week, year and month.
+```{r}
+# Extract date information
+dataset <- barcelona_temp |>
+  dplyr::mutate(
+    dow = weekdays(date),
+    year = lubridate::year(date),
+    month = lubridate::month(date)
+  )
+```
+
+## Fitting an additive DLNM
+While fitting a joint DLNM requires an extension of the basic functionality of DLNMs, fitting a model with an additive DLNM of maximum and minimum temperature is straightforward.
+
+We include month as natural splines with 3 degrees of freedom, year as a random walk of order one, day of the week as a factor and District as an (independent) random effect. Fitting an penalized additive DLNM, using 8 df and a penalty of order 2, can be done as follows:
+
+```{r}
+# Fit a penalized additive DLNM
+group <- factor(paste0(dataset$District, "-", dataset$year))
+
+basis.max_pen <- dlnm::crossbasis(
+  dataset$Tmax,
+  argvar = list(fun = "ps", df = 8),
+  arglag = list(fun = "ps", df = 8),
+  lag = 14,
+  group = group
+)
+
+basis.min_pen <- dlnm::crossbasis(
+  dataset$Tmin,
+  argvar = list(fun = "ps", df = 8),
+  arglag = list(fun = "ps", df = 8),
+  lag = 14,
+  group = group
+)
+
+model_additive <- DLNM_LPS(dtot ~ factor(dow) + 
+                                sm(basis.max_pen, arg = list(pen = 2)) +
+                                sm(basis.min_pen, arg = list(pen = 2)) +
+                                sm(month, arg = list(type = "ns", df = 3)) +
+                                sm(year, arg = list(type = "rw1")) +
+                                sm(District, arg = list(type = "ind")),
+                           data = dataset,
+                           offset = log(pop),
+                           model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                           family = "Poisson")
+```
+
+## Fitting a joint DLNM
+Fitting a joint DLNM is very similar to fitting a traditional DLNM. However, since the `dlnm` package does not directly provide the functionality to specify a joint crossbasis, the function `joint.crossbasis` of the `DLNMLPS` package should be used instead. This function is very similar to the `crossbasis` function of the `dlnm` package, requiring arguments for both exposure variables as well as the lag. The data can be supplied as a matrix for which the first and second column contain the timeseries of the first and second exposure respectively.
+
+```{r}
+# Fit an unpenalized joint DLNM
+knots_max <- quantile(dataset$Tmax, probs = c(0.10,0.50,0.90))
+knots_min <- quantile(dataset$Tmin, probs = c(0.10,0.50,0.90))
+knots_lag <- dlnm::logknots(0:14, nk = 2)
+
+joint.basis <- joint.crossbasis(
+                  cbind(dataset$Tmax, dataset$Tmin),
+                  argvar1 = list(fun = "ns", knots = knots_max),
+                  argvar2 = list(fun = "ns", knots = knots_min),
+                  arglag = list(fun = "ns", knots = knots_lag),
+                  lag = 14,
+                  group = group
+                  )
+
+model_unpenalized <- DLNM_LPS(dtot ~ factor(dow) + 
+                                   sm(joint.basis) +
+                                   sm(month, arg = list(type = "ns", df = 3)) +
+                                   sm(year, arg = list(type = "rw1")) +
+                                   sm(District, arg = list(type = "ind")),
+                              data = dataset,
+                              offset = log(pop),
+                              model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                              family = "Poisson")
+```
+
+Similarly, a penalized version of the DLNM, using 8 df and a second order penalty, can be fitted using:
+
+```{r}
+# Fit a penalized joint DLNM
+joint.basis_pen <- joint.crossbasis(
+                    cbind(dataset$Tmax, dataset$Tmin),
+                    argvar1 = list(fun = "ps", df = 8),
+                    argvar2 = list(fun = "ps", df = 8),
+                    arglag = list(fun = "ps", df = 8),
+                    lag = 14,
+                    group = group
+                    )
+
+model_penalized <- DLNM_LPS(dtot ~ factor(dow) + 
+                                 sm(joint.basis_pen, arg = list(pen = 2)) +
+                                 sm(month, arg = list(type = "ns", df = 3)) +
+                                 sm(year, arg = list(type = "rw1")) +
+                                 sm(District, arg = list(type = "ind")),
+                              data = dataset,
+                              offset = log(pop),
+                              model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                              family = "Poisson")
+```
+
+To visualize this mode, we need a grid of realistic maximum and minimum temperature combinations. A prediction is made for every *at_x*-*at_y* pair, rather than for cross-pairs. This also implies that the length of both vectors should be equal. A centering value now consists of a vector containing the reference value for both maximum and minimum temperature. A contour plot or 3D plot of the overall cumulative RR can then be made:
+
+```{r, fig.width = 6, fig.height = 4}
+pred_penalized <- pred_crossbasis(
+  basis = joint.basis_pen,
+  model = model_penalized,
+  at_x = c(29,29,29,30,30,30,31,31,31),
+  at_y = c(20,21,22,20,21,22,20,21,22),
+  cen = c(25,15),
+  lag = c(0,14),
+  CI = TRUE
+)
+
+contour(pred_penalized, ptype = "overall")
+plot(pred_penalized, ptype = "overall")
+```
+
+The plots seem to suggest that both maximum and minimum temperature are important when estimating RRs. We can for example also visualize the lag relationship for specific exposure levels:
+
+```{r, fig.width = 6, fig.height = 4}
+plot(pred_penalized, slice_x = c(31,31,31), slice_y = c(20,21,22), ptype = "slices")
+```
+
+## Fitting a spatial and effect modified joint DLNM
+Just as for traditional DLNMs, a joint DLNM can be spatially varying or subject to effect modification (see `vignette("Spatially varying DLNMs")` and `vignette("Effect-modified DLNMs")` for more information). The syntax remains exactly the same as for the univariate DLNM. 
+
+# Summary
+
+In this vignette, we introduced the joint modelling functionality of `DLNMLPS`. We demonstrated how to fit different models. For more information, see also `vignette("Introduction to DLNMLPS")`, `vignette("Spatially varying DLNMs")` and `vignette("Effect-modified DLNMs")`.
+
+
