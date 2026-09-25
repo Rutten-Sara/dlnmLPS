@@ -181,10 +181,18 @@ checkvarbasis <- function(fun, x){
 
 #' Checking formals
 #' @noRd
-f_formals <- function(fun) {tryCatch(
-  get(fun, mode = "function"),
-  error = function(e) utils::getFromNamespace(fun, "dlnm")
-)
+f_formals <- function(fun) {
+  tryCatch(
+    get(fun, mode = "function"),
+    error = function(e) {
+      tryCatch(
+        utils::getFromNamespace(fun, "dlnm"),
+        error = function(e) {
+          utils::getFromNamespace(fun, "splines")
+        }
+      )
+    }
+  )
 }
 
 

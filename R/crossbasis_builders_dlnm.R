@@ -160,12 +160,13 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
 
   rm(crossbasis_spat, Mat_crossbasis_spat, Z.rand_spat, interaction_matrix)
 
-  vx <- attributes(sm_args_iter$x)$df[1]
-  vl <- attributes(sm_args_iter$x)$df[2]
 
   pen_start <- cumsum(pen_dlnm)[term]
 
   if(!is.null(penorder)){
+    vx <- attributes(sm_args_iter$x)$df[1]
+    vl <- attributes(sm_args_iter$x)$df[2]
+
     # Penalty for exposure
     Dx <- Matrix::Diagonal(vx+1, x = NULL)
     for (k in 1:penorder) Dx <- Matrix::diff(Dx)
@@ -296,8 +297,8 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
       if (sm_args_iter$arg.by$type == "ind"){
         Sv_list <- Matrix::Diagonal(n = q.rand, x = 1)
 
-        Pv2_term <- function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = vx*vl, x = NULL)), "generalMatrix")%x%Sv_list
-        n_d <- vx*vl*q.rand
+        Pv2_term <- function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = ncol(sm_args_iter$x), x = NULL)), "generalMatrix")%x%Sv_list
+        n_d <- ncol(sm_args_iter$x)*q.rand
 
 
         logpv2 <- function(v) 0.5 * (nu+n_d) * (v[pen_start+1])-
@@ -317,8 +318,8 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
         neig.map <- build_neighbor_map(sm_args_iter$arg.by$map, connect = sm_args_iter$arg.by$connect)
         Rn <- make_graph_precision(neig.map, q.rand)
 
-        Pv2_term <- function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = vx*vl, x = NULL)), "generalMatrix")%x%Rn
-        n_d <- vx*vl*q.rand
+        Pv2_term <- function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = ncol(sm_args_iter$x), x = NULL)), "generalMatrix")%x%Rn
+        n_d <- ncol(sm_args_iter$x)*q.rand
 
 
         logpv2 <- function(v) 0.5 * (nu+n_d) * (v[pen_start+1])-
@@ -347,7 +348,7 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
           make_leroux_precision(0, v[pen_start + 2], q.rand, Rn)
         }
 
-        Pv2_term <- function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = vx*vl, x = NULL)), "generalMatrix")%x%Sv_list(v)
+        Pv2_term <- function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = ncol(sm_args_iter$x), x = NULL)), "generalMatrix")%x%Sv_list(v)
 
 
         logpv2<- function(v)  {
@@ -499,11 +500,13 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
 
   rm(interaction_matrix, crossbasis_em)
 
-  vx <- attributes(sm_args_iter$x)$df[1]
-  vl <- attributes(sm_args_iter$x)$df[2]
 
 
   if(!is.null(penorder)){
+
+    vx <- attributes(sm_args_iter$x)$df[1]
+    vl <- attributes(sm_args_iter$x)$df[2]
+
     # Penalty for exposure
     Dx <- Matrix::Diagonal(vx+1, x = NULL)
     for (k in 1:penorder) Dx <- Matrix::diff(Dx)
@@ -592,8 +595,8 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
     }
 
     if(sm_args_iter$arg.by$type == "ps"){
-      Pv2_term <- function(v) exp(v[pen_start+1])*(Matrix::Diagonal(n = vx*vl, x = NULL)%x%D_z)
-      n_d <- vx*vl*ncol(D_z)
+      Pv2_term <- function(v) exp(v[pen_start+1])*(Matrix::Diagonal(n = ncol(sm_args_iter$x), x = NULL)%x%D_z)
+      n_d <- ncol(sm_args_iter$x)*ncol(D_z)
 
 
       logpv2 <- function(v) 0.5 * (nu+n_d) * (v[pen_start+1])-
@@ -612,7 +615,7 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
 
       logpv2 <- function(v) 0
       Pv2_term <- function(v){
-        methods::as(Matrix::Diagonal(n = vx*vl*vz,
+        methods::as(Matrix::Diagonal(n = ncol(sm_args_iter$x)*vz,
                             x = zeta), "generalMatrix")
       }
 
@@ -814,13 +817,14 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
   Wcb <- add_wcb_block(Wcb, interaction_matrix)
   rm(interaction_matrix, Z.rand_spat, crossbasis_spat, Mat_crossbasis_spat)
 
-  vx1 <- attributes(sm_args_iter$x)$argvar1$df
-  vx2 <- attributes(sm_args_iter$x)$argvar2$df
-  vl <- attributes(sm_args_iter$x)$arglag$df
-
   pen_start <- cumsum(pen_dlnm)[term]
 
   if(!is.null(penorder)){
+
+    vx1 <- attributes(sm_args_iter$x)$argvar1$df
+    vx2 <- attributes(sm_args_iter$x)$argvar2$df
+    vl <- attributes(sm_args_iter$x)$arglag$df
+
     # Penalty for exposure 1
     Dx1 <- Matrix::Diagonal(vx1, x = NULL)
     for (k in 1:penorder) Dx1 <- Matrix::diff(Dx1)
@@ -1011,14 +1015,8 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
       if (sm_args_iter$arg.by$type == "ind"){
         Sv_list <- Matrix::Diagonal(n = q.rand, x = 1)
 
-        if(attributes(sm_args_iter$x)$is_identifiable){
-          Pv2_term <- function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = (vx1*vx2-1)*vl, x = NULL)), "generalMatrix")%x%Sv_list
-          n_d <- q.rand*(vx1*vx2-1)*vl
-        }else{
-          Pv2_term <- function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = vx1*vx2*vl, x = NULL)), "generalMatrix")%x%Sv_list
-          n_d <- q.rand*vx1*vx2*vl
-        }
-
+        Pv2_term <- function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = ncol(sm_args_iter$x), x = NULL)), "generalMatrix")%x%Sv_list
+        n_d <- q.rand*ncol(sm_args_iter$x)
 
 
         logpv2 <- function(v) 0.5 * (nu+n_d) * (v[pen_start+1])-
@@ -1039,13 +1037,9 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
         neig.map <- build_neighbor_map(sm_args_iter$arg.by$map, connect = sm_args_iter$arg.by$connect)
         Rn <- make_graph_precision(neig.map, q.rand)
 
-        if(attributes(sm_args_iter$x)$is_identifiable){
-          Pv2_term <- function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = (vx1*vx2-1)*vl, x = NULL)), "generalMatrix")%x%Rn
-          n_d <- q.rand*(vx1*vx2-1)*vl
-        }else{
-          Pv2_term <- function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = vx1*vx2*vl, x = NULL)), "generalMatrix")%x%Rn
-          n_d <- q.rand*vx1*vx2*vl
-        }
+        Pv2_term <- function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = ncol(sm_args_iter$x), x = NULL)), "generalMatrix")%x%Rn
+        n_d <- q.rand*ncol(sm_args_iter$x)
+
 
 
         logpv2 <- function(v) 0.5 * (nu+n_d) * (v[pen_start+1])-
@@ -1075,13 +1069,8 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
           make_leroux_precision(0, v[pen_start + 2], q.rand, Rn)
         }
 
-        if(attributes(sm_args_iter$x)$is_identifiable){
-          Pv2_term <- function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = (vx1*vx2-1)*vl, x = NULL)), "generalMatrix")%x%Sv_list(v)
-        }else{
+          Pv2_term <- function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = ncol(sm_args_iter$x), x = NULL)), "generalMatrix")%x%Sv_list(v)
 
-          Pv2_term <- function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = vx1*vx2*vl, x = NULL)), "generalMatrix")%x%Sv_list(v)
-
-        }
 
         logpv2<- function(v)  {
           value <- 0.5 * nu * (v[pen_start+1])-
@@ -1236,12 +1225,13 @@ build_component_modified2Ddlnm<-function(state, sm_args_iter, term, all_terms, c
   rm(interaction_matrix, crossbasis_em)
 
 
-  vx1 <- attributes(sm_args_iter$x)$argvar1$df
-  vx2 <- attributes(sm_args_iter$x)$argvar2$df
-  vl <- attributes(sm_args_iter$x)$arglag$df
-
 
   if(!is.null(penorder)){
+
+    vx1 <- attributes(sm_args_iter$x)$argvar1$df
+    vx2 <- attributes(sm_args_iter$x)$argvar2$df
+    vl <- attributes(sm_args_iter$x)$arglag$df
+
     # Penalty for exposure 1
     Dx1 <- Matrix::Diagonal(vx1, x = NULL)
     for (k in 1:penorder) Dx1 <- Matrix::diff(Dx1)
@@ -1377,14 +1367,9 @@ build_component_modified2Ddlnm<-function(state, sm_args_iter, term, all_terms, c
     }
 
     if(sm_args_iter$arg.by$type == "ps"){
-      if(attributes(sm_args_iter$x)$is_identifiable){
-        Pv2_term <- function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = (vx1*vx2-1)*vl, x = NULL)), "generalMatrix")%x%D_z
-        n_d <- (vx1*vx2-1)*vl*ncol(D_z)
+        Pv2_term <- function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = ncol(sm_args_iter$x), x = NULL)), "generalMatrix")%x%D_z
+        n_d <- ncol(sm_args_iter$x)*ncol(D_z)
 
-      }else{
-        Pv2_term <-  function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = vx1*vx2*vl, x = NULL)), "generalMatrix")%x%D_z
-        n_d <- vx1*vx2*vl*ncol(D_z)
-      }
 
       logpv2 <- function(v) 0.5 * (nu+n_d) * (v[pen_start+1])-
         (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start+1])))
@@ -1402,7 +1387,7 @@ build_component_modified2Ddlnm<-function(state, sm_args_iter, term, all_terms, c
 
       logpv2 <- function(v) 0
       Pv2_term <- function(v){
-        methods::as(Matrix::Diagonal(n = vx1*vx2*vl*vz,
+        methods::as(Matrix::Diagonal(n = ncol(sm_args_iter$x)*vz,
                             x = zeta), "generalMatrix")
       }
 
