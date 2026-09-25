@@ -448,7 +448,7 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
     D_z = Matrix::Matrix(attr(sm_list[[term]],"S"))+
       Matrix::Diagonal(n = sm_args_iter$arg.by$df, x = 1e-12)
 
-    vz <- sm_args_iter$arg.by$df
+    vz <- ncol(sm_list[[term]])
 
     colnames(sm_list[[term]]) <- paste(
       deparse(normalize_sm_call(all_terms[[term]])$by),
@@ -461,7 +461,7 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
                                    knots = sm_args_iter$arg.by$knots,
                                    intercept =F,
                                    Boundary.knots = sm_args_iter$arg.by$Boundary.knots)
-    vz <- sm_args_iter$arg.by$df
+    vz <- ncol(sm_list[[term]])
 
 
     colnames(sm_list[[term]]) <- paste(
@@ -476,7 +476,7 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
                                    degree = sm_args_iter$arg.by$degree,
                                    intercept = F,
                                    Boundary.knots = sm_args_iter$arg.by$Boundary.knots)
-    vz <- sm_args_iter$arg.by$df
+    vz <- ncol(sm_list[[term]])
 
 
     colnames(sm_list[[term]]) <- paste(

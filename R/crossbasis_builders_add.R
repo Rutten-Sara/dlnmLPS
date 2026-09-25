@@ -252,7 +252,7 @@ build_component_spline<-function(state, sm_args_iter, term, all_terms, constants
                                 intercept = sm_args_iter$arg$intercept)
 
     D_list = Matrix::Matrix(attr(sm_list[[term]],"S"))+
-      Matrix::Diagonal(n = sm_args_iter$arg$df, x = 1e-12)
+      Matrix::Diagonal(n =ncol(sm_list[[term]]), x = 1e-12)
 
     n_d <- ncol(D_list)
 
