@@ -20,7 +20,7 @@ spatial and temporal effects.
 
 ## Installation
 
-The development version of DLNMLPS can be installed from the
+The development version of DLNMLPS, without the vignettes, can be installed from the
 private GitHub repository using:
 
 ```r
@@ -28,6 +28,20 @@ private GitHub repository using:
 remotes::install_github("Rutten-Sara/DLNMLPS")
 ```
 Access to the repository is required to install the package.
+
+To install the version of DLNMLPS including the vignettes, containing short tutorials, 
+use instead:
+```r
+# install.packages("remotes")
+remotes::install_github("Rutten-Sara/DLNMLPS", build_vignettes = T)
+```
+
+Afterwards, the vignettes can be requested using:
+
+```r
+browseVignettes("DLNMLPS")
+```
+
 
 ## Citation
 
