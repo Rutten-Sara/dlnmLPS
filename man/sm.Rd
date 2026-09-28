@@ -27,7 +27,10 @@ Objects of class \code{crossbasis} are recognized
 automatically and therefore do not need to be specified explicitly in
 \code{arg$type}. The additional argument \code{pen} can be specified, where
 \code{NULL} (default) specifies an unpenalized basis and an integer
-specifies the penalty structure.}
+specifies the penalty structure. The additional argument \code{add.lagpen}
+(default TRUE) is a logical indicator, indicating whether an additional
+penalty should be specified in the lag dimension (for penalized settings)
+to encourage schrinkage of the effect at longer lags.}
 \item{\code{ps}, \code{ns}, \code{bs}}{Smooth functions based on P-splines,
 natural splines, or B-splines. Additional arguments can include
 those passed to the corresponding spline constructors, such as

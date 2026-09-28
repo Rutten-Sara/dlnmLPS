@@ -30,6 +30,7 @@ build_component_dlnm<-function(state, sm_args_iter, term, all_terms, constants){
   constraint_matrix[[term]] <- Matrix::Matrix(0,1,ncol(Wcb_part))
 
   penorder <- sm_args_iter$arg$pen
+  add_lag_penalty <- sm_args_iter$arg$add.lagpen
 
   pen_start <- cumsum(pen_dlnm)[term]
 
@@ -53,9 +54,9 @@ build_component_dlnm<-function(state, sm_args_iter, term, all_terms, constants){
     Pl <- Pl + Matrix::Diagonal(vl, x = 1e-12)
 
     # Additional penalty for delay (force lag effect going to zero)
+    if(add_lag_penalty){
     Dl_add <- diag((0:(vl-1))^2)
     Pl_add <- Dl_add + diag(1e-12, vl)
-
 
 
     Pv.list[[term]] <- function(v) exp(v[pen_start + 1])*(Px%x%Matrix::Diagonal(n = vl, x = NULL)) +
@@ -73,6 +74,24 @@ build_component_dlnm<-function(state, sm_args_iter, term, all_terms, constants){
     v_init <- c(v_init, rep(5, 3))
     names(v_init) <- c(names(v_init)[1:(length(v_init)-3)],
                        paste("Penalty DLNM",deparse1(all_terms[[term]]), 1:3))
+    }else{
+
+      Pv.list[[term]] <- function(v) exp(v[pen_start + 1])*(Px%x%Matrix::Diagonal(n = vl, x = NULL)) +
+        exp(v[pen_start + 2])*(Matrix::Diagonal(n = vx, x = NULL)%x%Pl)
+
+      Pv_term <- Pv.list[[term]]
+      logpv.fixed[[term]] <- function(v) 0.5 * nu * (v[pen_start + 1]+v[pen_start + 2])-
+        (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start + 1]))+log(b + 0.5*nu*exp(v[pen_start + 2])))+
+        0.5*determinant_Pv(Pv_term(v))
+
+      pen_dlnm[term+1] <- pen_dlnm[term+1]+2
+
+      v_init <- c(v_init, rep(5, 2))
+      names(v_init) <- c(names(v_init)[1:(length(v_init)-2)],
+                         paste("Penalty DLNM",deparse1(all_terms[[term]]), 1:2))
+    }
+
+
 
   }else{
     logpv.fixed[[term]] <- function(v) 0
@@ -128,6 +147,7 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
 
   Wcb <- add_wcb_block(Wcb, Wcb_part)
   penorder <- sm_args_iter$arg$pen
+  add_lag_penalty <- sm_args_iter$arg$add.lagpen
 
   #spatial effect
   crossbasis_spat = Matrix::Matrix(sm_args_iter$x, sparse = TRUE)
@@ -181,6 +201,7 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
     Pl <- Pl + Matrix::Diagonal(vl, x = 1e-12)
 
     # Additional penalty for delay (force lag effect going to zero)
+    if(add_lag_penalty){
     Dl_add <- diag((0:(vl-1))^2)
     Pl_add <- Dl_add + diag(1e-12, vl)
 
@@ -200,11 +221,25 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
     names(v_init) <- c(names(v_init)[1:(length(v_init)-3)],
                        paste("Penalty common DLNM",deparse1(all_terms[[term]]), 1:3))
 
+    }else{
+      Pv1_term <- function(v) exp(v[pen_start + 1])*(Px%x%Matrix::Diagonal(n = vl, x = NULL)) +
+        exp(v[pen_start + 2])*(Matrix::Diagonal(n = vx, x = NULL)%x%Pl)
 
+      logpv1 <- function(v) 0.5 * nu * (v[pen_start + 1]+v[pen_start + 2])-
+        (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start + 1]))+log(b + 0.5*nu*exp(v[pen_start + 2])))+
+        0.5*determinant_Pv(Pv1_term(v))
+
+      pen_dlnm[term+1] = pen_dlnm[term+1]+2
+
+      v_init <- c(v_init, rep(1, 2))
+      names(v_init) <- c(names(v_init)[1:(length(v_init)-2)],
+                         paste("Penalty common DLNM",deparse1(all_terms[[term]]), 1:2))
+    }
     # Spatial interaction
     if (sm_args_iter$arg.by$type == "ind"){
       Sv_list <- Matrix::Diagonal(n = q.rand, x = 1)
 
+     if(add_lag_penalty){
       Pv2_term <- function(v) exp(v[pen_start + 4])*(Px%x%Matrix::Diagonal(n = vl, x = NULL)%x%Sv_list) +
         exp(v[pen_start + 5])*(Matrix::Diagonal(n = vx, x = NULL)%x%Pl%x%Sv_list) +
         exp(v[pen_start + 6])*(Matrix::Diagonal(n = vx, x = NULL)%x%Pl_add%x%Sv_list)
@@ -224,12 +259,32 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
 
       pen_dlnm[term+1] = pen_dlnm[term+1]+3
 
-      constraint_matrix[[term]] <- Matrix::Matrix(0,1,ncol(Wcb_part)*(1+q.rand))
+     }else{
+       Pv2_term <- function(v) exp(v[pen_start + 3])*(Px%x%Matrix::Diagonal(n = vl, x = NULL)%x%Sv_list) +
+         exp(v[pen_start + 4])*(Matrix::Diagonal(n = vx, x = NULL)%x%Pl%x%Sv_list)
+
+
+       logpv2<- function(v) 0.5 * nu * (v[pen_start + 4]+v[pen_start + 3])-
+         (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start + 4]))+log(b + 0.5*nu*exp(v[pen_start + 3])))+
+         0.5*determinant_Pv(Pv2_term(v))
+
+       logpv.fixed[[term]] <- function(v) logpv1(v) + logpv2(v)
+       Pv.list[[term]] <- function(v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
+
+       v_init <- c(v_init, rep(3, 2))
+       names(v_init) <- c(names(v_init)[1:(length(v_init)-2)],
+                          paste("Penalty spatial DLNM",deparse1(all_terms[[term]]), 1:2))
+
+       pen_dlnm[term+1] = pen_dlnm[term+1]+2
+
+     }
+    constraint_matrix[[term]] <- Matrix::Matrix(0,1,ncol(Wcb_part)*(1+q.rand))
 
     } else if (sm_args_iter$arg.by$type == "ICAR"){
       neig.map <- build_neighbor_map(sm_args_iter$arg.by$map, connect = sm_args_iter$arg.by$connect)
       Rn <- make_graph_precision(neig.map, q.rand)
 
+      if(add_lag_penalty){
       Pv2_term <- function(v) exp(v[pen_start+4])*(Px%x%Matrix::Diagonal(n = vl, x = NULL)%x%Rn) +
         exp(v[pen_start+5])*(Matrix::Diagonal(n = vx, x = NULL)%x%Pl%x%Rn) +
         exp(v[pen_start+6])*(Matrix::Diagonal(n = vx, x = NULL)%x%Pl_add%x%Rn)
@@ -246,6 +301,23 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
       v_init <- c(v_init, rep(3,3))
       names(v_init) <- c(names(v_init)[1:(length(v_init)-3)],
                          paste("Penalty spatial DLNM",deparse1(all_terms[[term]]), 1:3))
+      }else{
+        Pv2_term <- function(v) exp(v[pen_start+3])*(Px%x%Matrix::Diagonal(n = vl, x = NULL)%x%Rn) +
+          exp(v[pen_start+4])*(Matrix::Diagonal(n = vx, x = NULL)%x%Pl%x%Rn)
+
+        logpv2 <- function(v) 0.5 * nu * (v[pen_start+4]+v[pen_start+3])-
+          (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start+4]))+log(b + 0.5*nu*exp(v[pen_start+3])))+
+          0.5*determinant_Pv(Pv2_term(v))
+
+
+        logpv.fixed[[term]] <- function(v) logpv1(v) + logpv2(v)
+        Pv.list[[term]] <- function(v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
+
+        pen_dlnm[term+1] = pen_dlnm[term+1]+2
+        v_init <- c(v_init, rep(3,2))
+        names(v_init) <- c(names(v_init)[1:(length(v_init)-2)],
+                           paste("Penalty spatial DLNM",deparse1(all_terms[[term]]), 1:2))
+      }
 
       ncol_Wcb <- ncol(Wcb_part)
       constraint_matrix[[term]] <-  Matrix::sparseMatrix(i = rep(1:ncol_Wcb, each = q.rand),
@@ -258,9 +330,11 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
       neig.map <- build_neighbor_map(sm_args_iter$arg.by$map, connect = sm_args_iter$arg.by$connect)
       Rn <- make_graph_precision(neig.map, q.rand)
 
+      if(add_lag_penalty){
+
       Sv_list <- function(v) {
-        make_leroux_precision(0, v[pen_start + 7], q.rand, Rn)
-      }
+          make_leroux_precision(0, v[pen_start + 7], q.rand, Rn)
+       }
 
       Pv2_term <- function( v) exp(v[pen_start+4])*(Px%x%Matrix::Diagonal(n = vl, x = NULL)%x%Sv_list(v)) +
         exp(v[pen_start+5])*(Matrix::Diagonal(n = vx, x = NULL)%x%Pl%x%Sv_list(v)) +
@@ -284,6 +358,34 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
                          paste("Rho DLNM",deparse1(all_terms[[term]])))
 
       pen_dlnm[term+1] <- pen_dlnm[term+1]+4
+      }else{
+
+        Sv_list <- function(v) {
+          make_leroux_precision(0, v[pen_start + 5], q.rand, Rn)
+        }
+
+        Pv2_term <- function( v) exp(v[pen_start+3])*(Px%x%Matrix::Diagonal(n = vl, x = NULL)%x%Sv_list(v)) +
+          exp(v[pen_start+4])*(Matrix::Diagonal(n = vx, x = NULL)%x%Pl%x%Sv_list(v))
+
+
+        logpv2<- function(v)  {
+          value <- 0.5 * nu * (v[pen_start+4]+v[pen_start+3])-
+            (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start+4]))+log(b + 0.5*nu*exp(v[pen_start+3])))+
+            0.5*determinant_Pv(Pv2_term(v)) +
+            a.rho*v[pen_start+5] - (a.rho + b.rho)*log(1 + exp(v[pen_start+5]))
+          return(as.numeric(value))}
+
+
+        logpv.fixed[[term]] <- function(v) logpv1( v) + logpv2(v)
+        Pv.list[[term]] <- function( v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
+
+        v_init <- c(v_init, c(rep(3,2),1))
+        names(v_init) <- c(names(v_init)[1:(length(v_init)-3)],
+                           paste("Penalty DLNM",deparse1(all_terms[[term]]), 1:2),
+                           paste("Rho DLNM",deparse1(all_terms[[term]])))
+
+        pen_dlnm[term+1] <- pen_dlnm[term+1]+3
+      }
 
       constraint_matrix[[term]] <- Matrix::Matrix(0,1,ncol(Wcb_part)*(1+q.rand))
     }}else{
@@ -418,6 +520,7 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
   Wcb <- add_wcb_block(Wcb, crossbasis_em)
 
   penorder <- sm_args_iter$arg$pen
+  add_lag_penalty <- sm_args_iter$arg$add.lagpen
 
   pen_start <- cumsum(pen_dlnm)[term]
 
@@ -520,6 +623,7 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
     Pl <- Matrix::t(Dl) %*% Dl
     Pl <- Pl + Matrix::Diagonal(vl, x = 1e-12)
 
+    if(add_lag_penalty){
     # Additional penalty for delay (force lag effect going to zero)
     Dl_add <- diag((0:(vl-1))^2)
     #Dl_add <- diag(rep(0:1,c(6,4)))
@@ -541,8 +645,24 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
 
     names(v_init) <- c(names(v_init)[1:(length(v_init)-3)],
                        paste("Penalty common DLNM",deparse1(all_terms[[term]]), 1:3))
+    }else{
+      Pv1_term <- function(v) exp(v[pen_start + 1])*(Px%x%Matrix::Diagonal(n = vl, x = NULL)) +
+        exp(v[pen_start + 2])*(Matrix::Diagonal(n = vx, x = NULL)%x%Pl)
+
+      logpv1 <- function(v) 0.5 * nu * (v[pen_start + 1]+v[pen_start + 2])-
+        (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start + 1]))+log(b + 0.5*nu*exp(v[pen_start + 2])))+
+        0.5*determinant_Pv(Pv1_term(v))
+
+      pen_dlnm[term+1] = pen_dlnm[term+1]+2
+
+      v_init <- c(v_init, rep(2, 2))
+
+      names(v_init) <- c(names(v_init)[1:(length(v_init)-2)],
+                         paste("Penalty common DLNM",deparse1(all_terms[[term]]), 1:2))
+    }
 
     if(sm_args_iter$arg.by$type == "ps"){
+      if(add_lag_penalty){
       Pv2_term <- function(v) exp(v[pen_start+4])*(Px%x%Matrix::Diagonal(n = vl*vz, x = NULL)) +
         exp(v[pen_start+5])*(Matrix::Diagonal(n = vx, x = NULL)%x%Pl%x%Matrix::Diagonal(n = vz, x = NULL)) +
         exp(v[pen_start+6])*(Matrix::Diagonal(n = vx, x = NULL)%x%Pl_add%x%Matrix::Diagonal(n = vz, x = NULL))+
@@ -561,9 +681,29 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
       v_init <- c(v_init, rep(2, 4))
       names(v_init) <- c(names(v_init)[1:(length(v_init)-4)],
                          paste("Penalty modified DLNM",deparse1(all_terms[[term]]), 1:4))
+      }else{
+        Pv2_term <- function(v) exp(v[pen_start+3])*(Px%x%Matrix::Diagonal(n = vl*vz, x = NULL)) +
+          exp(v[pen_start+4])*(Matrix::Diagonal(n = vx, x = NULL)%x%Pl%x%Matrix::Diagonal(n = vz, x = NULL)) +
+          exp(v[pen_start+5])*(Matrix::Diagonal(n = vx*vl, x = NULL)%x%D_z)
+
+        logpv2 <- function(v) 0.5 * nu * (v[pen_start+5]+v[pen_start+4]+v[pen_start+3])-
+          (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start+5]))+
+                          log(b + 0.5*nu*exp(v[pen_start+4]))+log(b + 0.5*nu*exp(v[pen_start+3])))+
+          0.5*determinant_Pv(Pv2_term(v))
+
+
+        logpv.fixed[[term]] <- function(v) logpv1(v) + logpv2(v)
+        Pv.list[[term]] <- function(v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
+
+        pen_dlnm[term+1] = pen_dlnm[term+1] + 3
+        v_init <- c(v_init, rep(2, 3))
+        names(v_init) <- c(names(v_init)[1:(length(v_init)-3)],
+                           paste("Penalty modified DLNM",deparse1(all_terms[[term]]), 1:3))
+      }
 
 
     }else{
+      if(add_lag_penalty){
       Pv2_term <- function(v) exp(v[pen_start+4])*(Px%x%Matrix::Diagonal(n = vl*vz, x = NULL)) +
         exp(v[pen_start+5])*(Matrix::Diagonal(n = vx, x = NULL)%x%Pl%x%Matrix::Diagonal(n = vz, x = NULL)) +
         exp(v[pen_start+6])*(Matrix::Diagonal(n = vx, x = NULL)%x%Pl_add%x%Matrix::Diagonal(n = vz, x = NULL))
@@ -581,6 +721,25 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
       v_init <- c(v_init, rep(2, 3))
       names(v_init) <- c(names(v_init)[1:(length(v_init)-3)],
                          paste("Penalty modified DLNM",deparse1(all_terms[[term]]), 1:3))
+      }else{
+        Pv2_term <- function(v) exp(v[pen_start+3])*(Px%x%Matrix::Diagonal(n = vl*vz, x = NULL)) +
+          exp(v[pen_start+4])*(Matrix::Diagonal(n = vx, x = NULL)%x%Pl%x%Matrix::Diagonal(n = vz, x = NULL))
+
+
+        logpv2 <- function(v) 0.5 * nu * (v[pen_start+3]+v[pen_start+4])-
+          (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start+3]))+
+                          log(b + 0.5*nu*exp(v[pen_start+4])))+
+          0.5*determinant_Pv(Pv2_term(v))
+
+
+        logpv.fixed[[term]] <- function(v) logpv1(v) + logpv2(v)
+        Pv.list[[term]] <- function(v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
+
+        pen_dlnm[term+1] = pen_dlnm[term+1] + 2
+        v_init <- c(v_init, rep(2, 2))
+        names(v_init) <- c(names(v_init)[1:(length(v_init)-2)],
+                           paste("Penalty modified DLNM",deparse1(all_terms[[term]]), 1:2))
+      }
     }
 
 
@@ -669,6 +828,7 @@ build_component_2Ddlnm<-function(state, sm_args_iter, term, all_terms, constants
   constraint_matrix[[term]] <- Matrix::Matrix(0,1,ncol(Wcb_part))
   Wcb <- add_wcb_block(Wcb, Wcb_part)
   penorder <- sm_args_iter$arg$pen
+  add_lag_penalty <- sm_args_iter$arg$add.lagpen
 
   pen_start <-  cumsum(pen_dlnm)[term]
 
@@ -697,6 +857,7 @@ build_component_2Ddlnm<-function(state, sm_args_iter, term, all_terms, constants
     Pl <- Matrix::t(Dl) %*% Dl
     Pl <- Pl + Matrix::Diagonal(vl, x = 1e-12)
 
+    if(add_lag_penalty){
     # Additional penalty for delay (force lag effect going to zero)
     Dl_add <- diag((0:(vl-1))^2)
     Pl_add <- Dl_add + diag(1e-12, vl)
@@ -730,6 +891,34 @@ build_component_2Ddlnm<-function(state, sm_args_iter, term, all_terms, constants
     v_init <- c(v_init, rep(5, 4))
     names(v_init) <- c(names(v_init)[1:(length(v_init)-4)],
                        paste("Penalty DLNM",deparse1(all_terms[[term]]), 1:4))
+    }else{
+      if(attributes(sm_args_iter$x)$is_identifiable){
+
+        Pv.list[[term]] <- function(v) exp(v[pen_start+1])*(Px1%x%Matrix::Diagonal(n = vx2*vl, x = NULL))[-c(1:vl),-c(1:vl)] +
+          exp(v[pen_start+2])*(Matrix::Diagonal(n = vx1, x = NULL)%x%Px2%x%Matrix::Diagonal(n = vl, x = NULL))[-c(1:vl),-c(1:vl)]  +
+          exp(v[pen_start+3])*(Matrix::Diagonal(n = vx1*vx2-1, x = NULL)%x%Pl)
+      }else{
+
+        Pv.list[[term]] <- function(v) exp(v[pen_start+1])*(Px1%x%Matrix::Diagonal(n = vx2*vl, x = NULL)) +
+          exp(v[pen_start+2])*(Matrix::Diagonal(n = vx1, x = NULL)%x%Px2%x%Matrix::Diagonal(n = vl, x = NULL))  +
+          exp(v[pen_start+3])*(Matrix::Diagonal(n = vx1*vx2, x = NULL)%x%Pl)
+
+      }
+
+      Pv_term <- Pv.list[[term]]
+
+      logpv.fixed[[term]] <- function(v) 0.5 * nu * (v[pen_start+1]+v[pen_start+2]+
+                                                       v[pen_start+3])-
+        (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start+1]))+log(b + 0.5*nu*exp(v[pen_start+2]))+
+                        log(b + 0.5*nu*exp(v[pen_start+3])))+
+        0.5*determinant_Pv(Pv_term(v))
+
+      pen_dlnm[term+1] <- pen_dlnm[term+1]+3
+
+      v_init <- c(v_init, rep(5, 3))
+      names(v_init) <- c(names(v_init)[1:(length(v_init)-3)],
+                         paste("Penalty DLNM",deparse1(all_terms[[term]]), 1:3))
+    }
 
   }else{
     logpv.fixed[[term]] <- function(v) 0
@@ -786,6 +975,7 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
 
   Wcb <- add_wcb_block(Wcb, Wcb_part)
   penorder <- sm_args_iter$arg$pen
+  add_lag_penalty <- sm_args_iter$arg$add.lagpen
 
   #spatial effect
   crossbasis_spat = Matrix::Matrix(sm_args_iter$x, sparse = TRUE)
@@ -844,6 +1034,7 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
     Pl <- Matrix::t(Dl) %*% Dl
     Pl <- Pl + Matrix::Diagonal(vl, x = 1e-12)
 
+    if(add_lag_penalty){
     # Additional penalty for delay (force lag effect going to zero)
     Dl_add <- diag((0:(vl-1))^2)
     Pl_add <- Dl_add + diag(1e-12, vl)
@@ -878,11 +1069,39 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
     v_init <- c(v_init, rep(1, 4))
     names(v_init) <- c(names(v_init)[1:(length(v_init)-4)],
                        paste("Penalty DLNM",deparse1(all_terms[[term]]), 1:4))
+    }else{
+      if(attributes(sm_args_iter$x)$is_identifiable){
+
+        Pv1_term <- function(v) exp(v[pen_start+1])*(Px1%x%Matrix::Diagonal(n = vx2*vl, x = NULL))[-c(1:vl),-c(1:vl)] +
+          exp(v[pen_start+2])*(Matrix::Diagonal(n = vx1, x = NULL)%x%Px2%x%Matrix::Diagonal(n = vl, x = NULL))[-c(1:vl),-c(1:vl)]  +
+          exp(v[pen_start+3])*(Matrix::Diagonal(n = vx1*vx2-1, x = NULL)%x%Pl)
+      }else{
+
+        Pv1_term <- function(v) exp(v[pen_start+1])*(Px1%x%Matrix::Diagonal(n = vx2*vl, x = NULL)) +
+          exp(v[pen_start+2])*(Matrix::Diagonal(n = vx1, x = NULL)%x%Px2%x%Matrix::Diagonal(n = vl, x = NULL))  +
+          exp(v[pen_start+3])*(Matrix::Diagonal(n = vx1*vx2, x = NULL)%x%Pl)
+
+      }
+
+
+      logpv1 <- function(v) 0.5 * nu * (v[pen_start+1]+v[pen_start+2]+
+                                          v[pen_start+3])-
+        (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start+1]))+log(b + 0.5*nu*exp(v[pen_start+2]))+
+                        log(b + 0.5*nu*exp(v[pen_start+3])))+
+        0.5*determinant_Pv(Pv1_term(v))
+
+      pen_dlnm[term+1] = pen_dlnm[term+1]+3
+
+      v_init <- c(v_init, rep(1, 3))
+      names(v_init) <- c(names(v_init)[1:(length(v_init)-3)],
+                         paste("Penalty DLNM",deparse1(all_terms[[term]]), 1:3))
+    }
 
     # Spatial interaction
     if (sm_args_iter$arg.by$type == "ind"){
       Sv_list <- Matrix::Diagonal(n = q.rand, x = 1)
 
+      if(add_lag_penalty){
       if(attributes(sm_args_iter$x)$is_identifiable){
 
         Pv2_term <- function(v) exp(v[pen_start+5])*((Px1%x%Matrix::Diagonal(n = vx2*vl, x = NULL))[-c(1:vl),-c(1:vl)])%x%Sv_list +
@@ -912,6 +1131,34 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
                          paste("Penalty spatial DLNM",deparse1(all_terms[[term]]), 1:4))
 
       pen_dlnm[term+1] = pen_dlnm[term+1]+4
+      }else{
+        if(attributes(sm_args_iter$x)$is_identifiable){
+
+          Pv2_term <- function(v) exp(v[pen_start+4])*((Px1%x%Matrix::Diagonal(n = vx2*vl, x = NULL))[-c(1:vl),-c(1:vl)])%x%Sv_list +
+            exp(v[pen_start+5])*((Matrix::Diagonal(n = vx1, x = NULL)%x%Px2%x%Matrix::Diagonal(n = vl, x = NULL))[-c(1:vl),-c(1:vl)])%x%Sv_list +
+            exp(v[pen_start+6])*(Matrix::Diagonal(n = vx1*vx2-1, x = NULL)%x%Pl)%x%Sv_list
+        }else{
+
+          Pv2_term <- function(v) exp(v[pen_start+4])*(Px1%x%Matrix::Diagonal(n = vx2*vl, x = NULL)%x%Sv_list) +
+            exp(v[pen_start+5])*(Matrix::Diagonal(n = vx1, x = NULL)%x%Px2%x%Matrix::Diagonal(n = vl, x = NULL)%x%Sv_list)  +
+            exp(v[pen_start+6])*(Matrix::Diagonal(n = vx1*vx2, x = NULL)%x%Pl)%x%Sv_list
+        }
+
+
+        logpv2<- function(v) 0.5 * nu * (v[pen_start + 4]+v[pen_start + 6]+v[pen_start + 5])-
+          (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start + 4]))+log(b + 0.5*nu*exp(v[pen_start + 5]))+
+                          log(b + 0.5*nu*exp(v[pen_start + 6])))+
+          0.5*determinant_Pv(Pv2_term(v))
+
+        logpv.fixed[[term]] <- function(v) logpv1(v) + logpv2(v)
+        Pv.list[[term]] <- function(v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
+
+        v_init <- c(v_init, rep(3, 3))
+        names(v_init) <- c(names(v_init)[1:(length(v_init)-3)],
+                           paste("Penalty spatial DLNM",deparse1(all_terms[[term]]), 1:3))
+
+        pen_dlnm[term+1] = pen_dlnm[term+1]+3
+      }
 
       constraint_matrix[[term]] <-Matrix::Matrix(0,1,ncol(Wcb_part)*(1+q.rand))
 
@@ -920,6 +1167,7 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
       neig.map <- build_neighbor_map(sm_args_iter$arg.by$map, connect = sm_args_iter$arg.by$connect)
       Rn <- make_graph_precision(neig.map, q.rand)
 
+      if(add_lag_penalty){
       if(attributes(sm_args_iter$x)$is_identifiable){
 
 
@@ -948,6 +1196,34 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
       v_init <- c(v_init, rep(3,4))
       names(v_init) <- c(names(v_init)[1:(length(v_init)-4)],
                          paste("Penalty spatial DLNM",deparse1(all_terms[[term]]), 1:4))
+      }else{
+        if(attributes(sm_args_iter$x)$is_identifiable){
+
+
+          Pv2_term <- function(v) exp(v[pen_start+4])*((Px1%x%Matrix::Diagonal(n = vx2*vl, x = NULL))[-c(1:vl),-c(1:vl)])%x%Rn +
+            exp(v[pen_start+5])*((Matrix::Diagonal(n = vx1, x = NULL)%x%Px2%x%Matrix::Diagonal(n = vl, x = NULL))[-c(1:vl),-c(1:vl)])%x%Rn  +
+            exp(v[pen_start+6])*(Matrix::Diagonal(n = vx1*vx2-1, x = NULL)%x%Pl)%x%Rn
+        }else{
+
+          Pv2_term <- function(v) exp(v[pen_start+4])*(Px1%x%Matrix::Diagonal(n = vx2*vl, x = NULL)%x%Rn) +
+            exp(v[pen_start+5])*(Matrix::Diagonal(n = vx1, x = NULL)%x%Px2%x%Matrix::Diagonal(n = vl, x = NULL)%x%Rn)  +
+            exp(v[pen_start+6])*(Matrix::Diagonal(n = vx1*vx2, x = NULL)%x%Pl)%x%Rn
+
+        }
+
+        logpv2 <- function(v) 0.5 * nu * (v[pen_start+4]+v[pen_start+5]+v[pen_start+6])-
+          (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start+4]))+log(b + 0.5*nu*exp(v[pen_start+5]))+log(b + 0.5*nu*exp(v[pen_start+6])))+
+          0.5*determinant_Pv(Pv2_term(v))
+
+
+        logpv.fixed[[term]] <- function(v) logpv1(v) + logpv2(v)
+        Pv.list[[term]] <- function(v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
+
+        pen_dlnm[term+1] = pen_dlnm[term+1]+3
+        v_init <- c(v_init, rep(3,3))
+        names(v_init) <- c(names(v_init)[1:(length(v_init)-3)],
+                           paste("Penalty spatial DLNM",deparse1(all_terms[[term]]), 1:3))
+      }
 
       ncol_Wcb <- ncol(Wcb_part)
       constraint_matrix[[term]] <-  Matrix::sparseMatrix(i = rep(1:ncol_Wcb, each = q.rand),
@@ -961,6 +1237,7 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
       neig.map <- build_neighbor_map(sm_args_iter$arg.by$map, connect = sm_args_iter$arg.by$connect)
       Rn <- make_graph_precision(neig.map, q.rand)
 
+      if(add_lag_penalty){
       Sv_list <- function(v) {
         make_leroux_precision(0, v[pen_start + 9], q.rand, Rn)
       }
@@ -1001,6 +1278,45 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
                          paste("Rho DLNM",deparse1(all_terms[[term]])))
 
       pen_dlnm[term+1] <- pen_dlnm[term+1]+5
+      }else{
+        Sv_list <- function(v) {
+          make_leroux_precision(0, v[pen_start + 7], q.rand, Rn)
+        }
+
+
+        if(attributes(sm_args_iter$x)$is_identifiable){
+
+
+          Pv2_term <- function(v) exp(v[pen_start+4])*((Px1%x%Matrix::Diagonal(n = vx2*vl, x = NULL))[-c(1:vl),-c(1:vl)])%x%Sv_list(v) +
+            exp(v[pen_start+5])*((Matrix::Diagonal(n = vx1, x = NULL)%x%Px2%x%Matrix::Diagonal(n = vl, x = NULL))[-c(1:vl),-c(1:vl)])%x%Sv_list(v)  +
+            exp(v[pen_start+6])*(Matrix::Diagonal(n = vx1*vx2-1, x = NULL)%x%Pl)%x%Sv_list(v)
+        }else{
+
+          Pv2_term <- function(v) exp(v[pen_start+4])*(Px1%x%Matrix::Diagonal(n = vx2*vl, x = NULL)%x%Sv_list(v)) +
+            exp(v[pen_start+5])*(Matrix::Diagonal(n = vx1, x = NULL)%x%Px2%x%Matrix::Diagonal(n = vl, x = NULL)%x%Sv_list(v))  +
+            exp(v[pen_start+6])*(Matrix::Diagonal(n = vx1*vx2, x = NULL)%x%Pl)%x%Sv_list(v)
+
+        }
+
+
+        logpv2<- function(v)  {
+          value <- 0.5 * nu * (v[pen_start+5]+v[pen_start+6]+v[pen_start+4])-
+            (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start+4]))+log(b + 0.5*nu*exp(v[pen_start+5]))+log(b + 0.5*nu*exp(v[pen_start+6])))+
+            0.5*determinant_Pv(Pv2_term(v)) +
+            a.rho*v[pen_start+7] - (a.rho + b.rho)*log(1 + exp(v[pen_start+7]))
+          return(as.numeric(value))}
+
+
+        logpv.fixed[[term]] <- function(v) logpv1(v) + logpv2(v)
+        Pv.list[[term]] <- function(v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
+
+        v_init <- c(v_init, c(rep(3,3),1))
+        names(v_init) <- c(names(v_init)[1:(length(v_init)-4)],
+                           paste("Penalty spatial DLNM",deparse1(all_terms[[term]]), 1:3),
+                           paste("Rho DLNM",deparse1(all_terms[[term]])))
+
+        pen_dlnm[term+1] <- pen_dlnm[term+1]+4
+      }
 
       constraint_matrix[[term]] <- Matrix::Matrix(0,1,ncol(Wcb_part)*(1+q.rand))
 
@@ -1139,6 +1455,7 @@ build_component_modified2Ddlnm<-function(state, sm_args_iter, term, all_terms, c
 
   Wcb <- add_wcb_block(Wcb, crossbasis_em)
   penorder <- sm_args_iter$arg$pen
+  add_lag_penalty <- sm_args_iter$arg$add.lagpen
 
   pen_start <- cumsum(pen_dlnm)[term]
 
@@ -1251,6 +1568,7 @@ build_component_modified2Ddlnm<-function(state, sm_args_iter, term, all_terms, c
     Pl <- Matrix::t(Dl) %*% Dl
     Pl <- Pl + Matrix::Diagonal(vl, x = 1e-12)
 
+    if(add_lag_penalty){
     # Additional penalty for delay (force lag effect going to zero)
     Dl_add <- diag((0:(vl-1))^2)
     Pl_add <- Dl_add + diag(1e-12, vl)
@@ -1284,10 +1602,37 @@ build_component_modified2Ddlnm<-function(state, sm_args_iter, term, all_terms, c
     names(v_init) <- c(names(v_init)[1:(length(v_init)-4)],
                        paste("Penalty common DLNM",deparse1(all_terms[[term]]), 1:4))
 
+    }else{
+      if(attributes(sm_args_iter$x)$is_identifiable){
 
+
+        Pv1_term <- function(v) exp(v[pen_start+1])*(Px1%x%Matrix::Diagonal(n = vx2*vl, x = NULL))[-c(1:vl),-c(1:vl)] +
+          exp(v[pen_start+2])*(Matrix::Diagonal(n = vx1, x = NULL)%x%Px2%x%Matrix::Diagonal(n = vl, x = NULL))[-c(1:vl),-c(1:vl)]  +
+          exp(v[pen_start+3])*(Matrix::Diagonal(n = vx1*vx2-1, x = NULL)%x%Pl)
+      }else{
+
+        Pv1_term <- function(v) exp(v[pen_start+1])*(Px1%x%Matrix::Diagonal(n = vx2*vl, x = NULL)) +
+          exp(v[pen_start+2])*(Matrix::Diagonal(n = vx1, x = NULL)%x%Px2%x%Matrix::Diagonal(n = vl, x = NULL))  +
+          exp(v[pen_start+3])*(Matrix::Diagonal(n = vx1*vx2, x = NULL)%x%Pl)
+
+      }
+
+
+      logpv1 <- function(v) 0.5 * nu * (v[pen_start + 1]+v[pen_start + 2]+v[pen_start + 3])-
+        (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start + 1]))+log(b + 0.5*nu*exp(v[pen_start + 2]))+
+                        log(b + 0.5*nu*exp(v[pen_start + 3])))+
+        0.5*determinant_Pv(Pv1_term(v))
+
+      pen_dlnm[term+1] = pen_dlnm[term+1]+3
+
+      v_init <- c(v_init, rep(2, 3))
+      names(v_init) <- c(names(v_init)[1:(length(v_init)-3)],
+                         paste("Penalty common DLNM",deparse1(all_terms[[term]]), 1:3))
+  }
 
     if(sm_args_iter$arg.by$type == "ps"){
 
+      if(add_lag_penalty){
       if(attributes(sm_args_iter$x)$is_identifiable){
 
 
@@ -1321,8 +1666,40 @@ build_component_modified2Ddlnm<-function(state, sm_args_iter, term, all_terms, c
       v_init <- c(v_init, rep(2, 5))
       names(v_init) <- c(names(v_init)[1:(length(v_init)-5)],
                          paste("Penalty modified DLNM",deparse1(all_terms[[term]]), 1:5))
+      }else{
+        if(attributes(sm_args_iter$x)$is_identifiable){
+
+        Pv2_term <- function(v) exp(v[pen_start+4])*((Px1%x%Matrix::Diagonal(n = vx2*vl, x = NULL))[-c(1:vl),-c(1:vl)])%x%Matrix::Diagonal(n = vz, x = NULL) +
+            exp(v[pen_start+5])*((Matrix::Diagonal(n = vx1, x = NULL)%x%Px2%x%Matrix::Diagonal(n = vl, x = NULL))[-c(1:vl),-c(1:vl)])%x%Matrix::Diagonal(n = vz, x = NULL)  +
+            exp(v[pen_start+6])*(Matrix::Diagonal(n = vx1*vx2-1, x = NULL)%x%Pl)%x%Matrix::Diagonal(n = vz, x = NULL)+
+            exp(v[pen_start+7])*(Matrix::Diagonal(n = (vx1*vx2-1)*vl, x = NULL)%x%D_z)
+        }else{
+
+          Pv2_term <- function(v) exp(v[pen_start+4])*(Px1%x%(Matrix::Diagonal(n = vx2*vl*vz, x = NULL)))+
+            exp(v[pen_start+5])*((Matrix::Diagonal(n = vx1, x = NULL)%x%Px2%x%Matrix::Diagonal(n = vl*vz, x = NULL))) +
+            exp(v[pen_start+6])*(Matrix::Diagonal(n = vx1*vx2, x = NULL)%x%Pl)%x%Matrix::Diagonal(n = vz, x = NULL)+
+            exp(v[pen_start+7])*(Matrix::Diagonal(n = vx1*vx2*vl, x = NULL)%x%D_z)
+
+        }
+
+
+        logpv2 <- function(v) 0.5 * nu * (v[pen_start+5]+v[pen_start+6]+v[pen_start+7]+v[pen_start+4])-
+          (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start+5]))+log(b + 0.5*nu*exp(v[pen_start+6]))+
+                          log(b + 0.5*nu*exp(v[pen_start+4]))+log(b + 0.5*nu*exp(v[pen_start+7])))+
+          0.5*determinant_Pv(Pv2_term(v))
+
+
+        logpv.fixed[[term]] <- function(v) logpv1(v) + logpv2(v)
+        Pv.list[[term]] <- function(v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
+
+        pen_dlnm[term+1] = pen_dlnm[term+1] + 4
+        v_init <- c(v_init, rep(2, 4))
+        names(v_init) <- c(names(v_init)[1:(length(v_init)-4)],
+                           paste("Penalty modified DLNM",deparse1(all_terms[[term]]), 1:4))
+      }
 
     }else{
+      if(add_lag_penalty){
       if(attributes(sm_args_iter$x)$is_identifiable){
 
 
@@ -1353,6 +1730,37 @@ build_component_modified2Ddlnm<-function(state, sm_args_iter, term, all_terms, c
       v_init <- c(v_init, rep(2, 4))
       names(v_init) <- c(names(v_init)[1:(length(v_init)-4)],
                          paste("Penalty modified DLNM",deparse1(all_terms[[term]]), 1:4))
+      }else{
+        if(attributes(sm_args_iter$x)$is_identifiable){
+
+
+          Pv2_term <- function(v) exp(v[pen_start+4])*((Px1%x%Matrix::Diagonal(n = vx2*vl, x = NULL))[-c(1:vl),-c(1:vl)])%x%Matrix::Diagonal(n = vz, x = NULL) +
+            exp(v[pen_start+5])*((Matrix::Diagonal(n = vx1, x = NULL)%x%Px2%x%Matrix::Diagonal(n = vl, x = NULL))[-c(1:vl),-c(1:vl)])%x%Matrix::Diagonal(n = vz, x = NULL)  +
+            exp(v[pen_start+6])*(Matrix::Diagonal(n =vx1*vx2-1, x = NULL)%x%Pl)%x%Matrix::Diagonal(n = vz, x = NULL)
+
+        }else{
+
+          Pv2_term <- function(v) exp(v[pen_start+4])*(Px1%x%(Matrix::Diagonal(n = vx2*vl*vz, x = NULL))) +
+            exp(v[pen_start+5])*((Matrix::Diagonal(n = vx1, x = NULL)%x%Px2%x%Matrix::Diagonal(n = vl*vz, x = NULL)))  +
+            exp(v[pen_start+6])*(Matrix::Diagonal(n = vx1*vx2, x = NULL)%x%Pl)%x%Matrix::Diagonal(n = vz, x = NULL)
+
+        }
+
+
+        logpv2 <- function(v) 0.5 * nu * (v[pen_start+5]+v[pen_start+6]+v[pen_start+4])-
+          (0.5*nu + a)*(log(b + 0.5*nu*exp(v[pen_start+5]))+log(b + 0.5*nu*exp(v[pen_start+4]))+
+                          log(b + 0.5*nu*exp(v[pen_start+6])))+
+          0.5*determinant_Pv(Pv2_term(v))
+
+
+        logpv.fixed[[term]] <- function(v) logpv1(v) + logpv2(v)
+        Pv.list[[term]] <- function(v) Matrix::bdiag(Pv1_term(v), Pv2_term(v))
+
+        pen_dlnm[term+1] = pen_dlnm[term+1] + 3
+        v_init <- c(v_init, rep(2, 3))
+        names(v_init) <- c(names(v_init)[1:(length(v_init)-3)],
+                           paste("Penalty modified DLNM",deparse1(all_terms[[term]]), 1:3))
+      }
     }
 
 

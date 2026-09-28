@@ -24,7 +24,10 @@
 #'     automatically and therefore do not need to be specified explicitly in
 #'     `arg$type`. The additional argument `pen` can be specified, where
 #'     `NULL` (default) specifies an unpenalized basis and an integer
-#'     specifies the penalty structure.}
+#'     specifies the penalty structure. The additional argument `add.lagpen`
+#'     (default TRUE) is a logical indicator, indicating whether an additional
+#'     penalty should be specified in the lag dimension (for penalized settings)
+#'     to encourage schrinkage of the effect at longer lags.}
 #'     \item{`ps`, `ns`, `bs`}{Smooth functions based on P-splines,
 #'     natural splines, or B-splines. Additional arguments can include
 #'     those passed to the corresponding spline constructors, such as
@@ -261,7 +264,7 @@ check_sm_term_inputs <- function(sm_args_iter, data, env) {
     )
   } else if (sm_args_iter$arg$type == "crossbasis") {
     sm_args_iter$arg <- utils::modifyList(
-      list(type = "crossbasis", pen = NULL, map = NULL),
+      list(type = "crossbasis", pen = NULL, map = NULL, add.lagpen = TRUE),
       sm_args_iter$arg
     )
   } else if (sm_args_iter$arg$type == "ps"){

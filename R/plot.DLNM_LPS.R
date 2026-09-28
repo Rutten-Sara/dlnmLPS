@@ -1291,9 +1291,9 @@ plot_cross_3D <- function(x, xlim, ylim, zlim, cols, xlab, ylab, zlab, CI, conto
     iy <- match(x$x[i], yvals)
 
     if(x$family != "Gaussian"){
-    z[ix, iy] <- exp(x$matRRfit[iy,ix])
+    z[ix, iy] <- x$matRRfit[iy,ix]
     }else{
-      z[ix, iy] <- exp(x$matfit[iy,ix])
+      z[ix, iy] <- x$matfit[iy,ix]
     }
     }
   }
@@ -1412,9 +1412,9 @@ plot_slices3D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
         stop("Slice x must be present in predictions.")
 
       if(x$family != "Gaussian"){
-      z <- t(exp(x$matRRfit[idx, ]))
+      z <- t(x$matRRfit[idx, ])
       }else{
-        z <- t(exp(x$matfit[idx, ]))
+        z <- t(x$matfit[idx, ])
       }
 
       yvals <- yvals[ord]
@@ -1447,9 +1447,9 @@ plot_slices3D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
         stop("Slice y must be present in predictions.")
 
       if(x$family != "Gaussian"){
-        z <- t(exp(x$matRRfit[idx, ]))
+        z <- t(x$matRRfit[idx, ])
       }else{
-        z <- t(exp(x$matfit[idx, ]))
+        z <- t(x$matfit[idx, ])
       }
 
       yvals <- yvals[ord]
@@ -1500,9 +1500,9 @@ plot_slices3D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
         iy <- match(x$y[i], yvals)
 
         if(x$family != "Gaussian"){
-          z[ix, iy]  <-exp(x$matRRfit[i, idx_lag])
+          z[ix, iy]  <-x$matRRfit[i, idx_lag]
         }else{
-          z[ix, iy] <- exp(x$matfit[i, idx_lag])
+          z[ix, iy] <- x$matfit[i, idx_lag]
         }
 
       }
@@ -1639,20 +1639,20 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
         for (i in seq_len(ncurve)) {
         z = x[[i]]
         if(z$family != "Gaussian"){
-          plot_y[[i]] <- exp(z$matRRfit[, idx, drop = TRUE])
+          plot_y[[i]] <- z$matRRfit[, idx, drop = TRUE]
         }else{
-          plot_y[[i]] <- exp(z$matfit[, idx, drop = TRUE])
+          plot_y[[i]] <- z$matfit[, idx, drop = TRUE]
         }
         plot_x[[i]] <- z$x
 
 
         if (CI) {
           if(z$family != "Gaussian"){
-            plot_lower[[i]] <- exp(z$Qlower_matRRfit[, idx, drop = TRUE])
-            plot_upper[[i]] <- exp(z$Qupper_matRRfit[, idx, drop = TRUE])
+            plot_lower[[i]] <- z$Qlower_matRRfit[, idx, drop = TRUE]
+            plot_upper[[i]] <- z$Qupper_matRRfit[, idx, drop = TRUE]
           }else{
-            plot_lower[[i]] <- exp(z$Qlower_matfit[, idx, drop = TRUE])
-            plot_upper[[i]] <- exp(z$Qupper_matfit[, idx, drop = TRUE])
+            plot_lower[[i]] <- z$Qlower_matfit[, idx, drop = TRUE]
+            plot_upper[[i]] <- z$Qupper_matfit[, idx, drop = TRUE]
           }
 
         }
@@ -1674,20 +1674,20 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
         for (i in seq_len(ncurve)) {
           z = x[[i]]
           if(z$family != "Gaussian"){
-            plot_y[[i]] <- exp(z$matRRfit[idx, , drop = TRUE])
+            plot_y[[i]] <- z$matRRfit[idx, , drop = TRUE]
           }else{
-            plot_y[[i]] <- exp(z$matfit[idx, , drop = TRUE])
+            plot_y[[i]] <- z$matfit[idx, , drop = TRUE]
           }
           plot_x[[i]] <- z$lag
 
 
           if (CI) {
             if(z$family != "Gaussian"){
-              plot_lower[[i]] <- exp(z$Qlower_matRRfit[idx, , drop = TRUE])
-              plot_upper[[i]] <- exp(z$Qupper_matRRfit[idx, , drop = TRUE])
+              plot_lower[[i]] <- z$Qlower_matRRfit[idx, , drop = TRUE]
+              plot_upper[[i]] <- z$Qupper_matRRfit[idx, , drop = TRUE]
             }else{
-              plot_lower[[i]] <- exp(z$Qlower_matfit[idx, , drop = TRUE])
-              plot_upper[[i]] <- exp(z$Qupper_matfit[idx, , drop = TRUE])
+              plot_lower[[i]] <- z$Qlower_matfit[idx, , drop = TRUE]
+              plot_upper[[i]] <- z$Qupper_matfit[idx, , drop = TRUE]
             }
 
           }
@@ -1719,9 +1719,9 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
         for (i in seq_len(ncurve)) {
           z <- x[[i]]
         if(z$family != "Gaussian"){
-          plot_y[[i]] <- exp(z$matRRfit[idx, , drop = TRUE])
+          plot_y[[i]] <- z$matRRfit[idx, , drop = TRUE]
         }else{
-          plot_y[[i]] <- exp(z$matfit[idx, , drop = TRUE])
+          plot_y[[i]] <- z$matfit[idx, , drop = TRUE]
         }
 
 
@@ -1729,11 +1729,11 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
 
         if (CI) {
           if(z$family != "Gaussian"){
-            plot_lower <- exp(z$Qlower_matRRfit[idx, , drop = TRUE])
-            plot_upper <- exp(z$Qupper_matRRfit[idx, , drop = TRUE])
+            plot_lower <- z$Qlower_matRRfit[idx, , drop = TRUE]
+            plot_upper <- z$Qupper_matRRfit[idx, , drop = TRUE]
           }else{
-            plot_lower <- exp(z$Qlower_matfit[idx, , drop = TRUE])
-            plot_upper <- exp(z$Qupper_matfit[idx, , drop = TRUE])
+            plot_lower <- z$Qlower_matfit[idx, , drop = TRUE]
+            plot_upper <- z$Qupper_matfit[idx, , drop = TRUE]
           }
 
         }
@@ -1768,33 +1768,23 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
           plot_x[[i]] <- z$y[idx_x]
 
           if(z$family != "Gaussian"){
-            plot_y[[i]] <- exp(
-              z$matRRfit[idx_x, idx_lag]
-            )
+            plot_y[[i]] <- z$matRRfit[idx_x, idx_lag]
+
           }else{
-            plot_z[[i]] <- exp(
-              z$matfit[idx_x, idx_lag]
-            )
+            plot_z[[i]] <- z$matfit[idx_x, idx_lag]
+
           }
 
 
           if (CI) {
             if(z$family != "Gaussian"){
-              plot_lower[[i]] <- exp(
-                z$Qlower_matRRfit[idx_x, idx_lag]
-              )
+              plot_lower[[i]] <- z$Qlower_matRRfit[idx_x, idx_lag]
 
-              plot_upper[[i]] <- exp(
-                z$Qupper_matRRfit[idx_x, idx_lag]
-              )
+              plot_upper[[i]] <-  z$Qupper_matRRfit[idx_x, idx_lag]
             }else{
-              plot_lower[[i]] <- exp(
-                z$Qlower_matfit[idx_x, idx_lag]
-              )
+              plot_lower[[i]] <- z$Qlower_matfit[idx_x, idx_lag]
 
-              plot_upper[[i]] <- exp(
-                z$Qupper_matfit[idx_x, idx_lag]
-              )
+              plot_upper[[i]] <- z$Qupper_matfit[idx_x, idx_lag]
             }
           }
         }
@@ -1825,33 +1815,21 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
           plot_x[[i]] <- z$x[idx_y]
 
           if(z$family != "Gaussian"){
-            plot_y[[i]] <- exp(
-              z$matRRfit[idx_y, idx_lag]
-            )
+            plot_y[[i]] <-  z$matRRfit[idx_y, idx_lag]
           }else{
-            plot_y[[i]] <- exp(
-              z$matfit[idx_y, idx_lag]
-            )
+            plot_y[[i]] <- z$matfit[idx_y, idx_lag]
           }
 
 
           if (CI) {
             if(z$family != "Gaussian"){
-              plot_lower[[i]] <- exp(
-                z$Qlower_matRRfit[idx_y, idx_lag]
-              )
+              plot_lower[[i]] <-  z$Qlower_matRRfit[idx_y, idx_lag]
 
-              plot_upper[[i]] <- exp(
-                z$Qupper_matRRfit[idx_y, idx_lag]
-              )
+              plot_upper[[i]] <-  z$Qupper_matRRfit[idx_y, idx_lag]
             }else{
-              plot_lower[[i]] <- exp(
-                z$Qlower_matfit[idx_y, idx_lag]
-              )
+              plot_lower[[i]] <- z$Qlower_matfit[idx_y, idx_lag]
 
-              plot_upper[[i]] <- exp(
-                z$Qupper_matfit[idx_y, idx_lag]
-              )
+              plot_upper[[i]] <-  z$Qupper_matfit[idx_y, idx_lag]
             }
           }
         }
@@ -1903,9 +1881,9 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
         stop("Slice lag must be present in predictions.")
 
       if(x$family != "Gaussian"){
-      plot_y <- exp(x$matRRfit[, idx, drop = FALSE])
+      plot_y <- x$matRRfit[, idx, drop = FALSE]
       }else{
-        plot_y <- exp(x$matfit[, idx, drop = FALSE])
+        plot_y <- x$matfit[, idx, drop = FALSE]
       }
 
       plot_y <- lapply(seq_len(ncol(plot_y)),
@@ -1914,11 +1892,11 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
 
       if (CI) {
         if(x$family != "Gaussian"){
-        plot_lower <- exp(x$Qlower_matRRfit[, idx, drop = FALSE])
-        plot_upper <- exp(x$Qupper_matRRfit[, idx, drop = FALSE])
+        plot_lower <- x$Qlower_matRRfit[, idx, drop = FALSE]
+        plot_upper <- x$Qupper_matRRfit[, idx, drop = FALSE]
         }else{
-          plot_lower <- exp(x$Qlower_matfit[, idx, drop = FALSE])
-          plot_upper <- exp(x$Qupper_matfit[, idx, drop = FALSE])
+          plot_lower <- x$Qlower_matfit[, idx, drop = FALSE]
+          plot_upper <- x$Qupper_matfit[, idx, drop = FALSE]
         }
         plot_lower <- lapply(seq_len(ncol(plot_lower)),
                              function(i) plot_lower[, i])
@@ -1942,9 +1920,9 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
         stop("Slice exposure must be present in predictions")
 
       if(x$family != "Gaussian"){
-      plot_y <- exp(x$matRRfit[idx, , drop = FALSE])
+      plot_y <- x$matRRfit[idx, , drop = FALSE]
       }else{
-        plot_y <- exp(x$matfit[idx, , drop = FALSE])
+        plot_y <- x$matfit[idx, , drop = FALSE]
       }
       plot_y <- lapply(seq_len(nrow(plot_y)),
                        function(i) plot_y[i, ])
@@ -1953,11 +1931,11 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
 
       if (CI) {
         if(x$family != "Gaussian"){
-        plot_lower <- exp(x$Qlower_matRRfit[idx, , drop = FALSE])
-        plot_upper <- exp(x$Qupper_matRRfit[idx, , drop = FALSE])
+        plot_lower <- x$Qlower_matRRfit[idx, , drop = FALSE]
+        plot_upper <- x$Qupper_matRRfit[idx, , drop = FALSE]
         }else{
-          plot_lower <- exp(x$Qlower_matfit[idx, , drop = FALSE])
-          plot_upper <- exp(x$Qupper_matfit[idx, , drop = FALSE])
+          plot_lower <- x$Qlower_matfit[idx, , drop = FALSE]
+          plot_upper <- x$Qupper_matfit[idx, , drop = FALSE]
         }
 
         plot_lower <- lapply(seq_len(nrow(plot_lower)),
@@ -1996,9 +1974,9 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
       idx <- unlist(idx)
 
       if(x$family != "Gaussian"){
-        plot_y <- exp(x$matRRfit[idx, , drop = FALSE])
+        plot_y <- x$matRRfit[idx, , drop = FALSE]
       }else{
-        plot_y <- exp(x$matfit[idx, , drop = FALSE])
+        plot_y <- x$matfit[idx, , drop = FALSE]
       }
 
       plot_y <- lapply(seq_len(nrow(plot_y)),
@@ -2007,11 +1985,11 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
 
       if (CI) {
         if(x$family != "Gaussian"){
-        plot_lower <- exp(x$Qlower_matRRfit[idx, , drop = FALSE])
-        plot_upper <- exp(x$Qupper_matRRfit[idx, , drop = FALSE])
+        plot_lower <- x$Qlower_matRRfit[idx, , drop = FALSE]
+        plot_upper <- x$Qupper_matRRfit[idx, , drop = FALSE]
         }else{
-          plot_lower <- exp(x$Qlower_matfit[idx, , drop = FALSE])
-          plot_upper <- exp(x$Qupper_matfit[idx, , drop = FALSE])
+          plot_lower <- x$Qlower_matfit[idx, , drop = FALSE]
+          plot_upper <- x$Qupper_matfit[idx, , drop = FALSE]
         }
 
         plot_lower <- lapply(seq_len(nrow(plot_lower)),
@@ -2063,33 +2041,21 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
         plot_x[[i]] <- x$y[idx_x]
 
         if(x$family != "Gaussian"){
-        plot_y[[i]] <- exp(
-          x$matRRfit[idx_x, idx_lag]
-        )
+        plot_y[[i]] <- x$matRRfit[idx_x, idx_lag]
         }else{
-          plot_y[[i]] <- exp(
-            x$matfit[idx_x, idx_lag]
-          )
+          plot_y[[i]] <- x$matfit[idx_x, idx_lag]
         }
 
 
         if (CI) {
           if(x$family != "Gaussian"){
-          plot_lower[[i]] <- exp(
-            x$Qlower_matRRfit[idx_x, idx_lag]
-          )
+          plot_lower[[i]] <-  x$Qlower_matRRfit[idx_x, idx_lag]
 
-          plot_upper[[i]] <- exp(
-            x$Qupper_matRRfit[idx_x, idx_lag]
-          )
+          plot_upper[[i]] <- x$Qupper_matRRfit[idx_x, idx_lag]
           }else{
-            plot_lower[[i]] <- exp(
-              x$Qlower_matfit[idx_x, idx_lag]
-            )
+            plot_lower[[i]] <- x$Qlower_matfit[idx_x, idx_lag]
 
-            plot_upper[[i]] <- exp(
-              x$Qupper_matfit[idx_x, idx_lag]
-            )
+            plot_upper[[i]] <- x$Qupper_matfit[idx_x, idx_lag]
           }
         }
       }
@@ -2137,33 +2103,21 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
         plot_x[[i]] <- x$x[idx_y]
 
         if(x$family != "Gaussian"){
-        plot_y[[i]] <- exp(
-          x$matRRfit[idx_y, idx_lag]
-        )
+        plot_y[[i]] <- x$matRRfit[idx_y, idx_lag]
         }else{
-          plot_y[[i]] <- exp(
-            x$matfit[idx_y, idx_lag]
-          )
+          plot_y[[i]] <-  x$matfit[idx_y, idx_lag]
         }
 
 
         if (CI) {
           if(x$family != "Gaussian"){
-          plot_lower[[i]] <- exp(
-            x$Qlower_matRRfit[idx_y, idx_lag]
-          )
+          plot_lower[[i]] <- x$Qlower_matRRfit[idx_y, idx_lag]
 
-          plot_upper[[i]] <- exp(
-            x$Qupper_matRRfit[idx_y, idx_lag]
-          )
+          plot_upper[[i]] <-  x$Qupper_matRRfit[idx_y, idx_lag]
           }else{
-            plot_lower[[i]] <- exp(
-              x$Qlower_matfit[idx_y, idx_lag]
-            )
+            plot_lower[[i]] <- x$Qlower_matfit[idx_y, idx_lag]
 
-            plot_upper[[i]] <- exp(
-              x$Qupper_matfit[idx_y, idx_lag]
-            )
+            plot_upper[[i]] <-  x$Qupper_matfit[idx_y, idx_lag]
           }
         }
       }
