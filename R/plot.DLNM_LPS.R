@@ -31,7 +31,7 @@
 #' @param cols Colours used for lines, surfaces or contours.
 #' @param xlab,ylab,zlab Axis labels.
 #' @param ... Additional graphical arguments passed to the underlying plotting
-#' functions.
+#' functions. For 3D plots, additional arguments of `graphics::persp`can be passed.
 #'
 #' @details
 #' The available plot types depend on whether the prediction object contains
@@ -553,13 +553,11 @@ contour.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = 
 
   mar = c(5.1, 4.1, 4.1, 2.1)
 
+  graphics::par(mar = mar, mfrow = c(1,1))
+
   nested <- !("allfit" %in% names(x))
 
   if(nested){
-    graphics::par(mar = mar, mfrow = if(length(x)==1) c(1,1) else
-      if(length(x)==2) c(1,2) else
-        if(length(x)==3) c(1,3) else
-          c(2,2))
 
     for (xi in 1:length(x)){
       DLNMLPS_contour_ind(x[[xi]], slice_lag, slice_x , slice_y , ptype ,
@@ -567,9 +565,7 @@ contour.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = 
                        ylab , zlab, main = paste('By = ', x[[xi]]$by), ...)
     }
 
-    graphics::par(mar = mar, mfrow = c(1,1))
   }else{
-    graphics::par(mar = mar, mfrow = c(1,1))
 
     DLNMLPS_contour_ind(x, slice_lag , slice_x, slice_y , ptype  ,
                      xlim, ylim , zlim  ,cols , xlab  ,
