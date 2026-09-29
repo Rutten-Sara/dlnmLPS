@@ -20,6 +20,7 @@
   xlab = NULL,
   ylab = NULL,
   zlab = NULL,
+  mar = NULL,
   ...
 )
 }
@@ -57,8 +58,10 @@ intervals are only available for two-dimensional plots.}
 
 \item{xlab, ylab, zlab}{Axis labels.}
 
+\item{mar}{Figure margins.}
+
 \item{...}{Additional graphical arguments passed to the underlying plotting
-functions.}
+functions. For 3D plots, additional arguments of \code{graphics::persp}can be passed.}
 }
 \value{
 Produces a plot. The function is called for its side effects and returns
