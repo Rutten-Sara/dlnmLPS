@@ -23,7 +23,7 @@
 #'     Objects of class `crossbasis` are recognized
 #'     automatically and therefore do not need to be specified explicitly in
 #'     `arg$type`. The additional argument `pen` can be specified, where
-#'     `NULL` (default) specifies an unpenalized basis and an integer
+#'     `NULL` specifies an unpenalized basis and an integer
 #'     specifies the penalty structure. The additional argument `add.lagpen`
 #'     (default TRUE) is a logical indicator, indicating whether an additional
 #'     penalty should be specified in the lag dimension (for penalized settings)

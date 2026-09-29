@@ -1,6 +1,7 @@
 ---
 title: "Effect-modified DLNMs"
 output: rmarkdown::html_vignette
+bibliography: references.bib
 vignette: >
   %\VignetteIndexEntry{Effect-modified DLNMs}
   %\VignetteEngine{knitr::rmarkdown}
@@ -23,11 +24,11 @@ library(DLNMLPS)
 
 Classical distributed lag non-linear models (DLNMs) assume a common exposure-lag-response relationships across geographical areas. However, this relationship might be altered by an effect modifier that differs between spatial units. For example, the relationship between temperature and mortality may differ between regions according to the deprivation index.
 
-`DLNMLPS` provides methods for fitting effect-modified distributed lag non-linear models, allowing the exposure-lag-response relationship to vary according to a continuous or categorical covariate. This framework allows for flexible interactions between the DLNM and a possibly non-linear smooth covariate.
+`DLNMLPS` provides methods for fitting effect-modified distributed lag non-linear models, allowing the exposure-lag-response relationship to vary according to a continuous or categorical covariate [@Rutten2026confounding]. This framework allows for flexible interactions between the DLNM and a possibly non-linear smooth covariate.
 
 In this vignette, we demonstrate how to fit covariate-varying DLNMs using `DLNMLPS` and show how to predict and visualize the exposure-lag-response relationship.
 
-The basic functionality of `DLNMLPS`is introduced in `vignette("Introduction to DLNMLPS")`.
+The basic functionality of `DLNMLPS`is introduced in `vignette("introduction_dlnmlps")`.
 
 # Effect-modified DLNMs
 
@@ -68,9 +69,9 @@ The `DLNMLPS` package provides a lot of flexibility in modelling effect modifica
 
 - **Smooth penalized effect modification**, a penalized DLNM modified by a continuous deprivation index, expressed by penalized splines using 5 df.
 
-We include month as natural splines with 3 degrees of freedom, year as a random walk of order one, day of the week as a factor and District as an independent random effect. We use a penalized DLNM with penalty of order 2.
+We include month as natural splines with 3 degrees of freedom, year as a random walk of order one, day of the week as a factor and District as an independent random effect. We use a penalized DLNM with 8 degrees of freedom and penalty of order 2.
 
-For the first model, we split the deprivation index in a categorical variable with three levels. We specify the modifying covariate through the option *by* and include *type*="factor" in the argument *arg.by*. We also include the categorical deprivation index as a main effect in the model. The model can be fitted as:
+For the first model, we split the deprivation index in a categorical variable with three levels. We specify the modifying covariate through the option `by` and include `type`="factor" in the argument `arg.by`. We also include the categorical deprivation index as a main effect in the model. The model can be fitted as:
 
 ```{r}
 # Fit a categorical modified DLNM
@@ -100,7 +101,7 @@ model1 <- DLNM_LPS(dtot ~ factor(dow) + factor(depriv_cat) +
 
 ```
 
-The second model can similarly be fitted by specifying *type*="linear" instead of *type*="factor". Deprivation index is now also included as a linear main effect. The model can be fitted as:
+The second model can similarly be fitted by specifying `type`="linear" instead of `type`="factor". Deprivation index is now also included as a linear main effect:
 
 ```{r}
 # Fit a linear modified DLNM
@@ -163,8 +164,7 @@ model3$DIC; model3$WAIC; -sum(log(model3$CPO))
 model4$DIC; model4$WAIC; -sum(log(model4$CPO))
 ```
 
-The fourth model is preferred based on all model selection criteria. We can visualize the results of this model. We choose three different levels of the deprivation index (2.5%, 50% and 97.5%).
-
+The fourth model is preferred based on all model selection criteria. Using this model, we predict the exposure-lag-response curve for three different levels of the deprivation index (2.5%, 50% and 97.5%) at temperatures between 22 and 30 degrees Celsius, relative to a centering value of 25 degrees.
 
 ```{r, fig.width = 6, fig.height = 4}
 pred_penalized <- pred_crossbasis(
@@ -174,24 +174,35 @@ pred_penalized <- pred_crossbasis(
   cen = 25,
   lag = c(0,14),
   CI = TRUE,
-  by = quantile(dataset$depriv, probs = c(0.025,0.50,0.975))
+  by = round(quantile(dataset$depriv, probs = c(0.025,0.50,0.975)),2)
 )
-
-plot(pred_penalized, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, xlab = "temp", ylab = "RR")
 ```
 
-Based on this plot, the differences in temporal evolution of the RR, based on deprivation index, seem to be small. The option multiple.plots = FALSE allows visualizing the results for different levels on one plot.
+To plot the exposure-response relationship at lag 0, 3 and 8 for these deprivation indices, we can use:
 
 ```{r, fig.width = 6, fig.height = 4}
-plot(pred_penalized, slice_x = 30, ptype = "slices", CI = TRUE, xlab = "temp", ylab = "RR",
-     multiple.plots = FALSE)
-plot(pred_penalized, ptype = "overall", CI = TRUE, xlab = "temp", ylab = "RR", multiple.plots = FALSE)
+plot(pred_penalized, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, 
+     xlab = "temperature", ylab = "RR")
 ```
 
-The overall RR seems to be lower for municipalities with a low deprivation index, although credible intervals overlap.
+Based on this plot, the differences in temporal evolution of the RR, based on deprivation index, seem to be small. The plot title indicates the level of deprivation. The option multiple.plots = FALSE allows visualizing the results for different levels of the deprivation index on one plot. Note that this option is only available for an integer (and not a vector) slice value or overall RR-curve.
+
+```{r, fig.width = 6, fig.height = 4}
+plot(pred_penalized, slice_x = 30, ptype = "slices", CI = TRUE, xlab = "lag", ylab = "RR",
+     multiple.plots = FALSE)
+plot(pred_penalized, ptype = "overall", CI = TRUE, 
+     xlab = "temperature", ylab = "RR", multiple.plots = FALSE)
+```
+
+At high temperatures, there is some evidence that the overall RR is lower for municipalities with a low deprivation index. A contour plot of the exposure-lag-response relationship can also be made for different deprivation levels:
+
+```{r, fig.width = 6, fig.height = 4}
+contour(pred_penalized, ptype = "cross", xlab = "lag", ylab = "temperature")
+```
 
 # Summary
 
-In this vignette, we introduced the effect modifying functionality of `DLNMLPS`. We demonstrated how to fit four different models, differing in the flexibility of the effect modification.
+In this vignette, we introduced the effect modifying functionality of `DLNMLPS`. We demonstrated how to fit four different models, differing in the flexibility of the effect modification. We used penalized splines to showcase the functionality of the package but similar models can be fitted with unpenalized splines. See also `vignette("introduction_dlnmlps")` for more information.
 
 
+# References
