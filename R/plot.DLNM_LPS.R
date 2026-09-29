@@ -30,6 +30,7 @@
 #' @param xlim,ylim,zlim Numeric vectors of length two giving axis limits.
 #' @param cols Colours used for lines, surfaces or contours.
 #' @param xlab,ylab,zlab Axis labels.
+#' @param mar Figure margins.
 #' @param ... Additional graphical arguments passed to the underlying plotting
 #' functions. For 3D plots, additional arguments of `graphics::persp`can be passed.
 #'
@@ -252,9 +253,11 @@
 plot.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, ptype = "overall",
                               multiple.plots = TRUE, show.legend = TRUE, CI = FALSE,
                               xlim = NULL, ylim = NULL, zlim = NULL,cols = NULL, xlab = NULL,
-                              ylab = NULL, zlab = NULL, ...){
+                              ylab = NULL, zlab = NULL, mar = NULL, ...){
 
+  if(is.null(mar)){
   mar = c(5.1, 4.1, 4.1, 2.1)
+  }
 
   nested <- !("allfit" %in% names(x))
 
@@ -549,9 +552,11 @@ DLNMLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
 
 contour.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, ptype = "overall",
                           xlim = NULL, ylim = NULL, zlim = NULL,cols = NULL, xlab = NULL,
-                          ylab = NULL, zlab = NULL, ...){
+                          ylab = NULL, zlab = NULL, mar = NULL, ...){
 
-  mar = c(5.1, 4.1, 4.1, 2.1)
+  if(is.null(mar)){
+    mar = c(5.1, 4.1, 4.1, 2.1)
+  }
 
   graphics::par(mar = mar, mfrow = c(1,1))
 
