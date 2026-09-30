@@ -330,16 +330,18 @@ df_spat <- data.frame(
 sf_plot <- merge(shapefile_bcn, df_spat, by = "District")
 
 ggplot2::ggplot(sf_plot) +
-  ggplot2::geom_sf(ggplot2::aes(fill = effect), linewidth = 0.01) +
+  ggplot2::geom_sf(ggplot2::aes(fill = effect), linewidth = 1) +
   ggplot2::facet_wrap(~ year)  +
   ggplot2::scale_fill_gradient2(
     low = "darkgreen",
-    mid = "white",
+    mid = "grey",
     high = "purple",
     midpoint = 0
   ) +
   ggplot2::theme_minimal()
 ```
+
+Little variation in the Leroux random effect over time can be observed.
 
 # Summary
 
