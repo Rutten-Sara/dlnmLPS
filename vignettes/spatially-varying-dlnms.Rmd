@@ -157,7 +157,7 @@ model_typeIII$DIC; model_typeIII$WAIC; -sum(log(model_typeIII$CPO))
 model_typeIV$DIC; model_typeIV$WAIC; -sum(log(model_typeIV$CPO))
 ```
 
-Model Type IV is preferred based on all model selection criteria. To make predictions for temperatures between 22 degrees Celsius and 30 degrees Celsius, compared to a reference level of 25 degrees, and for the first four districts, we use:
+Model Type IV is preferred based on all model selection criteria. To make predictions for temperatures between 22 degrees Celsius and 30 degrees Celsius, compared to a reference level of 25 degrees, and for the all districts, we use:
 
 ```{r, fig.width = 6, fig.height = 8}
 pred_penalized <- pred_crossbasis(
@@ -166,51 +166,42 @@ pred_penalized <- pred_crossbasis(
   at_x = seq(22,30,length = 50),
   cen = 25,
   lag = c(0,14),
-  CI = TRUE,
-  by = unique(dataset$District)[1:4]
+  CI = FALSE,
+  by = unique(dataset$District)
 )
 ```
 
-We can visualize the temperature-mortality relationship for lag 0, 3 and 8 as:
+We can visualize the temperature-mortality relationship for the first four districts and for lag 0, 3 and 8 as:
 
 ```{r, fig.width = 6, fig.height = 8}
-plot(pred_penalized, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, xlab = "temperature", ylab = "RR")
+plot(pred_penalized, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, xlab = "temperature", ylab = "RR",
+     slice_by = unique(dataset$District)[1:4])
 ```
 
 The option multiple.plots = FALSE allows visualizing the results for different districts on one plot. However, this option is only available for an integer (and not a vector) slice value or overall RR-curve. The lag-response relationships at 30 degrees, can be visualized for the four districts using:
 
 ```{r, fig.width = 6, fig.height = 4}
 plot(pred_penalized, slice_x = 30, ptype = "slices", CI = TRUE, xlab = "lag", ylab = "RR",
-     multiple.plots = FALSE)
+     multiple.plots = FALSE, slice_by = unique(dataset$District)[1:4])
 ```
 
 To disable the legend and hide the credible intervals, we can specify:
 
 ```{r, fig.width = 6, fig.height = 4}
 plot(pred_penalized, slice_x = 30, ptype = "slices", CI = FALSE, xlab = "lag", ylab = "RR",
-     multiple.plots = FALSE, show.legend = FALSE)
+     multiple.plots = FALSE, show.legend = FALSE, slice_by = unique(dataset$District)[1:4])
 ```
 
 The overall cumulative relationship, can be visualized using:
 
 ```{r, fig.width = 6, fig.height = 4}
 plot(pred_penalized, ptype = "overall", CI = FALSE, xlab = "temperature", ylab = "RR", 
-     multiple.plots = FALSE, show.legend = FALSE)
+     multiple.plots = FALSE, show.legend = FALSE, slice_by = unique(dataset$District)[1:4])
 ```
 
 Moreover, the overall RR for all districts at a temperature value of 30 degrees Celsius, could also be presented on a map:
 
 ```{r, fig.width = 4, fig.height = 4}
-pred_penalized_all <- pred_crossbasis(
-  basis = basis.max_pen,
-  model = model_typeIV,
-  at_x = seq(22,30,length = 50),
-  cen = 25,
-  lag = c(0,14),
-  CI = FALSE,
-  by = unique(dataset$District)
-)
-
 shapefile_bcn$rr <- sapply(pred_penalized_all, function(x) x$allRRfit[x$x == 30])
 tmap::tm_shape(shapefile_bcn) +
   tmap::tm_polygons(
@@ -228,7 +219,8 @@ To show the cross exposure-lag-response relationship, a 3D plot can be made. We 
 plot(pred_penalized, ptype = "cross", ticktype="detailed",theta=230,
         xlab = "lag", ylab = "temperature", zlab = "RR", mar = c(0.5, 0.5, 2, 0.5),
         ltheta=200,phi=30,lphi=30,
-        nticks = 4, shade = 0.75,r=sqrt(3),d=5,cex.axis=0.5, cex.lab=0.8,border=NA)
+        nticks = 4, shade = 0.75,r=sqrt(3),d=5,cex.axis=0.5, cex.lab=0.8,border=NA,
+        slice_by = unique(dataset$District)[1:4])
 ```
 
 Similarly, a contour plot could also be made. In general, plots show that differences between the different municipalities in the temperature-mortality relationship are relatively small.

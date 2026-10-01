@@ -469,7 +469,7 @@ pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 
                           "allfit" = pred_all,
                           "matRRfit" = matrix(matRRfit, nrow = length(predvar), byrow = FALSE),
                           "allRRfit" = allRRfit,
-                          "by" = i,
+                          "by" = by[i],
                           "x" = at_x,
                           "y" = at_y,
                           "lag" = lag,
