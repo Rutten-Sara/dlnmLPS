@@ -15,6 +15,8 @@
 #' obtain slices. Integer or numeric vector.
 #' @param slice_y Exposure values of the second exposure variable at which to
 #' obtain slices (bivariate exposures only). Integer or numeric vector.
+#' @param slice_by Optional argument to specify the levels of the by-variable
+#' to be plotted. One value or multiple values supplied through a vector.
 #' @param ptype Character string specifying the type of plot. One of:
 #' \describe{
 #'   \item{`"overall"`}{Overall cumulative exposure-response plot.}
@@ -250,8 +252,8 @@
 #'
 #' @export
 
-plot.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, ptype = "overall",
-                              multiple.plots = TRUE, show.legend = TRUE, CI = FALSE,
+plot.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, slice_by = NULL,
+                              ptype = "overall", multiple.plots = TRUE, show.legend = TRUE, CI = FALSE,
                               xlim = NULL, ylim = NULL, zlim = NULL,cols = NULL, xlab = NULL,
                               ylab = NULL, zlab = NULL, mar = NULL, ...){
 
@@ -260,8 +262,11 @@ plot.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NUL
   }
 
   nested <- !("allfit" %in% names(x))
-
   if(nested){
+    if(!is.null(slice_by)){
+      idx <- which(sapply(x, function(x) which(x$by == slice_by)) != 0)
+      x <- x[idx]
+    }
     if(multiple.plots){
     graphics::par( mar = mar, mfrow = if(length(x)==1) c(1,1) else
       if(length(x)==2) c(1,2) else
@@ -550,9 +555,9 @@ DLNMLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
 #'
 #' @export
 
-contour.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, ptype = "overall",
-                          xlim = NULL, ylim = NULL, zlim = NULL,cols = NULL, xlab = NULL,
-                          ylab = NULL, zlab = NULL, mar = NULL, ...){
+contour.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, slice_by = NULL,
+                                 ptype = "overall", xlim = NULL, ylim = NULL, zlim = NULL,
+                                 cols = NULL, xlab = NULL,ylab = NULL, zlab = NULL, mar = NULL, ...){
 
   if(is.null(mar)){
     mar = c(5.1, 4.1, 4.1, 2.1)
@@ -563,6 +568,11 @@ contour.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = 
   nested <- !("allfit" %in% names(x))
 
   if(nested){
+
+    if(!is.null(slice_by)){
+      idx <- which(sapply(x, function(x) which(x$by == slice_by)) != 0)
+      x <- x[idx]
+    }
 
     for (xi in 1:length(x)){
       DLNMLPS_contour_ind(x[[xi]], slice_lag, slice_x , slice_y , ptype ,
