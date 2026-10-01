@@ -660,8 +660,12 @@ plot_overall_uni <- function(x, xlim, ylim, cols, xlab, ylab, multiple.plots,sho
   if (multiple.plots) {
     ncurve <- length(x)
 
-    if (is.null(cols))
+    if (is.null(cols)){
       cols <- grDevices::hcl.colors(ncurve, "Dark 3")
+    }else if(length(cols) == 1){
+      cols <- rep(cols,ncurve)
+      show.legend = FALSE
+    }
 
     if (is.null(xlim)) {
       xlim <- range( unlist(lapply(x, function(z) z$x)), na.rm = TRUE )
@@ -1102,8 +1106,12 @@ plot_overall_2D <- function(x, slice_x, slice_y, xlim, ylim, cols, xlab, ylab, m
   ncurve <- length(plot_y)
 
 
-  if (is.null(cols))
+  if (is.null(cols)){
     cols <- grDevices::hcl.colors(ncurve, "Dark 3")
+  }else if(length(cols) == 1){
+    cols <- rep(cols ,ncurve)
+    show.legend = FALSE
+  }
 
 
   if (is.null(xlim))
@@ -2165,8 +2173,12 @@ plot_slices2D <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL,
   ncurve <- length(plot_y)
 
 
-  if (is.null(cols))
+  if (is.null(cols)){
     cols <- grDevices::hcl.colors(ncurve, "Dark 3")
+  }else if(length(cols) == 1){
+    cols <- rep(cols ,ncurve)
+    show.legend = FALSE
+  }
 
 
   if (is.null(xlim))

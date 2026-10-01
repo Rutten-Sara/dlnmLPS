@@ -166,7 +166,7 @@ pred_penalized <- pred_crossbasis(
   at_x = seq(22,30,length = 50),
   cen = 25,
   lag = c(0,14),
-  CI = FALSE,
+  CI = TRUE,
   by = unique(dataset$District)
 )
 ```
