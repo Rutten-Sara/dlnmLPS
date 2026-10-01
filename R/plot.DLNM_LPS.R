@@ -267,6 +267,13 @@ plot.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NUL
       idx <- which(sapply(x, function(x) which(x$by == slice_by)) != 0)
       x <- x[idx]
     }
+    if(length(x) == 1){
+      x <- x[[1]]
+      nested <- FALSE
+    }
+  }
+
+  if(nested){
     if(multiple.plots){
     graphics::par( mar = mar, mfrow = if(length(x)==1) c(1,1) else
       if(length(x)==2) c(1,2) else
@@ -568,11 +575,17 @@ contour.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = 
   nested <- !("allfit" %in% names(x))
 
   if(nested){
-
     if(!is.null(slice_by)){
       idx <- which(sapply(x, function(x) which(x$by == slice_by)) != 0)
       x <- x[idx]
     }
+    if(length(x) == 1){
+      x <- x[[1]]
+      nested <- FALSE
+    }
+  }
+
+  if(nested){
 
     for (xi in 1:length(x)){
       DLNMLPS_contour_ind(x[[xi]], slice_lag, slice_x , slice_y , ptype ,
