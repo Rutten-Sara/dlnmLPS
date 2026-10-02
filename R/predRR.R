@@ -59,7 +59,8 @@
 #'   \item{allRRfit}{Matrix of exponentiated associations from `allfit`.}
 #'   \item{Qlower_allRRfit}{Matrix of exponentiated bounds from `Qlower_allfit`.}
 #'   \item{Qupper_allRRfit}{Matrix of exponentiated bounds from `Qupper_allfit`.}
-#'   \item{exc_prob}{Vector of exceedance probabilities, if requested.}
+#'   \item{exc_prob_matfit}{Matrix of exceedance probabilities for matfit, if requested.}
+#'   \item{exc_prob_allfit}{Vector of exceedance probabilities for allfit, if requested.}
 #' }
 #'
 #' @examples
@@ -277,7 +278,7 @@ pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 
 
 
   if(exc.prob){
-    CI.all = TRUE
+    CI = TRUE
   }
 
 
@@ -407,9 +408,16 @@ pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 
     prob_all <- mapply(function(mean_val, sd_val) {
       stats::pnorm(threshold, mean = mean_val, sd = sd_val, lower.tail = FALSE)
     }, pred_all, sd_all)
-    exc.prob_res = prob_all
+    exc.prob_all = prob_all
+
+    prob_fit <- mapply(function(mean_val, sd_val) {
+      stats::pnorm(threshold, mean = mean_val, sd = sd_val, lower.tail = FALSE)
+    }, logpredX, sd_logpredX)
+    exc.prob_fit = matrix(prob_fit, nrow = length(predvar), byrow = FALSE)
+
   }else{
-    exc.prob_res = NULL
+    exc.prob_all = NULL
+    exc.prob_fit = NULL
   }
 
   output <- list("matfit" = matrix(logpredX, nrow = length(predvar), byrow = FALSE),
@@ -424,7 +432,8 @@ pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 
                  "Qlower_allRRfit" = Qlower_allRRfit,
                  "Qupper_allRRfit" = Qupper_allRRfit,
                  "allRRfit" = allRRfit,
-                 "exc.prob" = exc.prob_res,
+                 "exc.prob_allfit" = exc.prob_all,
+                 "exc.prob_matfit" = exc.prob_fit,
                  "x" = at_x,
                  "y" = at_y,
                  "lag" = lag,
@@ -495,12 +504,6 @@ pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 
         output[[i]]$Qlower_allRRfit = exp(quantiles_all[1,])
         output[[i]]$Qupper_allRRfit = exp(quantiles_all[2,])
 
-        if(exc.prob){
-          prob_all <- mapply(function(mean_val, sd_val) {
-            stats::pnorm(threshold, mean = mean_val, sd = sd_val, lower.tail = FALSE)
-          }, output[[i]]$allfit, sd_all[i,])
-          output[[i]]$exc.prob = prob_all
-        }
       }
     }
 
@@ -521,6 +524,18 @@ pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 
         output[[i]]$Qupper_matfit <- matrix(quantiles[2,], nrow = length(predvar), byrow = FALSE)
         output[[i]]$Qlower_matRRfit <- matrix(exp(quantiles[1,]), nrow = length(predvar), byrow = FALSE)
         output[[i]]$Qupper_matRRfit <- matrix(exp(quantiles[2,]), nrow = length(predvar), byrow = FALSE)
+      }
+
+      if(exc.prob){
+        prob_all <- mapply(function(mean_val, sd_val) {
+          stats::pnorm(threshold, mean = mean_val, sd = sd_val, lower.tail = FALSE)
+        }, output[[i]]$allfit, sd_all[i,])
+        output[[i]]$exc.prob_allfit = prob_all
+
+        prob_fit <- mapply(function(mean_val, sd_val) {
+          stats::pnorm(threshold, mean = mean_val, sd = sd_val, lower.tail = FALSE)
+        }, output[[i]]$matfit, sd_logpredX[i,])
+        output[[i]]$exc.prob_matfit = matrix(prob_fit, nrow = length(predar), byrow = FALSE)
       }
 
     }
@@ -638,9 +653,16 @@ pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 
       prob_all <- mapply(function(mean_val, sd_val) {
         stats::pnorm(threshold, mean = mean_val, sd = sd_val, lower.tail = FALSE)
       }, pred_all, sd_all)
-      exc.prob_res = prob_all
+      exc.prob_all = prob_all
+
+      prob_fit <- mapply(function(mean_val, sd_val) {
+        stats::pnorm(threshold, mean = mean_val, sd = sd_val, lower.tail = FALSE)
+      }, logpredX, sd_logpredX)
+      exc.prob_fit = matrix(prob_fit, nrow = length(predvar), byrow = FALSE)
+
     }else{
-      exc.prob_res = NULL
+      exc.prob_all = NULL
+      exc.prob_fit = NULL
     }
 
     output[[by.value]] <- list("matfit" = matrix(logpredX, nrow = length(predvar), byrow = FALSE),
@@ -655,7 +677,8 @@ pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 
                    "Qlower_allRRfit" = Qlower_allRRfit,
                    "Qupper_allRRfit" = Qupper_allRRfit,
                    "allRRfit" = allRRfit,
-                   "exc.prob" = exc.prob_res,
+                   "exc.prob_allfit" = exc.prob_all,
+                   "exc.prob_matfit" = exc.prob_fit,
                    "x" = at_x,
                    "y" = at_y,
                    "lag" = lag,
@@ -788,4 +811,215 @@ data_pred_1d <- function(basis, at_x, predlag, cen){
   return(Xpred)
 }
 
+
+
+#' Extract predictions
+#'
+#' Help function to extract requested predictions from an object returned by [pred_crossbasis()].
+#'
+#' @param x An object returned by [pred_crossbasis()].
+#' @param slice_x Exposure values of the first exposure variable at which to
+#' extract predictions. Integer or numeric vector.
+#' @param slice_y Exposure values of the second exposure variable at which to
+#' extract predictions (bivariate exposures only). Integer or numeric vector.
+#' @param slice_lag  Lag value(s) at which to extract predictions. Integer or numeric
+#' vector.
+#' @param slice_by  Optional argument to specify the levels of the by-variable
+#' at which to extract predictions. One value or multiple values supplied through a vector.
+#' @param ptype Character string specifying the type of prediction. One of:
+#' \describe{
+#'   \item{`"matfit"`}{Predictions for specified combinations of exposure and
+#'   lag variables.}
+#'   \item{`"matRRfit"`}{Predictions for exponentiated associations for
+#'   specified combinations of exposure and lag variables.}
+#'   \item{`"allfit"`}{Predictions for overall cumulative associations, default value.}
+#'   \item{`"allRRfit"`}{Predictions for exponentiated associations for
+#'   overall cumulative risks.}
+#' }
+#'
+#' @returns
+#' A dataframe containing the requested exposures (and lags), predicted value,
+#' lower and upper bounds on the credible intervals (if requested in predictions)
+#' exceedance probabilities (if requested in predictions), and levels of the
+#' by-variable (if applicable).
+#' @export
+#'
+#' @examples
+extract_predictions <- function(x, slice_x = NULL, slice_y = NULL, slice_lag = NULL, slice_by = NULL,
+                                ptype = "allfit"){
+
+  nested <- !("allfit" %in% names(x))
+
+
+  if(nested){
+    if(!is.null(slice_by)){
+      idx <- which(sapply(x, function(x) which(x$by == slice_by)) != 0)
+      x <- x[idx]
+    }
+
+    extracted <- list()
+    for (xi in 1:length(x)){
+      extracted[[as.character(x[[xi]]$by)]] <- extract_predictions_one(x[[xi]],
+                                                                       slice_x, slice_y, slice_lag, ptype)
+    }
+
+    extracted <- do.call(rbind, Map(
+      function(df, name) {
+        df <- as.data.frame(df)
+        df$by <- name
+        df
+      },
+      extracted,
+      names(extracted)
+    ))
+    rownames(extracted) <- NULL
+
+  }else{
+    extracted <- extract_predictions_one(x, slice_x, slice_y, slice_lag, ptype)
+  }
+
+  return(extracted)
+}
+
+
+#' Extraction for one single by value
+#' @noRd
+extract_predictions_one <- function(x, slice_x = NULL, slice_y = NULL, slice_lag = NULL,
+                                ptype = "allfit"){
+
+
+  if(!is.null(slice_y) & is.null(x$y)){
+    stop("Can only slice on y if predictions are made for y")
+  }
+  if(ptype == "allfit"){
+    estimate <- x$allfit
+    lower <- x$Qlower_allfit
+    upper <- x$Qupper_allfit
+    exc <- x$exc.prob_allfit
+  } else if (ptype == "allRRfit"){
+    estimate <- x$allRRfit
+    lower <- x$Qlower_allRRfit
+    upper <- x$Qupper_allRRfit
+    exc <- x$exc.prob_allfit
+  } else if (ptype == "matfit"){
+    estimate <- x$matfit
+    lower <- x$Qlower_matfit
+    upper <- x$Qupper_matfit
+    exc <- x$exc.prob_matfit
+  } else if (ptype == "matRRfit"){
+    estimate <- x$matRRfit
+    lower <- x$Qlower_matRRfit
+    upper <- x$Qupper_matRRfit
+    exc <- x$exc.prob_matfit
+  }
+
+  if(ptype == "allfit" | ptype == "allRRfit"){
+    at_x <- if(is.null(slice_x)){
+      seq_len(length(estimate))
+    }else{
+      which(x$x %in% slice_x)
+    }
+
+    at_y <- if(is.null(slice_y)){
+      seq_len(length(estimate))
+    }else{
+      which(x$y %in% slice_y)
+    }
+
+
+    if(length(at_x) == 0){
+      stop("Requested x value not found in predictions")
+    }
+
+    if(length(at_y) == 0){
+      stop("Requested y value not found in predictions")
+    }
+
+    if(!is.null(slice_lag)){
+      stop("Cannot slice on lag for overall predictions")
+    }
+
+    if(!is.null(slice_x) & !is.null(slice_y)){
+      at_exp <- mapply(function(xi, yi) {
+        which(x$x == xi & x$y == yi)
+      }, slice_x, slice_y)
+    }else{
+      at_exp = intersect(at_x, at_y)
+    }
+
+
+    result <- do.call(cbind, Filter(
+      Negate(is.null),
+      list(
+        x = x$x[at_exp],
+        y = if (!is.null(x$y)) x$y[at_exp] else NULL,
+        fit = estimate[at_exp],
+        lower = if (!is.null(lower)) lower[at_exp] else NULL,
+        upper = if (!is.null(upper)) upper[at_exp] else NULL,
+        exc.prob = if (!is.null(exc)) exc[at_exp] else NULL
+      )
+    ))
+
+
+  }else{
+    at_x <- if(is.null(slice_x)){
+      seq_len(nrow(estimate))
+    }else{
+      which(x$x %in% slice_x)
+    }
+
+    at_y <- if(is.null(slice_y)){
+      seq_len(nrow(estimate))
+    }else{
+      which(x$y %in% slice_y)
+    }
+
+
+    if(length(at_x) == 0){
+      stop("Requested x value not found in predictions")
+    }
+
+    if(length(at_y) == 0){
+      stop("Requested y value not found in predictions")
+    }
+
+    at_lag <- if(is.null(slice_lag)){
+      seq_len(ncol(estimate))
+    }else{
+      which(x$lag %in% slice_lag)
+    }
+    if(length(at_lag) == 0){
+      stop("Requested lag value not found in predictions")
+    }
+
+    if(!is.null(slice_x) & !is.null(slice_y)){
+      at_exp <- mapply(function(xi, yi) {
+        which(x$x == xi & x$y == yi)
+      }, slice_x, slice_y)
+
+      result <- expand.grid(x = x$x[at_exp], lag = x$lag[at_lag])
+      result$y <- rep(x$y[at_exp], length(at_lag))
+      result <- result[,c("x","y","lag")]
+    }else{
+      at_exp = intersect(at_x, at_y)
+      result <- expand.grid(x = x$x[at_exp], lag = x$lag[at_lag])
+    }
+
+
+    result <- do.call(cbind, Filter(
+      Negate(is.null),
+      list(
+        result,
+        fit = as.vector(estimate[at_exp, at_lag, drop = FALSE]),
+        lower = if (!is.null(lower)) as.vector(lower[at_exp, at_lag, drop = FALSE]) else NULL,
+        upper = if (!is.null(upper)) as.vector(upper[at_exp, at_lag, drop = FALSE]) else NULL,
+        exc.prob = if (!is.null(exc)) as.vector(exc[at_exp, at_lag, drop = FALSE]) else NULL
+      )
+    ))
+
+  }
+
+
+
+}
 
