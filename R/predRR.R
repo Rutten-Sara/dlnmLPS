@@ -839,12 +839,11 @@ data_pred_1d <- function(basis, at_x, predlag, cen){
 #'
 #' @returns
 #' A dataframe containing the requested exposures (and lags), predicted value,
-#' lower and upper bounds on the credible intervals (if requested in predictions)
+#' lower and upper bounds on the credible intervals (if requested in predictions),
 #' exceedance probabilities (if requested in predictions), and levels of the
 #' by-variable (if applicable).
 #' @export
 #'
-#' @examples
 extract_predictions <- function(x, slice_x = NULL, slice_y = NULL, slice_lag = NULL, slice_by = NULL,
                                 ptype = "allfit"){
 
