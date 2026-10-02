@@ -43,11 +43,11 @@
 #' **`ptype = "overall"`**
 #'
 #' For univariate exposures, the overall cumulative exposure-response curve is
-#' plotted. No slicing variables may be specified.
+#' plotted. No slicing variables (except for `slice_by`) may be specified.
 #'
 #' For bivariate exposures, the overall cumulative exposure-response is shown as
-#' a three-dimensional surface if no slicing variable is specified. Alternatively,
-#' either `slice_x` or `slice_y` (but not both) may be specified to obtain a
+#' a three-dimensional surface if no slicing variable (except for `slice_by`) is specified.
+#' Alternatively, either `slice_x` or `slice_y` (but not both) may be specified to obtain a
 #' two-dimensional cumulative exposure-response curve.
 #'
 #' **`ptype = "cross"`**
