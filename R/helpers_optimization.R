@@ -263,12 +263,16 @@ check_sm_term_inputs <- function(sm_args_iter, data, env) {
       sm_args_iter$arg
     )
   } else if (sm_args_iter$arg$type == "crossbasis") {
-    sm_args_iter$arg <- utils::modifyList(
-      list(type = "crossbasis", pen = NULL, map = NULL, add.lagpen = TRUE),
-      sm_args_iter$arg
-    )
     if(attributes(sm_args_iter$x)$arglag$fun != "ps"){
-      sm_args_iter$arg$pen = NULL
+      sm_args_iter$arg <- utils::modifyList(
+        list(type = "crossbasis", pen = NULL, map = NULL, add.lagpen = FALSE),
+        sm_args_iter$arg
+      )
+    }else{
+      sm_args_iter$arg <- utils::modifyList(
+        list(type = "crossbasis", pen = 2, map = NULL, add.lagpen = TRUE),
+        sm_args_iter$arg
+      )
     }
   } else if (sm_args_iter$arg$type == "ps"){
     sm_args_iter$arg <- utils::modifyList(
