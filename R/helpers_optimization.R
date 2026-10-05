@@ -268,6 +268,9 @@ check_sm_term_inputs <- function(sm_args_iter, data, env) {
         list(type = "crossbasis", pen = NULL, map = NULL, add.lagpen = FALSE),
         sm_args_iter$arg
       )
+      if(!is.null(sm_args_iter$arg$pen)){
+        warning("Penalty is set to NULL. Integer value for penalty only supported for penalized splines.")
+      }
     }else{
       sm_args_iter$arg <- utils::modifyList(
         list(type = "crossbasis", pen = 2, map = NULL, add.lagpen = TRUE),
