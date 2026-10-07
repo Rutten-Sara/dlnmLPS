@@ -27,7 +27,11 @@
 #'     specifies the penalty structure. The additional argument `add.lagpen`
 #'     (default TRUE) is a logical indicator, indicating whether an additional
 #'     penalty should be specified in the lag dimension (for penalized settings)
-#'     to encourage schrinkage of the effect at longer lags.}
+#'     to encourage shrinkage of the effect at longer lags. The additional lag
+#'     penalty matrix can be specified using `lagpen`: by default, this is a diagonal
+#'     matrix with entries corresponding to `0^2,1^2,...,(vl-1)^2`, with `vl`the
+#'     degrees of freedom for the lag basis.
+#'     `diag((0:(vl - 1))^2)`.}
 #'     \item{`ps`, `ns`, `bs`}{Smooth functions based on P-splines,
 #'     natural splines, or B-splines. Additional arguments can include
 #'     those passed to the corresponding spline constructors, such as
@@ -263,19 +267,42 @@ check_sm_term_inputs <- function(sm_args_iter, data, env) {
       sm_args_iter$arg
     )
   } else if (sm_args_iter$arg$type == "crossbasis") {
+
+    if("joint.crossbasis" %in% class(sm_args_iter$x)){
+      if(!(attributes(sm_args_iter$x)$arglag$fun == attributes(sm_args_iter$x)$argvar1$fun &
+           attributes(sm_args_iter$x)$arglag$fun == attributes(sm_args_iter$x)$argvar2$fun)){
+        stop("Please specify the same spline type for lag and exposure dimensions")
+      }
+    }else{
+      if(attributes(sm_args_iter$x)$arglag$fun != attributes(sm_args_iter$x)$argvar$fun){
+        stop("Please specify the same spline type for lag and exposure dimensions")
+      }
+    }
+
     if(attributes(sm_args_iter$x)$arglag$fun != "ps"){
       sm_args_iter$arg <- utils::modifyList(
-        list(type = "crossbasis", pen = NULL, map = NULL, add.lagpen = FALSE),
+        list(type = "crossbasis", pen = NULL, map = NULL, add.lagpen = FALSE, lagpen = NULL),
         sm_args_iter$arg
       )
       if(!is.null(sm_args_iter$arg$pen)){
         warning("Penalty is set to NULL. Integer value for penalty only supported for penalized splines.")
       }
+      if(sm_args_iter$arg$add.lagpen){
+        warning("Lag penalty is set to NULL. Penalty only supported for penalized splines.")
+      }
     }else{
       sm_args_iter$arg <- utils::modifyList(
-        list(type = "crossbasis", pen = 2, map = NULL, add.lagpen = TRUE),
+        list(type = "crossbasis", pen = 2, map = NULL, add.lagpen = TRUE, lagpen = NULL),
         sm_args_iter$arg
       )
+
+      if( sm_args_iter$arg$add.lagpen){
+        if(is.null(sm_args_iter$arg$lagpen)){
+        vl <- attributes(sm_args_iter$x)$arglag$df
+        sm_args_iter$arg$lagpen <- diag((0:(vl-1))^2)
+        }
+      }
+
     }
   } else if (sm_args_iter$arg$type == "ps"){
     sm_args_iter$arg <- utils::modifyList(

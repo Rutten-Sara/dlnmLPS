@@ -31,6 +31,7 @@ build_component_dlnm<-function(state, sm_args_iter, term, all_terms, constants){
 
   penorder <- sm_args_iter$arg$pen
   add_lag_penalty <- sm_args_iter$arg$add.lagpen
+  lag_penalty <- sm_args_iter$arg$lagpen
 
   pen_start <- cumsum(pen_dlnm)[term]
 
@@ -55,8 +56,7 @@ build_component_dlnm<-function(state, sm_args_iter, term, all_terms, constants){
 
     # Additional penalty for delay (force lag effect going to zero)
     if(add_lag_penalty){
-    Dl_add <- diag((0:(vl-1))^2)
-    Pl_add <- Dl_add + diag(1e-12, vl)
+    Pl_add <- lag_penalty + diag(1e-12, vl)
 
 
     Pv.list[[term]] <- function(v) exp(v[pen_start + 1])*(Px%x%Matrix::Diagonal(n = vl, x = NULL)) +
@@ -148,6 +148,7 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
   Wcb <- add_wcb_block(Wcb, Wcb_part)
   penorder <- sm_args_iter$arg$pen
   add_lag_penalty <- sm_args_iter$arg$add.lagpen
+  lag_penalty <- sm_args_iter$arg$lagpen
 
   #spatial effect
   crossbasis_spat = Matrix::Matrix(sm_args_iter$x, sparse = TRUE)
@@ -202,8 +203,7 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
 
     # Additional penalty for delay (force lag effect going to zero)
     if(add_lag_penalty){
-    Dl_add <- diag((0:(vl-1))^2)
-    Pl_add <- Dl_add + diag(1e-12, vl)
+    Pl_add <- lag_penalty + diag(1e-12, vl)
 
 
     Pv1_term <- function(v) exp(v[pen_start + 1])*(Px%x%Matrix::Diagonal(n = vl, x = NULL)) +
@@ -521,6 +521,7 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
 
   penorder <- sm_args_iter$arg$pen
   add_lag_penalty <- sm_args_iter$arg$add.lagpen
+  lag_penalty <- sm_args_iter$arg$lagpen
 
   pen_start <- cumsum(pen_dlnm)[term]
 
@@ -625,9 +626,7 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
 
     if(add_lag_penalty){
     # Additional penalty for delay (force lag effect going to zero)
-    Dl_add <- diag((0:(vl-1))^2)
-    #Dl_add <- diag(rep(0:1,c(6,4)))
-    Pl_add <- Dl_add + diag(1e-12, vl)
+    Pl_add <- lag_penalty + diag(1e-12, vl)
 
 
     Pv1_term <- function(v) exp(v[pen_start + 1])*(Px%x%Matrix::Diagonal(n = vl, x = NULL)) +
@@ -829,6 +828,7 @@ build_component_2Ddlnm<-function(state, sm_args_iter, term, all_terms, constants
   Wcb <- add_wcb_block(Wcb, Wcb_part)
   penorder <- sm_args_iter$arg$pen
   add_lag_penalty <- sm_args_iter$arg$add.lagpen
+  lag_penalty <- sm_args_iter$arg$lagpen
 
   pen_start <-  cumsum(pen_dlnm)[term]
 
@@ -859,8 +859,7 @@ build_component_2Ddlnm<-function(state, sm_args_iter, term, all_terms, constants
 
     if(add_lag_penalty){
     # Additional penalty for delay (force lag effect going to zero)
-    Dl_add <- diag((0:(vl-1))^2)
-    Pl_add <- Dl_add + diag(1e-12, vl)
+    Pl_add <- lag_penalty + diag(1e-12, vl)
 
 
     if(attributes(sm_args_iter$x)$is_identifiable){
@@ -976,6 +975,7 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
   Wcb <- add_wcb_block(Wcb, Wcb_part)
   penorder <- sm_args_iter$arg$pen
   add_lag_penalty <- sm_args_iter$arg$add.lagpen
+  lag_penalty <- sm_args_iter$arg$lagpen
 
   #spatial effect
   crossbasis_spat = Matrix::Matrix(sm_args_iter$x, sparse = TRUE)
@@ -1036,8 +1036,7 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
 
     if(add_lag_penalty){
     # Additional penalty for delay (force lag effect going to zero)
-    Dl_add <- diag((0:(vl-1))^2)
-    Pl_add <- Dl_add + diag(1e-12, vl)
+    Pl_add <- lag_penalty + diag(1e-12, vl)
 
 
 
@@ -1456,6 +1455,7 @@ build_component_modified2Ddlnm<-function(state, sm_args_iter, term, all_terms, c
   Wcb <- add_wcb_block(Wcb, crossbasis_em)
   penorder <- sm_args_iter$arg$pen
   add_lag_penalty <- sm_args_iter$arg$add.lagpen
+  lag_penalty <- sm_args_iter$arg$lagpen
 
   pen_start <- cumsum(pen_dlnm)[term]
 
@@ -1570,8 +1570,7 @@ build_component_modified2Ddlnm<-function(state, sm_args_iter, term, all_terms, c
 
     if(add_lag_penalty){
     # Additional penalty for delay (force lag effect going to zero)
-    Dl_add <- diag((0:(vl-1))^2)
-    Pl_add <- Dl_add + diag(1e-12, vl)
+    Pl_add <- lag_penalty + diag(1e-12, vl)
 
 
     if(attributes(sm_args_iter$x)$is_identifiable){
