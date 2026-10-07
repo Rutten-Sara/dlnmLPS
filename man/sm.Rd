@@ -30,7 +30,11 @@ automatically and therefore do not need to be specified explicitly in
 specifies the penalty structure. The additional argument \code{add.lagpen}
 (default TRUE) is a logical indicator, indicating whether an additional
 penalty should be specified in the lag dimension (for penalized settings)
-to encourage schrinkage of the effect at longer lags.}
+to encourage shrinkage of the effect at longer lags. The additional lag
+penalty matrix can be specified using \code{lagpen}: by default, this is a diagonal
+matrix with entries corresponding to \verb{0^2,1^2,...,(vl-1)^2}, with \code{vl}the
+degrees of freedom for the lag basis.
+\code{diag((0:(vl - 1))^2)}.}
 \item{\code{ps}, \code{ns}, \code{bs}}{Smooth functions based on P-splines,
 natural splines, or B-splines. Additional arguments can include
 those passed to the corresponding spline constructors, such as

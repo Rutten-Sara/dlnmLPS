@@ -9,6 +9,7 @@
   slice_lag = NULL,
   slice_x = NULL,
   slice_y = NULL,
+  slice_by = NULL,
   ptype = "overall",
   multiple.plots = TRUE,
   show.legend = TRUE,
@@ -35,6 +36,9 @@ obtain slices. Integer or numeric vector.}
 
 \item{slice_y}{Exposure values of the second exposure variable at which to
 obtain slices (bivariate exposures only). Integer or numeric vector.}
+
+\item{slice_by}{Optional argument to specify the levels of the by-variable
+to be plotted. One value or multiple values supplied through a vector.}
 
 \item{ptype}{Character string specifying the type of plot. One of:
 \describe{
@@ -83,11 +87,11 @@ univariate or bivariate exposures.
 \strong{\code{ptype = "overall"}}
 
 For univariate exposures, the overall cumulative exposure-response curve is
-plotted. No slicing variables may be specified.
+plotted. No slicing variables (except for \code{slice_by}) may be specified.
 
 For bivariate exposures, the overall cumulative exposure-response is shown as
-a three-dimensional surface if no slicing variable is specified. Alternatively,
-either \code{slice_x} or \code{slice_y} (but not both) may be specified to obtain a
+a three-dimensional surface if no slicing variable (except for \code{slice_by}) is specified.
+Alternatively, either \code{slice_x} or \code{slice_y} (but not both) may be specified to obtain a
 two-dimensional cumulative exposure-response curve.
 
 \strong{\code{ptype = "cross"}}

@@ -91,7 +91,8 @@ cumulative predictions in \code{allfit}.}
 \item{allRRfit}{Matrix of exponentiated associations from \code{allfit}.}
 \item{Qlower_allRRfit}{Matrix of exponentiated bounds from \code{Qlower_allfit}.}
 \item{Qupper_allRRfit}{Matrix of exponentiated bounds from \code{Qupper_allfit}.}
-\item{exc_prob}{Vector of exceedance probabilities, if requested.}
+\item{exc_prob_matfit}{Matrix of exceedance probabilities for matfit, if requested.}
+\item{exc_prob_allfit}{Vector of exceedance probabilities for allfit, if requested.}
 }
 }
 \description{

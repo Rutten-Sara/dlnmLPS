@@ -9,6 +9,7 @@
   slice_lag = NULL,
   slice_x = NULL,
   slice_y = NULL,
+  slice_by = NULL,
   ptype = "overall",
   xlim = NULL,
   ylim = NULL,
@@ -32,6 +33,9 @@ obtain slices. Integer or numeric vector.}
 
 \item{slice_y}{Exposure values of the second exposure variable at which to
 obtain slices (bivariate exposures only). Integer or numeric vector.}
+
+\item{slice_by}{Optional argument to specify the levels of the by-variable
+to be plotted. One value or multiple values supplied through a vector.}
 
 \item{ptype}{Character string specifying the type of plot. One of:
 \describe{
