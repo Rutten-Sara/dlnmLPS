@@ -27,7 +27,8 @@ Objects of class \code{crossbasis} are recognized
 automatically and therefore do not need to be specified explicitly in
 \code{arg$type}. The additional argument \code{pen} can be specified, where
 \code{NULL} specifies an unpenalized basis and an integer
-specifies the penalty structure. The additional argument \code{add.lagpen}
+specifies the penalty structure (default is 2 for \code{ps}).
+The additional argument \code{add.lagpen}
 (default TRUE) is a logical indicator, indicating whether an additional
 penalty should be specified in the lag dimension (for penalized settings)
 to encourage shrinkage of the effect at longer lags. The additional lag
