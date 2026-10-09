@@ -1,13 +1,104 @@
+#' Attributable risk from DLNMLPS model
+#'
+#' This function calculated the attributable risk (attributable fraction and
+#' attributable number) from a fitted [DLNM_LPS] model.
+#'
+#' @param basis An object of class `"crossbasis"` or `"joint.crossbasis"`
+#'   defining the exposure-lag basis used in the model.
+#' @param cases A vector of cases or, only if `dir = "forw"`, a matrix of
+#'   future cases.
+#' @param model An object of class `"DLNMLPS"` returned by the [DLNM_LPS] function.
+#' @param cen A value  (or a vector of length 2 for `"joint.crossbasis"`)
+#'   specifying the centering (reference) exposure level used
+#'   for calculating relative risk predictions.
+#' @param x Vector of the first exposure or, only if `dir = "back"` a matrix
+#'   of lagged exposures, for which the attributable fraction needs to be
+#'   calculated.
+#' @param y Vector of the second exposure or, only if `dir = "back"` a matrix
+#'   of lagged exposures, for which the attributable fraction needs to be
+#'   calculated. Only for `basis` of class`"joint.crossbasis"`.
+#' @param by Vector of the `by` variable-levels (same length as cases) at
+#'   which the DLNM relationship is evaluated. For a continuous `by` variable,
+#'   this is a vector of numeric values defining the level at
+#'   which the effect is evaluated. For a factor `by` variable,
+#'   this is a vector of factor levels defining the corresponding stratum.
+#' @param group Vector of region indicators to specify an optional grouping structure
+#'   of the output. For spatially varying DLNMs, this argument automatically corresponds
+#'   to the ID vector in `by` (i.e., region-specific attributable risks are calculated).
+#'   For non-spatially varying DLNMs, a vector can also be specified (same length
+#'   as cases) to group the output per region.
+#' @param dir Either "back" (default) or "forw" for backward and forward
+#'   perspective on attributable risk respectively.
+#' @param tot If `True`, the total attributable risk over the entire period is calculated.
+#' @param range_x The range of the first exposure for which the attributable risk is
+#'   calculated. If `NULL`(default), the whole range is used.
+#' @param range_y The range of the second exposure for which the attributable risk is
+#'   calculated. If `NULL`(default), the whole range is used.
+#'   Only for `basis` of class`"joint.crossbasis"`.
+#' @param samples Set to `TRUE` if samples from the posterior distribution should be returned.
+#'   Samples can only be calculated for `tot = TRUE`.
+#' @param nsamples Number of samples from the posterior distribution to be returned.
+#'   (only for `nsamples = TRUE`).
+#' @param exc.threshold Numeric value defining the threshold used for exceedance
+#'   probability calculations of the attributable fraction. If `NULL` (default), no
+#'   exceedance probabilities are calculated.
+#'
+#' @returns A list containing the attributable fractions and numbers.
+#'
+#'   If `samples = TRUE`, the list is structured in two main elements.
+#'   Note that this option is only possible with `tot = TRUE`. The two elements are:
+#' \describe{
+#'   \item{samples element}{List with samples from the posterior distribution of the total
+#'   attributable fraction `af` and total attributable number `an`. The group `ID`
+#'   (if applicable) and exceedance probabilities (if requested) are also reported.
+#'   For a non-NULL grouping structures, this output is structured per group.}
+#'   \item{fit element}{The fitted total `af`, `an`, and the group `ID`
+#'   if applicable. For a non-NULL grouping structures, this output is structured per group. }
+#' }
+#'
+#'   If `samples = FALSE`, the list contains the fitted total `af`, `an`, and the group `ID`
+#'   if applicable, when `tot = TRUE`. When `tot = FALSE`, this list contains the day-specific
+#'   `af`, `an` and `cases`, as well as the group `ID` if applicable. For non-NULL grouping
+#'   structures, this output is structured per group.
+#'
+#' @export
+#'
 attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, group = NULL,
-                              type = "af", dir ="back", tot = TRUE, range_x = NULL,
-                              range_y = NULL, sim = FALSE, nsim = 1000, exc.prob = NULL){
+                              dir ="back", tot = TRUE, range_x = NULL,
+                              range_y = NULL, samples = FALSE, nsamples = 1000,
+                              exc.threshold = NULL){
 
-  type <- match.arg(type,c("an","af"))
   dir <- match.arg(dir,c("back","forw"))
 
   if(missing(cen)){
     stop("Please specify a centering value")
   }
+
+  if (!is.null(exc.threshold) & !samples){
+    exc.threshold = NULL
+    warning("Exceedance probabilities can only be calculated with samples = TRUE")
+  }
+
+
+  # Which type of basis?
+  rhs <-  model$model[[3]]
+  all_terms <- split_terms(rhs)
+
+  index_term <- grepl(gsub("\\s+", "", deparse(substitute(basis))),
+                      gsub("\\s+", "", all_terms),
+                      fixed = TRUE)
+
+  kind_term <- model$types[which(index_term)-1]
+
+  if(kind_term %in% c("spatial DLNM", "joint spatial DLNM")){
+    group = by
+  }
+
+  if(kind_term %in% c("spatial DLNM", "joint spatial DLNM","modified DLNM", "joint modified DLNM") &&
+     is.null(by)){
+     stop("Please specify the level of the by-variable")
+  }
+
 
   # Select range
   if("joint.crossbasis" %in% class(basis)){
@@ -124,23 +215,12 @@ attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, 
     }
 
 
-    # Which type of basis?
-    rhs <-  model$model[[3]]
-    all_terms <- split_terms(rhs)
-
-    index_term <- grepl(gsub("\\s+", "", deparse(substitute(basis))),
-                        gsub("\\s+", "", all_terms),
-                        fixed = TRUE)
-
-    kind_term <- model$types[which(index_term)-1]
-
     dim_basis <- ncol(basis)
     ind_cb <- which(index)[1:dim_basis]
     xi_mode_cb = coef[ind_cb]
 
     # Effect-modified basis: interaction with effect-modification
     if (kind_term %in% c("modified DLNM", "joint modified DLNM")){
-      if(is.null(by)){stop("Specify a by-variable")}
       type_smooth <- model$smooth[[which(index_term)-1]]
       output = list()
 
@@ -163,9 +243,9 @@ attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, 
         for(by.value in 1:length(by)){
           index_by <- grepl(by[by.value], attributes(type_smooth)$Dimnames[[2]],
                      fixed = TRUE)
-          z <-rep(0,length(attributes(type_smooth)$Dimnames[[2]]))
-          z[index_by] =1
-          z <- rbind(z,as.matrix(z, nrow = 1))
+          z_part <-rep(0,length(attributes(type_smooth)$Dimnames[[2]]))
+          z_part[index_by] =1
+          z <- rbind(z,as.matrix(z_part, nrow = 1))
         }
       } else{
           z = as.matrix(by, ncol = 1)
@@ -265,16 +345,16 @@ attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, 
 
 
     # Credible intervals
-    if(!tot && sim) {
-      sim <- FALSE
-      warning("simulation samples only returned for tot=T")
+    if(!tot && samples) {
+      samples <- FALSE
+      warning("simulation samples and exceedance probabilities only returned for tot=T")
     }
 
-    if(sim){
+    if(samples){
     if(is.null(constraint_matrix)){
-      coefsim  = simulate_from_precision(Prec, nsim = 500)
+      coefsim  = simulate_from_precision(Prec, nsim = nsamples)
     }else{
-      coefsim  = simulate_from_precision_con(Prec,constraint_matrix, nsim = 500)
+      coefsim  = simulate_from_precision_con(Prec,constraint_matrix, nsim = nsamples)
     }
     coefsim <- coefsim + coef[index]
 
@@ -301,7 +381,7 @@ attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, 
         })
 
         ansim = NULL
-        for (r in 1:nsim){
+        for (r in 1:nsamples){
           ansim[r] <- as.numeric(afsim[r])*den[i]
         }
 
@@ -341,20 +421,23 @@ attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, 
     }
 
 
-    if (!is.null(exc.prob) & sim){
+    if (!is.null(exc.threshold) & samples){
       if(!is.null(group)){
       for (r in 1:length(output_list)){
-        output_list_sim[[r]]$exc.prob = sum(output_list_sim[[r]]$af>exc.prob, na.rm=T)/length(output_list_sim[[r]]$af)
+        output_list_sim[[r]]$exc.prob = sum(output_list_sim[[r]]$af>exc.threshold, na.rm=T)/length(output_list_sim[[r]]$af)
       }
       }else{
-        output_list_sim$exc.prob = sum(output_list_sim$af>exc.prob, na.rm=T)/length(output_list_sim$af)
+        output_list_sim$exc.prob = sum(output_list_sim$af>exc.threshold, na.rm=T)/length(output_list_sim$af)
       }
 
 
     }
 
-    if(sim){
-      return(list(sim = output_list_sim, fit = output_list))
+    if(length(output_list) == 1){
+      output_list = output_list[[1]]
+    }
+    if(samples){
+      return(list(samples = output_list_sim, fit = output_list))
     }else{
       return(output_list)
     }

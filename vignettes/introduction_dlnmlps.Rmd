@@ -265,6 +265,105 @@ plot(pred_unpenalized, ptype = "cross", ticktype="detailed",theta=230,
         nticks = 4, shade = 0.75,r=sqrt(3),d=5,cex.axis=0.5, cex.lab=0.5,border=NA)
 ```
 
+One of the advantages of Bayesian modelling, is that uncertainty quantification can easily be obtained. We already illustrated how to request exceedance probabilities, but also attributable risks can be calculated within a DLNM framework [@Gasparrini2014af]. Therefore, the `DLNMLPS` package provides the function `attributable_risk()`. For example, if we want to calculate the attributable fraction of temperature during the summer of 2007, using the average maximum temperature and total number of cases (over all Districts), we can use:
+
+```{r}
+# Calculate exposure and outcome timeseries
+data2007 <- dataset |>
+  dplyr::filter(year == 2007) |>
+  dplyr::group_by(date) |>
+  dplyr::summarize(
+    Tmax = mean(Tmax, na.rm = TRUE),
+    dtot = sum(dtot, na.rm = TRUE)
+  )
+
+# Calculate attributable risk
+af2007 <- attributable_risk(
+  basis = basis.max_pen, 
+  cases = data2007$dtot, 
+  model = model_penalized,
+  cen = 25,
+  x = data2007$Tmax,
+  dir = "back",
+  tot = TRUE,
+  samples = TRUE,
+  exc.threshold = 0)
+
+# Fit and Credible intervals
+af2007$fit$af
+quantile(af2007$samples$af, probs = c(0.025,0.975))
+
+# Exceedance probability
+af2007$samples$exc.prob
+```
+
+Using the backward perspective on attributable fraction (i.e. `dir = "back"`), we obtain a total (`tot = TRUE`) attributable fraction of 0.07(0.04,0.09). The probability that this attributable fraction is strictly positive is requested through `exc.threshold = 0`, and is equal to 1. We could also request the forward perspective, using:
+
+```{r}
+af2007_fw <- attributable_risk(
+  basis = basis.max_pen, 
+  cases = data2007$dtot, 
+  model = model_penalized,
+  cen = 25,
+  x = data2007$Tmax,
+  dir = "forw",
+  tot = TRUE,
+  samples = TRUE,
+  exc.threshold = 0)
+
+# Fit and Credible intervals
+af2007_fw$fit$af
+quantile(af2007_fw$samples$af, probs = c(0.025,0.975))
+
+# Exceedance probability
+af2007_fw$samples$exc.prob
+```
+
+Results are very similar. Instead of calculating the total attributable fraction, using an average temperature timeseries and total cases, we could also calculate the district-specific attributable fractions, using the district-specific timeseries and cases. This grouping variable can be spacified through the argument `group`:
+
+```{r}
+# Calculate exposure and outcome timeseries
+data2007_district <- dataset |>
+  dplyr::filter(year == 2007) 
+
+# Calculate attributable risk
+af2007_district <- attributable_risk(
+  basis = basis.max_pen, 
+  cases = data2007_district$dtot, 
+  model = model_penalized,
+  cen = 25,
+  x = data2007_district$Tmax,
+  group = data2007_district$District,
+  dir = "back",
+  tot = TRUE,
+  samples = TRUE)
+
+```
+
+These results could then for example be visualized as:
+
+```{r, fig.width = 4, fig.height = 4}
+# Extract results
+af_ci <- dplyr::bind_rows(lapply(seq_along(af2007_district$samples), function(i) {
+  x <- af2007_district$samples[[i]]
+  data.frame(
+    ID = x$ID[1],
+    estimate = af2007_district$fit[[i]]$af,
+    lower = quantile(x$af, 0.025, na.rm = TRUE),
+    upper = quantile(x$af, 0.975, na.rm = TRUE)
+  )
+}))
+
+# Visualize results
+ggplot2::ggplot(af_ci, ggplot2::aes(x = estimate, y = ID)) +
+  ggplot2::geom_errorbar(ggplot2::aes(xmin = lower, xmax = upper), orientation = "y") +
+  ggplot2::geom_point() +
+  ggplot2::labs(x = "Attributable fraction", y = "District") +
+  ggplot2::theme_minimal()
+
+```
+
+Some small regional differences can be seen, which could be explained by different district-specific temperature timeseries and cases.
 
 ## Comparing penalized and unpenalized models
 
