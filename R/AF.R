@@ -33,9 +33,9 @@ attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, 
   lag <- attr(basis,"lag")
   if("joint.crossbasis" %in% class(basis)){
   if(NCOL(x)==1L & NCOL(y)==1L) {
-    at_x <- if(dir=="back") tsModel:::Lag(x,seq(lag[1],lag[2]),group=group) else
+    at_x <- if(dir=="back") tsModel::Lag(x,seq(lag[1],lag[2]),group=group) else
       matrix(rep(x,diff(lag)+1),length(x))
-    at_y <- if(dir=="back") tsModel:::Lag(y,seq(lag[1],lag[2]), group=group) else
+    at_y <- if(dir=="back") tsModel::Lag(y,seq(lag[1],lag[2]), group=group) else
       matrix(rep(y,diff(lag)+1),length(y))
   } else if(NCOL(x)!=1L & NCOL(y)!=1L) {
     if(dir=="forw") stop("'x' and 'y' must be a vector of dimension 1 when dir='forw'")
@@ -46,7 +46,7 @@ attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, 
   } else{stop("dimension of x and y are not compatible")}
   }else{
     if(NCOL(x)==1L) {
-      at_x <- if(dir=="back") tsModel:::Lag(x,seq(lag[1],lag[2]),group=group) else
+      at_x <- if(dir=="back") tsModel::Lag(x,seq(lag[1],lag[2]),group=group) else
         matrix(rep(x,diff(lag)+1),length(x))
     } else{
       if(dir=="forw") stop("'x' must be a vector of dimension 1 when dir='forw'")
@@ -83,7 +83,7 @@ attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, 
       den <- sum(cases,na.rm=TRUE)
     }
     if(dir=="forw")
-      cases <- rowMeans(as.matrix(tsModel:::Lag(cases,-seq(lag[1],lag[2]), group=group)))
+      cases <- rowMeans(as.matrix(tsModel::Lag(cases,-seq(lag[1],lag[2]), group=group)))
   }
 
   # Extract the model

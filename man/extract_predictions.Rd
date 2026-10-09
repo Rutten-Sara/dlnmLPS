@@ -111,7 +111,8 @@ extract_predictions(
     ptype = "allRRfit"
 )
 
-# Extract lag-specific RR for 28 and 30 degrees Celsius, lag 0 and 8 and for 10\% deprivation percentile
+# Extract lag-specific RR for 28 and 30 degrees Celsius, lag 0 and 8 and
+# for 10\% deprivation percentile
 extract_predictions(
     pred_conf_max,
     slice_x = c(28,30),
