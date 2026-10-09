@@ -216,6 +216,50 @@ contour(pred_penalized, slice_lag = 5, xlab = "maximumimum temperature", ylab = 
         ptype = "slices")
 ```
 
+The attributable fraction in 2007 can also be calculated for example. We make use of the district-specific maximum and minimum temperature timeseries and of the backward perspective:
+
+```{r}
+# Calculate exposure and outcome timeseries
+data2007_district <- dataset |>
+  dplyr::filter(year == 2007) 
+
+# Calculate attributable risk
+af2007_district <- attributable_risk(
+  basis = joint.basis_pen, 
+  cases = data2007_district$dtot, 
+  model = model_penalized,
+  cen = c(25,15),
+  x = data2007_district$Tmax,
+  y = data2007_district$Tmin,
+  group = data2007_district$District,
+  dir = "back",
+  tot = TRUE,
+  samples = TRUE)
+
+```
+
+These results could then for be visualized as:
+
+```{r, fig.width = 4, fig.height = 4}
+# Extract results
+af_ci <- dplyr::bind_rows(lapply(seq_along(af2007_district$samples), function(i) {
+  x <- af2007_district$samples[[i]]
+  data.frame(
+    ID = x$ID[1],
+    estimate = af2007_district$fit[[i]]$af,
+    lower = quantile(x$af, 0.025, na.rm = TRUE),
+    upper = quantile(x$af, 0.975, na.rm = TRUE)
+  )
+}))
+
+# Visualize results
+ggplot2::ggplot(af_ci, ggplot2::aes(x = estimate, y = ID)) +
+  ggplot2::geom_errorbar(ggplot2::aes(xmin = lower, xmax = upper), orientation = "y") +
+  ggplot2::geom_point() +
+  ggplot2::labs(x = "Attributable fraction", y = "District") +
+  ggplot2::theme_minimal()
+
+```
 
 ## Fitting a spatial and effect modified joint DLNM
 Just as for traditional DLNMs, a joint DLNM can be spatially varying or subject to effect modification (see `vignette("spatially-varying-dlnms")` and `vignette("effect-modified-dlnms")` for more information). The syntax remains exactly the same as for the univariate DLNM. 

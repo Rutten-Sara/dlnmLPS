@@ -319,7 +319,7 @@ quantile(af2007_fw$samples$af, probs = c(0.025,0.975))
 af2007_fw$samples$exc.prob
 ```
 
-Results are very similar. Instead of calculating the total attributable fraction, using an average temperature timeseries and total cases, we could also calculate the district-specific attributable fractions, using the district-specific timeseries and cases. This grouping variable can be spacified through the argument `group`:
+Results are very similar. Instead of calculating the total attributable fraction, using an average temperature timeseries and total cases, we could also calculate the district-specific attributable fractions, using the district-specific timeseries and cases. This output grouping variable can be specified through the argument `group`:
 
 ```{r}
 # Calculate exposure and outcome timeseries

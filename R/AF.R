@@ -245,10 +245,10 @@ attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, 
                      fixed = TRUE)
           z_part <-rep(0,length(attributes(type_smooth)$Dimnames[[2]]))
           z_part[index_by] =1
-          z <- rbind(z,as.matrix(z_part, nrow = 1))
+          z <- rbind(z,matrix(z_part, nrow = 1))
         }
       } else{
-          z = as.matrix(by, ncol = 1)
+          z = matrix(by, ncol = 1)
         }
 
 

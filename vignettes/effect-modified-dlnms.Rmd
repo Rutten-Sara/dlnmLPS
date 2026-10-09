@@ -212,6 +212,90 @@ At high temperatures, there is some evidence that the overall RR is lower for mu
 contour(pred_penalized, ptype = "cross", xlab = "lag", ylab = "temperature")
 ```
 
+We could also calculate the attributable fraction in 2007 for example. Using the district-specific maximum temperatures, deprivation index and deaths, and the backward perspective, we get:
+
+```{r}
+# Calculate exposure and outcome timeseries
+data2007_district <- dataset |>
+  dplyr::filter(year == 2007) 
+
+# Calculate attributable risk
+af2007_district <- attributable_risk(
+  basis = basis.max_pen, 
+  cases = data2007_district$dtot, 
+  model = model4,
+  cen = 25,
+  x = data2007_district$Tmax,
+  by = data2007_district$depriv,
+  group = data2007_district$District,
+  dir = "back",
+  tot = TRUE,
+  samples = TRUE)
+
+```
+
+We could for example also calculate a counterfactual attributable fraction, in which the deprivation index in every area is equal to the 2.5% deprivation percentile.
+
+```{r}
+# Calculate counterfactual attributable risk
+depriv_lower <- round(quantile(data2007_district$depriv, probs = 0.025, na.rm = TRUE),2)
+af2007_counter <- attributable_risk(
+  basis = basis.max_pen, 
+  cases = data2007_district$dtot, 
+  model = model4,
+  cen = 25,
+  x = data2007_district$Tmax,
+  by = rep(depriv_lower, length(data2007_district$depriv)),
+  group = data2007_district$District,
+  dir = "back",
+  tot = TRUE,
+  samples = TRUE)
+
+```
+
+Both results could be visualized as:
+
+```{r, fig.width = 4, fig.height = 4}
+# Extract results
+af_ci <- dplyr::bind_rows(lapply(seq_along(af2007_district$samples), function(i) {
+  x <- af2007_district$samples[[i]]
+  data.frame(
+    ID = x$ID[1],
+    estimate = af2007_district$fit[[i]]$af,
+    lower = quantile(x$af, 0.025, na.rm = TRUE),
+    upper = quantile(x$af, 0.975, na.rm = TRUE)
+  )
+}))
+
+counter_ci <- dplyr::bind_rows(lapply(seq_along(af2007_counter$samples), function(i) {
+  x <- af2007_counter$samples[[i]]
+  data.frame(
+    ID = x$ID[1],
+    estimate = af2007_counter$fit[[i]]$af,
+    lower = quantile(x$af, 0.025, na.rm = TRUE),
+    upper = quantile(x$af, 0.975, na.rm = TRUE)
+  )
+}))
+
+af_plot_df <- dplyr::bind_rows(
+  dplyr::mutate(af_ci, scenario = "Observed"),
+  dplyr::mutate(counter_ci, scenario = "Counterfactual")
+)
+
+
+# Visualize results
+ggplot2::ggplot(af_plot_df, ggplot2::aes(x = estimate, y = ID, colour = scenario)) +
+  ggplot2::geom_errorbar(ggplot2::aes(xmin = lower, xmax = upper), orientation = "y", 
+                         position = ggplot2::position_dodge(0.5)) +
+  ggplot2::geom_point(position = ggplot2::position_dodge(0.5)) +
+  ggplot2::scale_colour_manual(values = c("Observed" = "#0072B2","Counterfactual" = "#D55E00")) +
+  ggplot2::labs(x = "Attributable fraction", y = "District",colour = "Scenario") +
+  ggplot2::theme_minimal()
+
+```
+
+It can be seen that a lower deprivation index, would result in a lower attributable fraction for some districts.
+
 # Summary
 
 In this vignette, we introduced the effect modifying functionality of `DLNMLPS`. We demonstrated how to fit four different models, differing in the flexibility of the effect modification. We used penalized splines to showcase the functionality of the package but similar models can be fitted with unpenalized splines. See also `vignette("introduction_dlnmlps")` for more information.

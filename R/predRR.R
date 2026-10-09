@@ -590,9 +590,9 @@ pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag = NULL, by
                         fixed = TRUE)
       arg.by <-rep(0,length(attributes(type_smooth)$Dimnames[[2]]))
       arg.by[index_by] =1
-      arg.by <- as.matrix(arg.by, nrow = 1)
+      arg.by <- matrix(arg.by, nrow = 1)
     } else{
-      arg.by = as.matrix(by[by.value], ncol = 1)
+      arg.by = matrix(by[by.value], ncol = 1)
     }
 
     arg.by <- matrix(rep(arg.by, each = length(predvar)*length(lag)), nrow = length(predvar)*length(lag), byrow = FALSE) # Replicate values for every lag
