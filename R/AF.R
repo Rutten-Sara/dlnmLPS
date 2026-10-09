@@ -61,6 +61,180 @@
 #'   `af`, `an` and `cases`, as well as the group `ID` if applicable. For non-NULL grouping
 #'   structures, this output is structured per group.
 #'
+#' @examples
+#' data(barcelona_temp)
+#' data(shapefile_bcn)
+#'
+#' # Examples of applications
+#'
+#' dataset <- barcelona_temp |>
+#'   dplyr::mutate(
+#'     dow = weekdays(date),
+#'     year = lubridate::year(date),
+#'     month = lubridate::month(date)
+#'   )
+#'
+#' group <- factor(paste0(dataset$District, "-", dataset$year))
+#'
+#'
+#' ### Example 1: Penalized and common DLNM
+#'
+#' # Create the (penalized) crossbasis
+#' basis.max <- dlnm::crossbasis(
+#'     dataset$Tmax,
+#'     argvar = list(df = 5, fun = "ps"),
+#'     arglag = list(df = 5, fun = "ps"),
+#'     lag = 14,
+#'     group = group
+#' )
+#'
+#' # Fit model
+#' model_max_common <- DLNM_LPS(
+#'     dtot ~ 1 + factor(dow) +
+#'     sm(month, arg = list(type = "ns", df = 3)) +
+#'     sm(year, arg = list(type = "rw1")) +
+#'     sm(basis.max, arg = list(pen= 2)) +
+#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+#'     data = dataset,
+#'     offset = log(pop),
+#'     model.comparison = list(DIC = TRUE),
+#'     family = "Poisson"
+#' )
+#'
+#' # Calculate attributable fraction (forward perspective) for 2007
+#'
+#' data2007_district <- dataset |>
+#'   dplyr::filter(year == 2007)
+#'
+#' # Calculate attributable risk
+#' af2007_common <- attributable_risk(
+#'   basis = basis.max,
+#'   cases = data2007_district$dtot,
+#'   model = model_max_common,
+#'   cen = 25,
+#'   x = data2007_district$Tmax,
+#'   group = data2007_district$District, # Calculate af per district
+#'   dir = "forw",
+#'   tot = TRUE,
+#'   samples = TRUE  # Samples from posterior distribution
+#' )
+#'
+#' ### Example 2: Penalized and common joint DLNM
+#'
+#' # Create the (penalized) joint crossbasis
+#' basis.max_min <- joint.crossbasis(
+#'     cbind(dataset$Tmax, dataset$Tmin),
+#'     argvar1 = list(df = 5, fun = "ps"),
+#'     argvar2 = list(df = 5, fun = "ps"),
+#'     arglag = list(df = 5, fun = "ps"),
+#'     lag = 14,
+#'     group = group
+#' )
+#'
+#' # Fit model
+#' model_joint_common <- DLNM_LPS(
+#'     dtot ~ 1 + factor(dow) +
+#'     sm(month, arg = list(type = "ns", df = 3)) +
+#'     sm(year, arg = list(type = "rw1")) +
+#'     sm(basis.max_min, arg = list(pen= 2)) +
+#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+#'     data = dataset,
+#'     offset = log(pop),
+#'     model.comparison = list(DIC = TRUE),
+#'     family = "Poisson"
+#' )
+#'
+#' # Calculate attributable fraction (backward perspective) for 2007
+#'
+#' af2007_joint <- attributable_risk(
+#'   basis = basis.max_min,
+#'   cases = data2007_district$dtot,
+#'   model = model_joint_common,
+#'   cen = c(25,15),
+#'   x = data2007_district$Tmax,
+#'   y = data2007_district$Tmin,
+#'   group = data2007_district$District, # Calculate af per district
+#'   dir = "back",
+#'   tot = TRUE,
+#'   samples = TRUE  # Samples from posterior distribution
+#' )
+#'
+#'
+#' ### Example 3: Unpenalized and spatially varying DLNM
+#'
+#' # Create the (unpenalized) crossbasis
+#' knots_max <- quantile(dataset$Tmax, probs = c(0.10,0.50,0.90))
+#' knots_lag <- dlnm::logknots(0:14, nk = 2)
+#'
+#' basis.max_unpen <- dlnm::crossbasis(
+#'     dataset$Tmax,
+#'     argvar=list(fun = "ns", knots = knots_max),
+#'     arglag=list(fun="ns", knots = knots_lag),
+#'     lag=14,
+#'     group=group
+#' )
+#'
+#' # Fit model
+#' model_max_spat <- DLNM_LPS(
+#'     dtot ~ 1 + factor(dow) +
+#'     sm(month, arg = list(type = "ns", df = 3)) +
+#'     sm(year, arg = list(type = "rw1")) +
+#'     sm(basis.max_unpen, by = District,
+#'             arg.by = list(type = "Leroux", map = shapefile_bcn)) +
+#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+#'     data = dataset,
+#'     offset = log(pop),
+#'     model.comparison = list(DIC = TRUE),
+#'     family = "Poisson")
+#'
+#'
+#' # Calculate attributable fraction (backward perspective) for 2007
+#'
+#' af2007_spat <- attributable_risk(
+#'   basis = basis.max_unpen,
+#'   cases = data2007_district$dtot,
+#'   model = model_max_spat,
+#'   cen = 25,
+#'   x = data2007_district$Tmax,
+#'   by = data2007_district$District, # Spatially varying DLNM by district
+#'   dir = "back",
+#'   tot = TRUE,
+#'   samples = TRUE  # Samples from posterior distribution
+#' )
+#'
+#'
+#' ### Example 4: Unpenalized and deprivation-varying DLNM
+#'
+#' # Fit model
+#' model_max_conf <- DLNM_LPS(
+#'     dtot ~ 1 + factor(dow) +
+#'     sm(month, arg = list(type = "ns", df = 3)) +
+#'     sm(year, arg = list(type = "rw1")) +
+#'     sm(depriv, arg = list(type = "ns", df = 3)) +
+#'     sm(basis.max_unpen, by = depriv,
+#'             arg.by = list(type = "ns", df = 3)) +
+#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+#'     data = dataset,
+#'     offset = log(pop),
+#'     model.comparison = list(DIC = TRUE),
+#'     family = "Poisson")
+#'
+#' # Calculate attributable fraction (forward perspective) for 2007
+#'
+#' af2007_conf <- attributable_risk(
+#'   basis = basis.max_unpen,
+#'   cases = data2007_district$dtot,
+#'   model = model_max_conf,
+#'   cen = 25,
+#'   x = data2007_district$Tmax,
+#'   by = data2007_district$depriv, # By-value for every district
+#'   group = data2007_district$District, # Group output by district
+#'   dir = "forw",
+#'   tot = TRUE,
+#'   samples = TRUE  # Samples from posterior distribution
+#' )
+#'
+#'
 #' @export
 #'
 attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, group = NULL,
