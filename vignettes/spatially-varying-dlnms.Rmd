@@ -277,7 +277,6 @@ ggplot2::ggplot(af_ci, ggplot2::aes(x = estimate, y = ID)) +
 
 ```
 
-Small regional differences can be found.
 
 # Summary
 
