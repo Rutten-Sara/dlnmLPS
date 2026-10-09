@@ -233,6 +233,52 @@ plot(pred_penalized, ptype = "cross", ticktype="detailed",theta=230,
 
 Similarly, a contour plot could also be made. In general, plots show that differences between the different municipalities in the temperature-mortality relationship are relatively small.
 
+It's also possible to calculate the region-specific attributable fractions for a specific year, for example 2007. For a spatially-varying DLNM, the output is automatically grouped using the `by` variable, and hence the `group` argument does not need to be specified. Adopting the backward perspective, we get:
+
+```{r}
+# Calculate exposure and outcome timeseries
+data2007_district <- dataset |>
+  dplyr::filter(year == 2007) 
+
+# Calculate attributable risk
+af2007_district <- attributable_risk(
+  basis = basis.max_pen, 
+  cases = data2007_district$dtot, 
+  model = model_typeIV,
+  cen = 25,
+  x = data2007_district$Tmax,
+  by = data2007_district$District,
+  dir = "back",
+  tot = TRUE,
+  samples = TRUE)
+
+```
+
+The output can be visualized as:
+
+```{r, fig.width = 4, fig.height = 4}
+# Extract results
+af_ci <- dplyr::bind_rows(lapply(seq_along(af2007_district$samples), function(i) {
+  x <- af2007_district$samples[[i]]
+  data.frame(
+    ID = x$ID[1],
+    estimate = af2007_district$fit[[i]]$af,
+    lower = quantile(x$af, 0.025, na.rm = TRUE),
+    upper = quantile(x$af, 0.975, na.rm = TRUE)
+  )
+}))
+
+# Visualize results
+ggplot2::ggplot(af_ci, ggplot2::aes(x = estimate, y = ID)) +
+  ggplot2::geom_errorbar(ggplot2::aes(xmin = lower, xmax = upper), orientation = "y") +
+  ggplot2::geom_point() +
+  ggplot2::labs(x = "Attributable fraction", y = "District") +
+  ggplot2::theme_minimal()
+
+```
+
+Small regional differences can be found.
+
 # Summary
 
 In this vignette, we introduced the spatially varying functionality of `DLNMLPS`. We demonstrated how to fit four different types of spatially-varying DLNMs, differing in penalization and spatial structure. See also `vignette("introduction_dlnmlps")` for more information.
