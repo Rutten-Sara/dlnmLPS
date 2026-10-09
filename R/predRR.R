@@ -230,14 +230,35 @@
 #'     by = quantile(dataset$depriv,probs= c(0.10, 0.90))
 #' )
 #'
+#' # Extract overall RR for 28 and 30 degrees Celsius for both deprivation indices
+#' extract_predictions(
+#'     pred_conf_max,
+#'     slice_x = c(28,30),
+#'     ptype = "allRRfit"
+#')
+#'
+#' # Extract lag-specific RR for 28 and 30 degrees Celsius, lag 0 and 8 and for 10% deprivation percentile
+#' extract_predictions(
+#'     pred_conf_max,
+#'     slice_x = c(28,30),
+#'     slice_lag = c(0,8),
+#'     slice_by = quantile(dataset$depriv,probs= c(0.10)),
+#'     ptype = "matRRfit"
+#')
+#'
 #' # Plot results (contour plot exposure-lag-response)
 #' contour(pred_conf_max, ptype = "cross", cols = function(n) hcl.colors(n, "Inferno"))
 #'
 #'
 #' @export
 
-pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 1, CI.all = FALSE, CI = FALSE,
+pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag = NULL, by.lag = 1, CI.all = FALSE, CI = FALSE,
                    ci.level = 0.95, exc.prob = FALSE, threshold = 0, mode = NULL, by = NULL){
+
+
+  if(missing(cen)){
+    stop("Please specify a centering value")
+  }
 
 
   constraint_matrix <- model$constraints
@@ -535,7 +556,7 @@ pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag, by.lag = 
         prob_fit <- mapply(function(mean_val, sd_val) {
           stats::pnorm(threshold, mean = mean_val, sd = sd_val, lower.tail = FALSE)
         }, output[[i]]$matfit, sd_logpredX[i,])
-        output[[i]]$exc.prob_matfit = matrix(prob_fit, nrow = length(predar), byrow = FALSE)
+        output[[i]]$exc.prob_matfit = matrix(prob_fit, nrow = length(predvar), byrow = FALSE)
       }
 
     }
@@ -842,6 +863,79 @@ data_pred_1d <- function(basis, at_x, predlag, cen){
 #' lower and upper bounds on the credible intervals (if requested in predictions),
 #' exceedance probabilities (if requested in predictions), and levels of the
 #' by-variable (if applicable).
+#'
+#' @examples
+#' data(barcelona_temp)
+#' data(shapefile_bcn)
+#'
+#' # Examples of applications
+#'
+#' dataset <- barcelona_temp |>
+#'   dplyr::mutate(
+#'     dow = weekdays(date),
+#'     year = lubridate::year(date),
+#'     month = lubridate::month(date)
+#'   )
+#'
+#' group <- factor(paste0(dataset$District, "-", dataset$year))
+#'
+#'
+#' ### Example 1: Penalized and common DLNM
+#'
+#' # Create the (unpenalized) crossbasis
+#'
+#' knots_max <- quantile(dataset$Tmax, probs = c(0.10,0.50,0.90))
+#' knots_lag <- dlnm::logknots(0:14, nk = 2)
+#'
+#' basis.max_unpen <- dlnm::crossbasis(
+#'     dataset$Tmax,
+#'     argvar=list(fun = "ns", knots = knots_max),
+#'     arglag=list(fun="ns", knots = knots_lag),
+#'     lag=14,
+#'     group=group
+#' )
+#'
+#' # Fit model
+#' model_max_conf <- DLNM_LPS(
+#'     dtot ~ 1 + factor(dow) +
+#'     sm(month, arg = list(type = "ns", df = 3)) +
+#'     sm(year, arg = list(type = "rw1")) +
+#'     sm(depriv, arg = list(type = "ns", df = 3)) +
+#'     sm(basis.max_unpen, by = depriv,
+#'             arg.by = list(type = "ns", df = 3)) +
+#'     sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+#'     data = dataset,
+#'     offset = log(pop),
+#'     model.comparison = list(DIC = TRUE),
+#'     family = "Poisson")
+#'
+#' # Make predictions
+#' pred_conf_max <- pred_crossbasis(
+#'     basis.max_unpen,
+#'     model_max_conf,
+#'     at_x = 22:30,
+#'     cen = 25,
+#'     lag = c(0,14),
+#'     CI = TRUE,
+#'     by = quantile(dataset$depriv,probs= c(0.10, 0.90))
+#' )
+#'
+#' # Extract overall RR for 28 and 30 degrees Celsius for both deprivation indices
+#' extract_predictions(
+#'     pred_conf_max,
+#'     slice_x = c(28,30),
+#'     ptype = "allRRfit"
+#')
+#'
+#' # Extract lag-specific RR for 28 and 30 degrees Celsius, lag 0 and 8 and for 10% deprivation percentile
+#' extract_predictions(
+#'     pred_conf_max,
+#'     slice_x = c(28,30),
+#'     slice_lag = c(0,8),
+#'     slice_by = quantile(dataset$depriv,probs= c(0.10)),
+#'     ptype = "matRRfit"
+#')
+#'
 #' @export
 #'
 extract_predictions <- function(x, slice_x = NULL, slice_y = NULL, slice_lag = NULL, slice_by = NULL,

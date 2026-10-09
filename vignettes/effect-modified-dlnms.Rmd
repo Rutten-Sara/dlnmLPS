@@ -164,7 +164,7 @@ model3$DIC; model3$WAIC; -sum(log(model3$CPO))
 model4$DIC; model4$WAIC; -sum(log(model4$CPO))
 ```
 
-The fourth model is preferred based on all model selection criteria. Using this model, we predict the exposure-lag-response curve for three different levels of the deprivation index (2.5%, 50% and 97.5%) at temperatures between 22 and 30 degrees Celsius, relative to a centering value of 25 degrees.
+The fourth model is preferred based on all model selection criteria. Using this model, we predict the exposure-lag-response curve for three different levels of the deprivation index (2.5%, 50% and 97.5%) at temperatures between 22 and 30 degrees Celsius, relative to a centering value of 25 degrees. We also request the probability that the logarithm of the relative risk exceeds 0:
 
 ```{r, fig.width = 6, fig.height = 4}
 pred_penalized <- pred_crossbasis(
@@ -174,24 +174,36 @@ pred_penalized <- pred_crossbasis(
   cen = 25,
   lag = c(0,14),
   CI = TRUE,
-  by = round(quantile(dataset$depriv, probs = c(0.025,0.50,0.975)),2)
+  by = round(quantile(dataset$depriv, probs = c(0.025,0.50,0.975)),2),
+  exc.prob = TRUE
 )
 ```
 
-To plot the exposure-response relationship at lag 0, 3 and 8 for these deprivation indices, we can use:
+Using the `extract_predictions()` function, we can easily extract (part of) the requested predictions. For example, if interest is in the lag-specific RR for lag 0 and lag 2 at 22 and 30 degrees and for deprivation quantiles 2.5% and 97.5%, we can use:
+
+```{r}
+extract_predictions(pred_penalized, slice_x = c(22,30), slice_lag = c(0,2), 
+                    slice_by = round(quantile(dataset$depriv, probs = c(0.025,0.975)),2), 
+                    ptype = "matRRfit")
+```
+
+
+To plot the exposure-response relationship at lag 0, 3 and 8 for the 2.5%, 50% and 97.5% percentile deprivation indices, we can use:
 
 ```{r, fig.width = 6, fig.height = 4}
 plot(pred_penalized, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, 
      xlab = "temperature", ylab = "RR")
 ```
 
-Based on this plot, the differences in temporal evolution of the RR, based on deprivation index, seem to be small. The plot title indicates the level of deprivation. The option multiple.plots = FALSE allows visualizing the results for different levels of the deprivation index on one plot. Note that this option is only available for an integer (and not a vector) slice value or overall RR-curve.
+Based on this plot, the differences in temporal evolution of the RR, based on deprivation index, seem to be small. The plot title indicates the level of deprivation. The option `multiple.plots` = FALSE allows visualizing the results for different levels of the deprivation index on one plot. Note that this option is only available for an integer (and not a vector) slice value or overall RR-curve. Furthermore, the option `slice_by` allows to specify only a subset of the predicted `by`-values. For example, if we only want to plot the 2.5% and 97.5% deprivation percentiles, we can use:
 
 ```{r, fig.width = 6, fig.height = 4}
-plot(pred_penalized, slice_x = 30, ptype = "slices", CI = TRUE, xlab = "lag", ylab = "RR",
+plot(pred_penalized, slice_x = 30, 
+     slice_by = round(quantile(dataset$depriv,probs = c(0.025,0.975)),2), 
+     ptype = "slices", CI = TRUE, xlab = "lag", ylab = "RR", multiple.plots = FALSE)
+plot(pred_penalized, slice_by = round(quantile(dataset$depriv, probs = c(0.025,0.975)),2), 
+     ptype = "overall", CI = TRUE, xlab = "temperature", ylab = "RR",  
      multiple.plots = FALSE)
-plot(pred_penalized, ptype = "overall", CI = TRUE, 
-     xlab = "temperature", ylab = "RR", multiple.plots = FALSE)
 ```
 
 At high temperatures, there is some evidence that the overall RR is lower for municipalities with a low deprivation index. A contour plot of the exposure-lag-response relationship can also be made for different deprivation levels:

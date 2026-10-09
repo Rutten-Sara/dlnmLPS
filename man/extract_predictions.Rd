@@ -48,3 +48,76 @@ by-variable (if applicable).
 \description{
 Help function to extract requested predictions from an object returned by \code{\link[=pred_crossbasis]{pred_crossbasis()}}.
 }
+\examples{
+data(barcelona_temp)
+data(shapefile_bcn)
+
+# Examples of applications
+
+dataset <- barcelona_temp |>
+  dplyr::mutate(
+    dow = weekdays(date),
+    year = lubridate::year(date),
+    month = lubridate::month(date)
+  )
+
+group <- factor(paste0(dataset$District, "-", dataset$year))
+
+
+### Example 1: Penalized and common DLNM
+
+# Create the (unpenalized) crossbasis
+
+knots_max <- quantile(dataset$Tmax, probs = c(0.10,0.50,0.90))
+knots_lag <- dlnm::logknots(0:14, nk = 2)
+
+basis.max_unpen <- dlnm::crossbasis(
+    dataset$Tmax,
+    argvar=list(fun = "ns", knots = knots_max),
+    arglag=list(fun="ns", knots = knots_lag),
+    lag=14,
+    group=group
+)
+
+# Fit model
+model_max_conf <- DLNM_LPS(
+    dtot ~ 1 + factor(dow) +
+    sm(month, arg = list(type = "ns", df = 3)) +
+    sm(year, arg = list(type = "rw1")) +
+    sm(depriv, arg = list(type = "ns", df = 3)) +
+    sm(basis.max_unpen, by = depriv,
+            arg.by = list(type = "ns", df = 3)) +
+    sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+    data = dataset,
+    offset = log(pop),
+    model.comparison = list(DIC = TRUE),
+    family = "Poisson")
+
+# Make predictions
+pred_conf_max <- pred_crossbasis(
+    basis.max_unpen,
+    model_max_conf,
+    at_x = 22:30,
+    cen = 25,
+    lag = c(0,14),
+    CI = TRUE,
+    by = quantile(dataset$depriv,probs= c(0.10, 0.90))
+)
+
+# Extract overall RR for 28 and 30 degrees Celsius for both deprivation indices
+extract_predictions(
+    pred_conf_max,
+    slice_x = c(28,30),
+    ptype = "allRRfit"
+)
+
+# Extract lag-specific RR for 28 and 30 degrees Celsius, lag 0 and 8 and for 10\% deprivation percentile
+extract_predictions(
+    pred_conf_max,
+    slice_x = c(28,30),
+    slice_lag = c(0,8),
+    slice_by = quantile(dataset$depriv,probs= c(0.10)),
+    ptype = "matRRfit"
+)
+
+}

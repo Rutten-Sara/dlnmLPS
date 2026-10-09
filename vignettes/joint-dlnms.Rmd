@@ -147,7 +147,7 @@ model_penalized <- DLNM_LPS(dtot ~ factor(dow) +
                               family = "Poisson")
 ```
 
-To visualize this mode, we need a grid of realistic maximum and minimum temperature combinations. A prediction is made for every `at_x`-`at_y` pair, rather than for cross-pairs. This also implies that the length of both vectors should be equal. A centering value now consists of a vector containing the reference value for both the first and the second exposure. A contour plot and 3D plot of the overall cumulative RR can then be made:
+To visualize this mode, we need a grid of realistic maximum and minimum temperature combinations. A prediction is made for every `at_x`-`at_y` pair, rather than for cross-pairs. This also implies that the length of both vectors should be equal. A centering value now consists of a vector containing the reference value for both the first and the second exposure. Predictions can then be made and exceedance probabilities can be requested, using:
 
 ```{r, fig.width = 6, fig.height = 4}
 # Realistic maximum - minimum temperature data frame
@@ -174,9 +174,20 @@ pred_penalized <- pred_crossbasis(
   at_y = df$y,
   cen = c(25,15),
   lag = c(0,14),
-  CI = TRUE
+  CI = TRUE,
+  exc.prob = TRUE
 )
+```
 
+We can again extract specific predictions of interest using `extract_predictions()`. For example, if we want to extract the lag-specific RRs at the first three `x` and `y` combinations, we can use:
+
+```{r}
+extract_predictions(pred_penalized, slice_x = df$x[1:3], slice_y = df$y[1:3], ptype = "allRRfit")
+```
+
+A contour plot and 3D plot of the overall cumulative RR can be made:
+
+```{r, fig.width = 6, fig.height = 4}
 contour(pred_penalized, ptype = "overall", xlab = "maximum temperature", ylab = "minimum temperature")
 plot(pred_penalized, ptype = "overall", ticktype="detailed",theta=230,
         xlab = "maximum", ylab = "minimum", zlab = "RR", 

@@ -10,7 +10,7 @@ pred_crossbasis(
   at_x,
   at_y = NULL,
   cen,
-  lag,
+  lag = NULL,
   by.lag = 1,
   CI.all = FALSE,
   CI = FALSE,
@@ -265,6 +265,22 @@ pred_conf_max <- pred_crossbasis(
     lag = c(0,14),
     CI = TRUE,
     by = quantile(dataset$depriv,probs= c(0.10, 0.90))
+)
+
+# Extract overall RR for 28 and 30 degrees Celsius for both deprivation indices
+extract_predictions(
+    pred_conf_max,
+    slice_x = c(28,30),
+    ptype = "allRRfit"
+)
+
+# Extract lag-specific RR for 28 and 30 degrees Celsius, lag 0 and 8 and for 10\% deprivation percentile
+extract_predictions(
+    pred_conf_max,
+    slice_x = c(28,30),
+    slice_lag = c(0,8),
+    slice_by = quantile(dataset$depriv,probs= c(0.10)),
+    ptype = "matRRfit"
 )
 
 # Plot results (contour plot exposure-lag-response)

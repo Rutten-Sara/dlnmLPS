@@ -152,13 +152,27 @@ pred_unpenalized <- pred_crossbasis(
   at_x = seq(22,30,length = 50),
   cen = 25,
   lag = c(0,14),
-  CI = TRUE
+  CI = TRUE,
+  exc.prob = TRUE,
+  threshold = 0
 )
 ```
 
-In this example, we requested predictions of the relative risk (RR) of temperature values 22-30, compared to a reference value of 25, over the entire lag period (0-14). Furthermore, we requested credible intervals.
+In this example, we requested predictions of the relative risk (RR) of temperature values 22-30, compared to a reference value of 25, over the entire lag period (0-14). Furthermore, we requested credible intervals. Exceedance probabilities can be requested through: `exc.prob`= TRUE. The threshold used to calculate these exceedance probabilities needs to be supplied through `threshold`, at the scale of the linear predictor. By default, the threshold is specified to be 0, calculating the probability that the logarithm of the relative risks exceeds 0:
 
-The estimated exposure-response association can be visualized at different lags (e.g. 0,3 and 8) using `ptype` = slices and `slice_lag`:
+Although all requested predictions are represented in `pred_unpenalized`, retrieving specific parts of these predictions might require some manual searching. To avoid this, the wrapper function can be used to easily extract (parts of) these predictions in one user-friendly data set. For example, if we want to extract the overall RR predictions for a temperature of 22 and 30 degrees Celsius, we can use `ptype` = "allRRfit" and:
+
+```{r}
+extract_predictions(pred_unpenalized, slice_x = c(22,30), ptype = "allRRfit")
+```
+
+Note that credible intervals and exceedance probabilities are also printed if present in the predictions. To extract the lag-specific RRs at lag 0 and lag 8 for these temperatures, we can similarly use `ptype` = "matRRfit":
+
+```{r}
+extract_predictions(pred_unpenalized, slice_x = c(22,30), slice_lag = c(0,8), ptype = "matRRfit")
+```
+
+The estimated exposure-response association can also be visualized at different lags (e.g. 0,3 and 8) using `ptype` = slices and `slice_lag`:
 
 ```{r, fig.width = 6, fig.height = 4}
 plot(pred_unpenalized, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, 
