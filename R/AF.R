@@ -357,7 +357,7 @@ attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, 
                    fixed = TRUE)
 
     coef <- model$xi_mode
-    Prec <- model$Prec[index,index]
+    Prec <- model$Prec
     model.link <- ifelse(model$family %in% c("Poisson", "NB"), "log",
                          ifelse(model$family == "Binomial", "logit", "identity"))
     if(!model.link %in% c("log","logit"))
@@ -530,7 +530,7 @@ attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, 
     }else{
       coefsim  = simulate_from_precision_con(Prec,constraint_matrix, nsim = nsamples)
     }
-    coefsim <- coefsim + coef[index]
+    coefsim <- coefsim + coef
 
     output_list_sim = list()
 
@@ -541,8 +541,8 @@ attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, 
 
         afsim <- apply(coefsim,2, function(coefi) {
 
-          ind_cb_spat_af <-  which(index & ind_spat_ID) - max(ind_cb ) + dim_basis
-          coefi <- coefi[c(1:dim_basis,ind_cb_spat_af)]
+          ind_cb_spat_af <-  index & ind_spat_ID
+          coefi <- c(coefi[ind_cb],coefi[ind_cb_spat_af])
 
 
           ind_dlist <-  !grepl("^(cases|group)", names(dlist[[i]]))
@@ -563,7 +563,7 @@ attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, 
       }
     }else{
       afsim <- apply(coefsim,2, function(coefi) {
-        ani <- as.numeric((1-exp(-drop(Xpredall%*%coefi)))*cases)
+        ani <- as.numeric((1-exp(-drop(Xpredall%*%coefi[index])))*cases)
         ani_result = NULL
         if(!is.null(group)){
           for (r in 1:length(names(output_list))){
