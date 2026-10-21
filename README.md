@@ -16,8 +16,36 @@ provides a flexible approach for modelling complex
 exposure-lag-response relationships, including relationships that
 vary spatially or according to pre-specified continuous or categorical
 modifiers, as well as exposure-lag-response relationships for two joint exposures.
-The package also supports the inclusion of other (smooth) covariate effects
-and (structured) spatial and temporal effects.
+In addition to exposure-lag-response relationships, `DLNMLPS` allows other sources
+of heterogeneity to be incorporated, including smooth covariate effects, random effects 
+and spatial and temporal structures.
+
+More specifically, `DLNMLPS` can be used to model:
+
+- **distributed lag nonlinear associations**, allowing nonlinear exposure-response relationships over multiple time lags. DLNMs can be unpenalized (natural splines or B-splines) or penalized (P-splines);
+
+- **random effects**, including independent random effects and spatially structured random effects (ICAR, BYM or Leroux). These random effects can possibly vary over time (according to an independent or random walk structure);
+
+- **temporal random effects**, including first- and second-order random-walk structures. These temporal effects can possibly depend on location (according to an independent, ICAR or Leroux structure);
+
+- **smooth exposure effects**, using natural splines (`ns`), B-splines (`bs`), or P-splines (`ps`); and
+
+- **more complex DLNM extensions**, including effect modification, spatially varying DLNMs, and models with bivariate exposures.
+
+The different components can be combined to construct models that account simultaneously 
+for nonlinear exposure-response relationships, distributed lag effects, and spatial or temporal dependence.
+Supported outcome distributions are Poisson, negative binomial, binomial and Gaussian.
+
+## Documentation
+
+Detailed documentation for DLNMLPS is available through the tabs on this website:
+
+- The **Reference** tab provides an overview of the functions available in DLNMLPS, including
+their arguments and return values.
+
+- The **Articles** tab provides more detailed explanations of the package functionality,
+with examples illustrating how to specify and fit different models.
+
 
 ## Installation
 
@@ -70,9 +98,6 @@ Associated literature:
    Laplacian P-splines. *arXiv preprint arXiv:2604.09012*.
    <https://doi.org/10.48550/arXiv.2604.09012>
 
-To cite the DLNMLPS package in publications, use:
-    Rutten, S., Neyens, T., Duarte, E. & Faes, C. (2026).
-    DLNMLPS: Flexible Bayesian Distributed Lag Non-Linear Models.[Computer Software].
    
 ## Package version
 
