@@ -1,13 +1,13 @@
 #' Attributable risk from dlnmLPS model
 #'
 #' This function calculated the attributable risk (attributable fraction and
-#' attributable number) from a fitted [DLNM_LPS] model.
+#' attributable number) from a fitted [dlnmLPS] model.
 #'
 #' @param basis An object of class `"crossbasis"` or `"joint.crossbasis"`
 #'   defining the exposure-lag basis used in the model.
 #' @param cases A vector of cases or, only if `dir = "forw"`, a matrix of
 #'   future cases.
-#' @param model An object of class `"dlnmLPS"` returned by the [DLNM_LPS] function.
+#' @param model An object of class `"dlnmLPS"` returned by the [dlnmLPS] function.
 #' @param cen A value  (or a vector of length 2 for `"joint.crossbasis"`)
 #'   specifying the centering (reference) exposure level used
 #'   for calculating relative risk predictions.
@@ -89,7 +89,7 @@
 #' )
 #'
 #' # Fit model
-#' model_max_common <- DLNM_LPS(
+#' model_max_common <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +
@@ -132,7 +132,7 @@
 #' )
 #'
 #' # Fit model
-#' model_joint_common <- DLNM_LPS(
+#' model_joint_common <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +
@@ -175,7 +175,7 @@
 #' )
 #'
 #' # Fit model
-#' model_max_spat <- DLNM_LPS(
+#' model_max_spat <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +
@@ -206,7 +206,7 @@
 #' ### Example 4: Unpenalized and deprivation-varying DLNM
 #'
 #' # Fit model
-#' model_max_conf <- DLNM_LPS(
+#' model_max_conf <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +

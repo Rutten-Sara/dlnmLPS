@@ -80,7 +80,7 @@ basis.min_pen <- dlnm::crossbasis(
   group = group
 )
 
-model_additive <- DLNM_LPS(dtot ~ factor(dow) + 
+model_additive <- dlnmLPS(dtot ~ factor(dow) + 
                                 sm(basis.max_pen, arg = list(pen = 2)) +
                                 sm(basis.min_pen, arg = list(pen = 2)) +
                                 sm(month, arg = list(type = "ns", df = 3)) +
@@ -112,7 +112,7 @@ joint.basis <- joint.crossbasis(
                   group = group
                   )
 
-model_unpenalized <- DLNM_LPS(dtot ~ factor(dow) + 
+model_unpenalized <- dlnmLPS(dtot ~ factor(dow) + 
                                    sm(joint.basis) +
                                    sm(month, arg = list(type = "ns", df = 3)) +
                                    sm(year, arg = list(type = "rw1")) +
@@ -136,7 +136,7 @@ joint.basis_pen <- joint.crossbasis(
                     group = group
                     )
 
-model_penalized <- DLNM_LPS(dtot ~ factor(dow) + 
+model_penalized <- dlnmLPS(dtot ~ factor(dow) + 
                                  sm(joint.basis_pen, arg = list(pen = 2)) +
                                  sm(month, arg = list(type = "ns", df = 3)) +
                                  sm(year, arg = list(type = "rw1")) +

@@ -3,7 +3,7 @@
 #' Specify a smooth or structured model component
 #'
 #' `sm()` specifies smooth functions and structured effects to be included
-#' in the model formula supplied to [DLNM_LPS()].
+#' in the model formula supplied to [dlnmLPS()].
 #'
 #' @param x The variable or basis to which the model component is applied.
 #'   This can be:
@@ -84,11 +84,11 @@
 #'
 #' @returns
 #' An object representing a smooth or structured model component. This object
-#' is used internally by [DLNM_LPS()] when constructing the model from the
+#' is used internally by [dlnmLPS()] when constructing the model from the
 #' supplied formula.
 #'
 #' @examples
-#' # `sm()` is intended to be used inside a DLNM_LPS() formula:
+#' # `sm()` is intended to be used inside a dlnmLPS() formula:
 #' \dontrun{
 #' # Penalized DLNM cross-basis
 #' # Cross-basis objects are recognized automatically

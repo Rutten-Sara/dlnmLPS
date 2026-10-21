@@ -89,7 +89,7 @@ basis.max <- dlnm::crossbasis(
   group = group
 )
 
-model_typeI <- DLNM_LPS(dtot ~ factor(dow) + 
+model_typeI <- dlnmLPS(dtot ~ factor(dow) + 
                              sm(basis.max,
                                   by = District, arg.by = list(type = "ind")) +
                              sm(month, arg = list(type = "ns", df = 3)) +
@@ -100,7 +100,7 @@ model_typeI <- DLNM_LPS(dtot ~ factor(dow) +
                         model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
                         family = "Poisson")
 
-model_typeIII <- DLNM_LPS(dtot ~ factor(dow) + 
+model_typeIII <- dlnmLPS(dtot ~ factor(dow) + 
                                sm(basis.max,
                                   by = District, arg.by = list(type = "Leroux", map = shapefile_bcn)) +
                                sm(month, arg = list(type = "ns", df = 3)) +
@@ -124,7 +124,7 @@ basis.max_pen <- dlnm::crossbasis(
   group = group
 )
 
-model_typeII <- DLNM_LPS(dtot ~ factor(dow) + 
+model_typeII <- dlnmLPS(dtot ~ factor(dow) + 
                               sm(basis.max_pen, arg = list(pen = 2),
                                   by = District, arg.by = list(type = "ind")) +
                               sm(month, arg = list(type = "ns", df = 3)) +
@@ -135,7 +135,7 @@ model_typeII <- DLNM_LPS(dtot ~ factor(dow) +
                          model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
                          family = "Poisson")
 
-model_typeIV <- DLNM_LPS(dtot ~ factor(dow) + 
+model_typeIV <- dlnmLPS(dtot ~ factor(dow) + 
                               sm(basis.max_pen, arg = list(pen = 2),
                                   by = District, arg.by = list(type = "Leroux", map = shapefile_bcn)) +
                               sm(month, arg = list(type = "ns", df = 3)) +

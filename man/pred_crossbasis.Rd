@@ -25,7 +25,7 @@ pred_crossbasis(
 \item{basis}{An object of class \code{"crossbasis"} or \code{"joint.crossbasis"}
 defining the exposure-lag basis used in the model.}
 
-\item{model}{An object of class \code{"dlnmLPS"} returned by the \link{DLNM_LPS} function.}
+\item{model}{An object of class \code{"dlnmLPS"} returned by the \link{dlnmLPS} function.}
 
 \item{at_x}{A numeric vector specifying constant exposure values over the
 selected lag period, or a matrix specifying exposure histories over the
@@ -97,7 +97,7 @@ cumulative predictions in \code{allfit}.}
 }
 \description{
 This function generates predictions from a fitted
-\link{DLNM_LPS} model over a specified grid of exposure and lag values. Predictions
+\link{dlnmLPS} model over a specified grid of exposure and lag values. Predictions
 are computed relative to a user-defined reference (centering) value.
 }
 \examples{
@@ -128,7 +128,7 @@ basis.max <- dlnm::crossbasis(
 )
 
 # Fit model
-model_max_common <- DLNM_LPS(
+model_max_common <- dlnmLPS(
     dtot ~ 1 + factor(dow) +
     sm(month, arg = list(type = "ns", df = 3)) +
     sm(year, arg = list(type = "rw1")) +
@@ -168,7 +168,7 @@ basis.max_min <- joint.crossbasis(
 )
 
 # Fit model
-model_joint_common <- DLNM_LPS(
+model_joint_common <- dlnmLPS(
     dtot ~ 1 + factor(dow) +
     sm(month, arg = list(type = "ns", df = 3)) +
     sm(year, arg = list(type = "rw1")) +
@@ -210,7 +210,7 @@ basis.max_unpen <- dlnm::crossbasis(
 )
 
 # Fit model
-model_max_spat <- DLNM_LPS(
+model_max_spat <- dlnmLPS(
     dtot ~ 1 + factor(dow) +
     sm(month, arg = list(type = "ns", df = 3)) +
     sm(year, arg = list(type = "rw1")) +
@@ -243,7 +243,7 @@ plot(pred_spat_max, ptype = "overall", CI = FALSE, xlab = "temp", ylab = "RR", y
 ### Example 4: Unpenalized and deprivation-varying DLNM
 
 # Fit model
-model_max_conf <- DLNM_LPS(
+model_max_conf <- dlnmLPS(
     dtot ~ 1 + factor(dow) +
     sm(month, arg = list(type = "ns", df = 3)) +
     sm(year, arg = list(type = "rw1")) +

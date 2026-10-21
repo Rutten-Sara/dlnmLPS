@@ -1,12 +1,12 @@
 #' Generate Predictions from a dlnmLPS Model
 #'
 #' This function generates predictions from a fitted
-#' [DLNM_LPS] model over a specified grid of exposure and lag values. Predictions
+#' [dlnmLPS] model over a specified grid of exposure and lag values. Predictions
 #' are computed relative to a user-defined reference (centering) value.
 #'
 #' @param basis An object of class `"crossbasis"` or `"joint.crossbasis"`
 #'   defining the exposure-lag basis used in the model.
-#' @param model An object of class `"dlnmLPS"` returned by the [DLNM_LPS] function.
+#' @param model An object of class `"dlnmLPS"` returned by the [dlnmLPS] function.
 #' @param at_x A numeric vector specifying constant exposure values over the
 #'   selected lag period, or a matrix specifying exposure histories over the
 #'   same lag period used during model estimation.
@@ -91,7 +91,7 @@
 #' )
 #'
 #' # Fit model
-#' model_max_common <- DLNM_LPS(
+#' model_max_common <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +
@@ -131,7 +131,7 @@
 #' )
 #'
 #' # Fit model
-#' model_joint_common <- DLNM_LPS(
+#' model_joint_common <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +
@@ -173,7 +173,7 @@
 #' )
 #'
 #' # Fit model
-#' model_max_spat <- DLNM_LPS(
+#' model_max_spat <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +
@@ -206,7 +206,7 @@
 #' ### Example 4: Unpenalized and deprivation-varying DLNM
 #'
 #' # Fit model
-#' model_max_conf <- DLNM_LPS(
+#' model_max_conf <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +
@@ -897,7 +897,7 @@ data_pred_1d <- function(basis, at_x, predlag, cen){
 #' )
 #'
 #' # Fit model
-#' model_max_conf <- DLNM_LPS(
+#' model_max_conf <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +

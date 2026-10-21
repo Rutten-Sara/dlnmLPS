@@ -89,15 +89,15 @@ random effects (main type is \code{ind}, \code{ICAR} or \code{Leroux}).}
 }
 \value{
 An object representing a smooth or structured model component. This object
-is used internally by \code{\link[=DLNM_LPS]{DLNM_LPS()}} when constructing the model from the
+is used internally by \code{\link[=dlnmLPS]{dlnmLPS()}} when constructing the model from the
 supplied formula.
 }
 \description{
 \code{sm()} specifies smooth functions and structured effects to be included
-in the model formula supplied to \code{\link[=DLNM_LPS]{DLNM_LPS()}}.
+in the model formula supplied to \code{\link[=dlnmLPS]{dlnmLPS()}}.
 }
 \examples{
-# `sm()` is intended to be used inside a DLNM_LPS() formula:
+# `sm()` is intended to be used inside a dlnmLPS() formula:
 \dontrun{
 # Penalized DLNM cross-basis
 # Cross-basis objects are recognized automatically

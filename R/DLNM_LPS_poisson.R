@@ -1,6 +1,6 @@
 #' Fitting the model using LPS for poisson distribution
 #' @noRd
-DLNM_LPS_pois <- function(model,
+dlnmLPS_pois <- function(model,
                   data,
                   offset,
                   model.comparison,

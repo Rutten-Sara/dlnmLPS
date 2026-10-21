@@ -80,7 +80,7 @@ basis.max_unpen <- dlnm::crossbasis(
 )
 
 # Fit model
-model_max_conf <- DLNM_LPS(
+model_max_conf <- dlnmLPS(
     dtot ~ 1 + factor(dow) +
     sm(month, arg = list(type = "ns", df = 3)) +
     sm(year, arg = list(type = "rw1")) +

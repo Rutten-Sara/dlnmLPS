@@ -1,6 +1,6 @@
 #' Fitting the model using LPS for negative binomial distribution
 #' @noRd
-DLNM_LPS_NB <- function(model,
+dlnmLPS_NB <- function(model,
                   data,
                   offset,
                   model.comparison,

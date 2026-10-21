@@ -1,6 +1,6 @@
 #' Fit DLNM using Laplacian P-splines
 #'
-#' `DLNM_LPS` fits distributed lag non-linear models (DLNMs) using a
+#' `dlnmLPS` fits distributed lag non-linear models (DLNMs) using a
 #' Laplace approximation framework. The method is primarily designed for
 #' penalized spline representations, but also accommodates unpenalized spline
 #' bases within the DLNM framework. The model allows inclusion of structured
@@ -57,7 +57,7 @@
 #' )
 #'
 #' # Fit model
-#' model_max_common <- DLNM_LPS(
+#' model_max_common <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +
@@ -97,7 +97,7 @@
 #' )
 #'
 #' # Fit model
-#' model_joint_common <- DLNM_LPS(
+#' model_joint_common <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +
@@ -139,7 +139,7 @@
 #' )
 #'
 #' # Fit model
-#' model_max_spat <- DLNM_LPS(
+#' model_max_spat <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +
@@ -172,7 +172,7 @@
 #' ### Example 4: Unpenalized and deprivation-varying DLNM
 #'
 #' # Fit model
-#' model_max_conf <- DLNM_LPS(
+#' model_max_conf <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +
@@ -202,7 +202,7 @@
 #'
 #' @export
 #'
-DLNM_LPS <- function(model,
+dlnmLPS <- function(model,
                          data = NULL,
                          offset = NULL,
                          model.comparison = list(DIC = FALSE, WAIC = FALSE, CPO = FALSE),
@@ -218,7 +218,7 @@ DLNM_LPS <- function(model,
 
 
   if(family %in% c("Poisson", "poisson")){
-    output = DLNM_LPS_pois(model,
+    output = dlnmLPS_pois(model,
                               data,
                               offset,
                               model.comparison,
@@ -230,7 +230,7 @@ DLNM_LPS <- function(model,
     }else{
       Ntrials <- eval(substitute(Ntrials), data, base_env)
     }
-    output = DLNM_LPS_binomial(model,
+    output = dlnmLPS_binomial(model,
                                 data,
                                 offset,
                                 model.comparison,
@@ -239,7 +239,7 @@ DLNM_LPS <- function(model,
                                 base_env)
 
   }else if (family %in% c("NB","nb")){
-    output = DLNM_LPS_NB(model,
+    output = dlnmLPS_NB(model,
                              data,
                              offset,
                              model.comparison,
@@ -247,7 +247,7 @@ DLNM_LPS <- function(model,
                              base_env)
 
   }else if (family %in% c("Gaussian", "gaussian")){
-    output = DLNM_LPS_Gaussian(model,
+    output = dlnmLPS_Gaussian(model,
                          data,
                          offset,
                          model.comparison,

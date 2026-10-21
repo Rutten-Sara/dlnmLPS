@@ -88,7 +88,7 @@ basis.max_pen <- dlnm::crossbasis(
 dataset$depriv_cat <- ifelse(dataset$depriv <= quantile(dataset$depriv,0.25), "low",
                              ifelse(dataset$depriv >= quantile(dataset$depriv,0.75), "high", "medium"))
 
-model1 <- DLNM_LPS(dtot ~ factor(dow) + factor(depriv_cat) +
+model1 <- dlnmLPS(dtot ~ factor(dow) + factor(depriv_cat) +
                         sm(basis.max_pen, arg = list(pen = 2),
                            by = depriv_cat, arg.by = list(type = "factor")) +
                         sm(month, arg = list(type = "ns", df = 3)) +
@@ -105,7 +105,7 @@ The second model can similarly be fitted by specifying `type`="linear" instead o
 
 ```{r}
 # Fit a linear modified DLNM
-model2 <- DLNM_LPS(dtot ~ factor(dow) + depriv +
+model2 <- dlnmLPS(dtot ~ factor(dow) + depriv +
                         sm(basis.max_pen, arg = list(pen = 2),
                            by = depriv, arg.by = list(type = "linear")) +
                         sm(month, arg = list(type = "ns", df = 3)) +
@@ -124,7 +124,7 @@ For the third model, we include deprivation index as a smooth effect, using natu
 # Fit an unpenalized smooth modified DLNM
 knots_depriv <- quantile(dataset$depriv, probs = c(0.10,0.90))
 
-model3 <- DLNM_LPS(dtot ~ factor(dow) + sm(depriv, arg = list(type = "ns", knots = knots_depriv)) +
+model3 <- dlnmLPS(dtot ~ factor(dow) + sm(depriv, arg = list(type = "ns", knots = knots_depriv)) +
                         sm(basis.max_pen, arg = list(pen = 2),
                            by = depriv, arg.by = list(type = "ns", knots = knots_depriv)) +
                         sm(month, arg = list(type = "ns", df = 3)) +
@@ -141,7 +141,7 @@ Lastly, in the fourth model, we include an interaction with deprivation index us
 
 ```{r}
 # Fit an penalized smooth modified DLNM
-model4 <- DLNM_LPS(dtot ~ factor(dow) + sm(depriv, arg = list(type = "ps", df = 5, pen = 2)) +
+model4 <- dlnmLPS(dtot ~ factor(dow) + sm(depriv, arg = list(type = "ps", df = 5, pen = 2)) +
                         sm(basis.max_pen, arg = list(pen = 2),
                            by = depriv, arg.by = list(type = "ps", df = 5, pen = 2)) +
                         sm(month, arg = list(type = "ns", df = 3)) +

@@ -1,6 +1,6 @@
 #' dlnmLPS objects
 #'
-#' Objects of class `"dlnmLPS"` as returned by [DLNM_LPS()].
+#' Objects of class `"dlnmLPS"` as returned by [dlnmLPS()].
 #'
 #' @section Components:
 #' \describe{

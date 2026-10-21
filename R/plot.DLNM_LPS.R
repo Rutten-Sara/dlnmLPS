@@ -107,7 +107,7 @@
 #' )
 #'
 #' # Fit model
-#' model_max_common <- DLNM_LPS(
+#' model_max_common <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +
@@ -147,7 +147,7 @@
 #' )
 #'
 #' # Fit model
-#' model_joint_common <- DLNM_LPS(
+#' model_joint_common <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +
@@ -189,7 +189,7 @@
 #' )
 #'
 #' # Fit model
-#' model_max_spat <- DLNM_LPS(
+#' model_max_spat <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +
@@ -222,7 +222,7 @@
 #' ### Example 4: Unpenalized and deprivation-varying DLNM
 #'
 #' # Fit model
-#' model_max_conf <- DLNM_LPS(
+#' model_max_conf <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +
@@ -422,7 +422,7 @@ dlnmLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
 #' )
 #'
 #' # Fit model
-#' model_max_spat <- DLNM_LPS(
+#' model_max_spat <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +
@@ -454,7 +454,7 @@ dlnmLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
 #' ### Example 2: Unpenalized and deprivation-varying DLNM
 #'
 #' # Fit model
-#' model_max_conf <- DLNM_LPS(
+#' model_max_conf <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +
@@ -494,7 +494,7 @@ dlnmLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
 #' )
 #'
 #' # Fit model
-#' model_max_common <- DLNM_LPS(
+#' model_max_common <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +
@@ -534,7 +534,7 @@ dlnmLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
 #' )
 #'
 #' # Fit model
-#' model_joint_common <- DLNM_LPS(
+#' model_joint_common <- dlnmLPS(
 #'     dtot ~ 1 + factor(dow) +
 #'     sm(month, arg = list(type = "ns", df = 3)) +
 #'     sm(year, arg = list(type = "rw1")) +

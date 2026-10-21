@@ -119,7 +119,7 @@ basis.max_unpen <- dlnm::crossbasis(
 )
 
 # Fit model
-model_max_spat <- DLNM_LPS(
+model_max_spat <- dlnmLPS(
     dtot ~ 1 + factor(dow) +
     sm(month, arg = list(type = "ns", df = 3)) +
     sm(year, arg = list(type = "rw1")) +
@@ -151,7 +151,7 @@ plot(pred_spat_max, ptype = "overall", CI = TRUE, xlab = "temp", ylab = "RR", yl
 ### Example 2: Unpenalized and deprivation-varying DLNM
 
 # Fit model
-model_max_conf <- DLNM_LPS(
+model_max_conf <- dlnmLPS(
     dtot ~ 1 + factor(dow) +
     sm(month, arg = list(type = "ns", df = 3)) +
     sm(year, arg = list(type = "rw1")) +
@@ -191,7 +191,7 @@ basis.max <- dlnm::crossbasis(
 )
 
 # Fit model
-model_max_common <- DLNM_LPS(
+model_max_common <- dlnmLPS(
     dtot ~ 1 + factor(dow) +
     sm(month, arg = list(type = "ns", df = 3)) +
     sm(year, arg = list(type = "rw1")) +
@@ -231,7 +231,7 @@ basis.max_min <- joint.crossbasis(
 )
 
 # Fit model
-model_joint_common <- DLNM_LPS(
+model_joint_common <- dlnmLPS(
     dtot ~ 1 + factor(dow) +
     sm(month, arg = list(type = "ns", df = 3)) +
     sm(year, arg = list(type = "rw1")) +

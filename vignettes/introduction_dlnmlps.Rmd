@@ -96,7 +96,7 @@ basis.max <- dlnm::crossbasis(
   group = group
 )
 
-model_unpenalized <- DLNM_LPS(dtot ~ sm(basis.max),
+model_unpenalized <- dlnmLPS(dtot ~ sm(basis.max),
                               data = dataset,
                               offset = log(pop),
                               model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
@@ -109,7 +109,7 @@ We can include additional covariates in the model. Smooth covariates need to be 
 
 ```{r}
 # Fit an unpenalized DLNM
-model_unpenalized2 <- DLNM_LPS(dtot ~ factor(dow) + sm(basis.max) +
+model_unpenalized2 <- dlnmLPS(dtot ~ factor(dow) + sm(basis.max) +
                                     sm(month, arg = list(type = "ns", df = 3)),
                               data = dataset,
                               offset = log(pop),
@@ -211,7 +211,7 @@ basis.max_pen <- dlnm::crossbasis(
   group = group
 )
 
-model_penalized <- DLNM_LPS(dtot ~ factor(dow) + sm(basis.max_pen, arg = list(pen = 2)) +
+model_penalized <- dlnmLPS(dtot ~ factor(dow) + sm(basis.max_pen, arg = list(pen = 2)) +
                                  sm(month, arg = list(type = "ns", df = 3)),
                             data = dataset,
                             offset = log(pop),
@@ -371,7 +371,7 @@ A model with a year-specific random walk of order one and a district-specific Le
 ```{r}
 # Fit a penalized DLNM with spatial and temporal RW
 data(shapefile_bcn)
-model_penalized2 <- DLNM_LPS(dtot ~ factor(dow) + sm(basis.max_pen, arg = list(pen = 2)) +
+model_penalized2 <- dlnmLPS(dtot ~ factor(dow) + sm(basis.max_pen, arg = list(pen = 2)) +
                                   sm(month, arg = list(type = "ns", df = 3)) +
                                   sm(year, arg = list(type = "rw1")) +
                                   sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
@@ -399,7 +399,7 @@ A model with an independently year-varying Leroux random effect on District, can
 
 ```{r}
 # Fit a penalized DLNM with temporally varying spatial effect
-model_penalized3 <- DLNM_LPS(dtot ~ factor(dow) + sm(basis.max_pen, arg = list(pen = 2)) +
+model_penalized3 <- dlnmLPS(dtot ~ factor(dow) + sm(basis.max_pen, arg = list(pen = 2)) +
                                   sm(month, arg = list(type = "ns", df = 3)) +
                                   sm(District, arg = list(type = "Leroux", map = shapefile_bcn),
                                          by = year, arg.by = list(type = "ind")),

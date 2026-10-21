@@ -29,7 +29,7 @@ defining the exposure-lag basis used in the model.}
 \item{cases}{A vector of cases or, only if \code{dir = "forw"}, a matrix of
 future cases.}
 
-\item{model}{An object of class \code{"dlnmLPS"} returned by the \link{DLNM_LPS} function.}
+\item{model}{An object of class \code{"dlnmLPS"} returned by the \link{dlnmLPS} function.}
 
 \item{cen}{A value  (or a vector of length 2 for \code{"joint.crossbasis"})
 specifying the centering (reference) exposure level used
@@ -98,7 +98,7 @@ structures, this output is structured per group.
 }
 \description{
 This function calculated the attributable risk (attributable fraction and
-attributable number) from a fitted \link{DLNM_LPS} model.
+attributable number) from a fitted \link{dlnmLPS} model.
 }
 \examples{
 data(barcelona_temp)
@@ -128,7 +128,7 @@ basis.max <- dlnm::crossbasis(
 )
 
 # Fit model
-model_max_common <- DLNM_LPS(
+model_max_common <- dlnmLPS(
     dtot ~ 1 + factor(dow) +
     sm(month, arg = list(type = "ns", df = 3)) +
     sm(year, arg = list(type = "rw1")) +
@@ -171,7 +171,7 @@ basis.max_min <- joint.crossbasis(
 )
 
 # Fit model
-model_joint_common <- DLNM_LPS(
+model_joint_common <- dlnmLPS(
     dtot ~ 1 + factor(dow) +
     sm(month, arg = list(type = "ns", df = 3)) +
     sm(year, arg = list(type = "rw1")) +
@@ -214,7 +214,7 @@ basis.max_unpen <- dlnm::crossbasis(
 )
 
 # Fit model
-model_max_spat <- DLNM_LPS(
+model_max_spat <- dlnmLPS(
     dtot ~ 1 + factor(dow) +
     sm(month, arg = list(type = "ns", df = 3)) +
     sm(year, arg = list(type = "rw1")) +
@@ -245,7 +245,7 @@ af2007_spat <- attributable_risk(
 ### Example 4: Unpenalized and deprivation-varying DLNM
 
 # Fit model
-model_max_conf <- DLNM_LPS(
+model_max_conf <- dlnmLPS(
     dtot ~ 1 + factor(dow) +
     sm(month, arg = list(type = "ns", df = 3)) +
     sm(year, arg = list(type = "rw1")) +

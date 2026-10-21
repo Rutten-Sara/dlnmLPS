@@ -4,7 +4,7 @@
 \alias{dlnmLPS_Object}
 \title{dlnmLPS objects}
 \description{
-Objects of class \code{"dlnmLPS"} as returned by \code{\link[=DLNM_LPS]{DLNM_LPS()}}.
+Objects of class \code{"dlnmLPS"} as returned by \code{\link[=dlnmLPS]{dlnmLPS()}}.
 }
 \section{Components}{
 
