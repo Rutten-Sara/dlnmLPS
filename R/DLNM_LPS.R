@@ -26,7 +26,7 @@
 #'   iteration updates the coefficient and hyperparameter estimates based on the
 #'   previous iteration. Default is `0`.
 #'
-#' @returns A list of class `"DLNMLPS"`. See [DLNMLPS_Object] for a description of
+#' @returns A list of class `"dlnmLPS"`. See [dlnmLPS_Object] for a description of
 #' the returned object and its components.
 #'
 #' @examples

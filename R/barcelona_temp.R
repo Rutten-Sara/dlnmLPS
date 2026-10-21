@@ -6,7 +6,7 @@
 #'
 #' The dataset is provided solely for illustrative and demonstration
 #' purposes, in particular for demonstrating the methods implemented
-#' in the \code{DLNMLPS} package. The data are simulated and do not
+#' in the \code{dlnmLPS} package. The data are simulated and do not
 #' represent actual observations from Barcelona.
 #'
 #' @format A data frame with 6100 observations and 9 variables:
@@ -34,7 +34,7 @@
 #' methods. They should not be interpreted as real epidemiological or
 #' climatological observations.
 #'
-#' @source Simulated data generated for the \code{DLNMLPS} package.
+#' @source Simulated data generated for the \code{dlnmLPS} package.
 #'
 #' @examples
 #' data(barcelona_temp)

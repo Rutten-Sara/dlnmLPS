@@ -2,7 +2,7 @@
 % Please edit documentation in R/AF.R
 \name{attributable_risk}
 \alias{attributable_risk}
-\title{Attributable risk from DLNMLPS model}
+\title{Attributable risk from dlnmLPS model}
 \usage{
 attributable_risk(
   basis,
@@ -29,7 +29,7 @@ defining the exposure-lag basis used in the model.}
 \item{cases}{A vector of cases or, only if \code{dir = "forw"}, a matrix of
 future cases.}
 
-\item{model}{An object of class \code{"DLNMLPS"} returned by the \link{DLNM_LPS} function.}
+\item{model}{An object of class \code{"dlnmLPS"} returned by the \link{DLNM_LPS} function.}
 
 \item{cen}{A value  (or a vector of length 2 for \code{"joint.crossbasis"})
 specifying the centering (reference) exposure level used

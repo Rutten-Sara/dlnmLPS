@@ -40,7 +40,7 @@ iteration updates the coefficient and hyperparameter estimates based on the
 previous iteration. Default is \code{0}.}
 }
 \value{
-A list of class \code{"DLNMLPS"}. See \link{DLNMLPS_Object} for a description of
+A list of class \code{"dlnmLPS"}. See \link{dlnmLPS_Object} for a description of
 the returned object and its components.
 }
 \description{

@@ -27,7 +27,7 @@ shapefile_bcn
 Spatial boundaries of the 10 administrative districts of Barcelona,
 provided as an \code{sf} object. The dataset is used alongside the
 simulated \code{barcelona_temp} dataset to facilitate spatial
-visualisation and examples in the \code{DLNMLPS} package.
+visualisation and examples in the \code{dlnmLPS} package.
 }
 \details{
 The district boundaries correspond to the 10 administrative

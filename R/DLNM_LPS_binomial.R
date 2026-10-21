@@ -438,7 +438,7 @@ DLNM_LPS_binomial <- function(model,
                    "types" = types_term,
                    "family" = "Binomial")
 
-    class(output) <- "DLNMLPS"
+    class(output) <- "dlnmLPS"
     return(output)
 
 }

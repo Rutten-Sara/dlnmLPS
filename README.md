@@ -1,26 +1,26 @@
 
-# DLNMLPS
+# dlnmLPS
 
 <!-- badges: start -->
 ![Version](https://img.shields.io/badge/Version-0.1.0-red)
 ![Languages](https://img.shields.io/badge/Languages-R%2C%20C%2B%2B-informational)
 ![Lifecycle](https://img.shields.io/badge/lifecycle-Experimental-orange)
-![CodeSize](https://img.shields.io/github/languages/code-size/Rutten-Sara/DLNMLPS?color=orange&label=Code%20size&style=plastic)
+![CodeSize](https://img.shields.io/github/languages/code-size/Rutten-Sara/dlnmLPS?color=orange&label=Code%20size&style=plastic)
 ![License](https://img.shields.io/badge/License-GPL%20%28%3E%3D%203%29-blue)
-![UserStars](https://img.shields.io/github/stars/Rutten-Sara/DLNMLPS?style=social)
+![UserStars](https://img.shields.io/github/stars/Rutten-Sara/dlnmLPS?style=social)
 <!-- badges: end -->
 
-**DLNMLPS** is an R package for fitting **D**istributed **L**ag **N**on-linear
-**M**odels within a Bayesian framework using **L**aplacian-**P**-**S**plines. It
+**dlnmLPS** is an R package for fitting **d**istributed **l**ag **n**on-linear
+**m**odels within a Bayesian framework using **L**aplacian-**P**-**S**plines. It
 provides a flexible approach for modelling complex
 exposure-lag-response relationships, including relationships that
 vary spatially or according to pre-specified continuous or categorical
 modifiers, as well as exposure-lag-response relationships for two joint exposures.
-In addition to exposure-lag-response relationships, `DLNMLPS` allows other sources
+In addition to exposure-lag-response relationships, `dlnmLPS` allows other sources
 of heterogeneity to be incorporated, including smooth covariate effects, random effects 
 and spatial and temporal structures.
 
-More specifically, `DLNMLPS` can be used to model:
+More specifically, `dlnmLPS` can be used to model:
 
 - **distributed lag nonlinear associations**, allowing nonlinear exposure-response relationships over multiple time lags. DLNMs can be unpenalized (natural splines or B-splines) or penalized (P-splines);
 
@@ -38,9 +38,9 @@ Supported outcome distributions are Poisson, negative binomial, binomial and Gau
 
 ## Documentation
 
-Detailed documentation for DLNMLPS is available through the tabs on this website:
+Detailed documentation for `dlnmLPS` is available through the tabs on this website:
 
-- The **Reference** tab provides an overview of the functions available in DLNMLPS, including
+- The **Reference** tab provides an overview of the functions available in `dlnmLPS`, including
 their arguments and return values.
 
 - The **Articles** tab provides more detailed explanations of the package functionality,
@@ -49,26 +49,26 @@ with examples illustrating how to specify and fit different models.
 
 ## Installation
 
-The development version of DLNMLPS, can be installed from the
+The development version of `dlnmLPS`, can be installed from the
 private GitHub repository using:
 
 ```r
 # install.packages("remotes")
-remotes::install_github("Rutten-Sara/DLNMLPS")
+remotes::install_github("Rutten-Sara/dlnmLPS")
 ```
 Access to the repository is required to install the package.
 
-To install DLNMLPS together with its vignettes, containing short tutorials, 
+To install `dlnmLPS` together with its vignettes, containing short tutorials, 
 use:
 ```r
 # install.packages("remotes")
-remotes::install_github("Rutten-Sara/DLNMLPS", build_vignettes = TRUE)
+remotes::install_github("Rutten-Sara/dlnmLPS", build_vignettes = TRUE)
 ```
 
 Afterwards, the vignettes can be requested using:
 
 ```r
-browseVignettes("DLNMLPS")
+browseVignettes("dlnmLPS")
 ```
 
 
@@ -103,19 +103,19 @@ Associated literature:
 
 This is version 0.1.0 (2026-09-01). 
 
-DLNMLPS is currently under active development. This is an early
+`dlnmLPS` is currently under active development. This is an early
 development version, and the package interface may change
 as functionality is developed and tested.
 
 ## License
-DLNMLPS: a fast and flexible Bayesian tool for Distributed Lag Non-Linear Models.
+`dlnmLPS`: a fast and flexible Bayesian tool for Distributed Lag Non-Linear Models.
 Copyright (C) 2026 Sara Rutten. 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation, either version 3 of the License, or (at your
 option) any later version.
 
-DLNMLPS is distributed in the hope that it will be useful, but
+`dlnmLPS` is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY. See the `LICENSE` file for details.
 
 

@@ -16,16 +16,16 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(DLNMLPS)
+library(dlnmLPS)
 ```
 
 # Introduction
 
 Traditionally, distributed lag non-linear models (DLNMs) are used to model the effect of one, possibly delayed and non-linear, exposure on an outcome. However, interest might be in the joint effect of two (bivariate) exposures. For example, the effect of maximum and minimum temperature on mortality might be synergistic, requiring a joint modelling strategy.
 
-`DLNMLPS` provides methods for modelling the delayed and non-linear effect of two exposures jointly [@Rutten2024joint]. In this vignette, we demonstrate how to fit and visualize these bivariate DLNMs using the `DLNMLPS` framework.
+`dlnmLPS` provides methods for modelling the delayed and non-linear effect of two exposures jointly [@Rutten2024joint]. In this vignette, we demonstrate how to fit and visualize these bivariate DLNMs using the `dlnmLPS` framework.
 
-The basic functionality of `DLNMLPS` is introduced in `vignette("introduction_dlnmlps")`.
+The basic functionality of `dlnmLPS` is introduced in `vignette("introduction_dlnmlps")`.
 
 # Joint DLNMs
 
@@ -93,7 +93,7 @@ model_additive <- DLNM_LPS(dtot ~ factor(dow) +
 ```
 
 ## Fitting a joint DLNM
-Fitting a joint DLNM is very similar to fitting a traditional DLNM. However, since the `dlnm` package does not directly provide the functionality to specify a joint crossbasis, the function `joint.crossbasis()` of the `DLNMLPS` package should be used instead. This function is very similar to the `dlnm::crossbasis()` function, requiring arguments for both exposure variables as well as the lag. The data can be supplied as a matrix for which the first and second column contain the timeseries of the first and second exposure respectively.
+Fitting a joint DLNM is very similar to fitting a traditional DLNM. However, since the `dlnm` package does not directly provide the functionality to specify a joint crossbasis, the function `joint.crossbasis()` of the `dlnmLPS` package should be used instead. This function is very similar to the `dlnm::crossbasis()` function, requiring arguments for both exposure variables as well as the lag. The data can be supplied as a matrix for which the first and second column contain the timeseries of the first and second exposure respectively.
 
 Fitting an unpenalized version of the model can be done through:
 
@@ -266,7 +266,7 @@ Just as for traditional DLNMs, a joint DLNM can be spatially varying or subject 
 
 # Summary
 
-In this vignette, we introduced the joint modelling functionality of `DLNMLPS`. We demonstrated how to fit and visualize these models. For more information, see also `vignette("introduction_dlnmlps")`, `vignette("spatially-varying-dlnms")` and `vignette("effect-modified-dlnms")`.
+In this vignette, we introduced the joint modelling functionality of `dlnmLPS`. We demonstrated how to fit and visualize these models. For more information, see also `vignette("introduction_dlnmlps")`, `vignette("spatially-varying-dlnms")` and `vignette("effect-modified-dlnms")`.
 
 
 # References

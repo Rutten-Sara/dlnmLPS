@@ -13,7 +13,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 
 // Hutchinson_pD
 double Hutchinson_pD(const Eigen::SparseMatrix<double>& Ipost, const Eigen::SparseMatrix<double>& Ilike, int R);
-RcppExport SEXP _DLNMLPS_Hutchinson_pD(SEXP IpostSEXP, SEXP IlikeSEXP, SEXP RSEXP) {
+RcppExport SEXP _dlnmLPS_Hutchinson_pD(SEXP IpostSEXP, SEXP IlikeSEXP, SEXP RSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -26,7 +26,7 @@ END_RCPP
 }
 // Hutchinson_pD_con
 double Hutchinson_pD_con(const Eigen::SparseMatrix<double>& Ipost, const Eigen::SparseMatrix<double>& Ilike, const Eigen::SparseMatrix<double>& A, int R);
-RcppExport SEXP _DLNMLPS_Hutchinson_pD_con(SEXP IpostSEXP, SEXP IlikeSEXP, SEXP ASEXP, SEXP RSEXP) {
+RcppExport SEXP _dlnmLPS_Hutchinson_pD_con(SEXP IpostSEXP, SEXP IlikeSEXP, SEXP ASEXP, SEXP RSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -40,7 +40,7 @@ END_RCPP
 }
 // simulate_from_precision
 Eigen::MatrixXd simulate_from_precision(const Eigen::SparseMatrix<double>& Prec, const int nsim);
-RcppExport SEXP _DLNMLPS_simulate_from_precision(SEXP PrecSEXP, SEXP nsimSEXP) {
+RcppExport SEXP _dlnmLPS_simulate_from_precision(SEXP PrecSEXP, SEXP nsimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -52,7 +52,7 @@ END_RCPP
 }
 // simulate_from_precision_con
 Eigen::MatrixXd simulate_from_precision_con(const Eigen::SparseMatrix<double>& Prec, const Eigen::SparseMatrix<double>& A, const int nsim);
-RcppExport SEXP _DLNMLPS_simulate_from_precision_con(SEXP PrecSEXP, SEXP ASEXP, SEXP nsimSEXP) {
+RcppExport SEXP _dlnmLPS_simulate_from_precision_con(SEXP PrecSEXP, SEXP ASEXP, SEXP nsimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -65,7 +65,7 @@ END_RCPP
 }
 // poisson_loglik_samples_cpp
 Rcpp::NumericMatrix poisson_loglik_samples_cpp(Rcpp::NumericVector xi_mode, Rcpp::NumericMatrix betas, Rcpp::S4 Xv, Rcpp::NumericVector y, Rcpp::NumericVector offset, SEXP v_mode, SEXP Ntrials);
-RcppExport SEXP _DLNMLPS_poisson_loglik_samples_cpp(SEXP xi_modeSEXP, SEXP betasSEXP, SEXP XvSEXP, SEXP ySEXP, SEXP offsetSEXP, SEXP v_modeSEXP, SEXP NtrialsSEXP) {
+RcppExport SEXP _dlnmLPS_poisson_loglik_samples_cpp(SEXP xi_modeSEXP, SEXP betasSEXP, SEXP XvSEXP, SEXP ySEXP, SEXP offsetSEXP, SEXP v_modeSEXP, SEXP NtrialsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -82,7 +82,7 @@ END_RCPP
 }
 // gaussian_loglik_samples_cpp
 Rcpp::NumericMatrix gaussian_loglik_samples_cpp(Rcpp::NumericVector xi_mode, Rcpp::NumericMatrix betas, Rcpp::S4 Xv, Rcpp::NumericVector y, Rcpp::NumericVector offset, SEXP v_mode, SEXP Ntrials);
-RcppExport SEXP _DLNMLPS_gaussian_loglik_samples_cpp(SEXP xi_modeSEXP, SEXP betasSEXP, SEXP XvSEXP, SEXP ySEXP, SEXP offsetSEXP, SEXP v_modeSEXP, SEXP NtrialsSEXP) {
+RcppExport SEXP _dlnmLPS_gaussian_loglik_samples_cpp(SEXP xi_modeSEXP, SEXP betasSEXP, SEXP XvSEXP, SEXP ySEXP, SEXP offsetSEXP, SEXP v_modeSEXP, SEXP NtrialsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -99,7 +99,7 @@ END_RCPP
 }
 // nb_loglik_samples_cpp
 Rcpp::NumericMatrix nb_loglik_samples_cpp(Rcpp::NumericVector xi_mode, Rcpp::NumericMatrix betas, Rcpp::S4 Xv, Rcpp::NumericVector y, Rcpp::NumericVector offset, SEXP v_mode, SEXP Ntrials);
-RcppExport SEXP _DLNMLPS_nb_loglik_samples_cpp(SEXP xi_modeSEXP, SEXP betasSEXP, SEXP XvSEXP, SEXP ySEXP, SEXP offsetSEXP, SEXP v_modeSEXP, SEXP NtrialsSEXP) {
+RcppExport SEXP _dlnmLPS_nb_loglik_samples_cpp(SEXP xi_modeSEXP, SEXP betasSEXP, SEXP XvSEXP, SEXP ySEXP, SEXP offsetSEXP, SEXP v_modeSEXP, SEXP NtrialsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -116,7 +116,7 @@ END_RCPP
 }
 // logistic_loglik_samples_cpp
 Rcpp::NumericMatrix logistic_loglik_samples_cpp(Rcpp::NumericVector xi_mode, Rcpp::NumericMatrix betas, Rcpp::S4 Xv, Rcpp::NumericVector y, Rcpp::NumericVector offset, SEXP v_mode, SEXP Ntrials);
-RcppExport SEXP _DLNMLPS_logistic_loglik_samples_cpp(SEXP xi_modeSEXP, SEXP betasSEXP, SEXP XvSEXP, SEXP ySEXP, SEXP offsetSEXP, SEXP v_modeSEXP, SEXP NtrialsSEXP) {
+RcppExport SEXP _dlnmLPS_logistic_loglik_samples_cpp(SEXP xi_modeSEXP, SEXP betasSEXP, SEXP XvSEXP, SEXP ySEXP, SEXP offsetSEXP, SEXP v_modeSEXP, SEXP NtrialsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -133,7 +133,7 @@ END_RCPP
 }
 // Hess_logpxi
 Eigen::SparseMatrix<double> Hess_logpxi(const Eigen::SparseMatrix<double>& Qv, const Eigen::VectorXd& Cvxi, const Eigen::SparseMatrix<double>& Xv);
-RcppExport SEXP _DLNMLPS_Hess_logpxi(SEXP QvSEXP, SEXP CvxiSEXP, SEXP XvSEXP) {
+RcppExport SEXP _dlnmLPS_Hess_logpxi(SEXP QvSEXP, SEXP CvxiSEXP, SEXP XvSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -146,7 +146,7 @@ END_RCPP
 }
 // Hess_logpxi_NB
 Eigen::SparseMatrix<double> Hess_logpxi_NB(const Eigen::SparseMatrix<double>& Qv, const Eigen::SparseMatrix<double>& Wnb, const Eigen::SparseMatrix<double>& MVnb, const Eigen::SparseMatrix<double>& Xv);
-RcppExport SEXP _DLNMLPS_Hess_logpxi_NB(SEXP QvSEXP, SEXP WnbSEXP, SEXP MVnbSEXP, SEXP XvSEXP) {
+RcppExport SEXP _dlnmLPS_Hess_logpxi_NB(SEXP QvSEXP, SEXP WnbSEXP, SEXP MVnbSEXP, SEXP XvSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -160,7 +160,7 @@ END_RCPP
 }
 // solve_sparse_cholesky
 Eigen::MatrixXd solve_sparse_cholesky(const Eigen::SparseMatrix<double>& Qv, const Eigen::VectorXd& Cvxi, const Eigen::SparseMatrix<double>& Xv, const Eigen::VectorXd& b);
-RcppExport SEXP _DLNMLPS_solve_sparse_cholesky(SEXP QvSEXP, SEXP CvxiSEXP, SEXP XvSEXP, SEXP bSEXP) {
+RcppExport SEXP _dlnmLPS_solve_sparse_cholesky(SEXP QvSEXP, SEXP CvxiSEXP, SEXP XvSEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -174,7 +174,7 @@ END_RCPP
 }
 // solve_sparse_cholesky_NB
 Eigen::MatrixXd solve_sparse_cholesky_NB(const Eigen::SparseMatrix<double>& Qv, const Eigen::SparseMatrix<double>& Wnb, const Eigen::SparseMatrix<double>& MVnb, const Eigen::SparseMatrix<double>& Xv, const Eigen::VectorXd& b);
-RcppExport SEXP _DLNMLPS_solve_sparse_cholesky_NB(SEXP QvSEXP, SEXP WnbSEXP, SEXP MVnbSEXP, SEXP XvSEXP, SEXP bSEXP) {
+RcppExport SEXP _dlnmLPS_solve_sparse_cholesky_NB(SEXP QvSEXP, SEXP WnbSEXP, SEXP MVnbSEXP, SEXP XvSEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -189,7 +189,7 @@ END_RCPP
 }
 // solve_gaussian_mode
 Eigen::VectorXd solve_gaussian_mode(const Eigen::SparseMatrix<double>& Qv, const Eigen::SparseMatrix<double>& XtX, const Eigen::VectorXd& Xty, const double v1);
-RcppExport SEXP _DLNMLPS_solve_gaussian_mode(SEXP QvSEXP, SEXP XtXSEXP, SEXP XtySEXP, SEXP v1SEXP) {
+RcppExport SEXP _dlnmLPS_solve_gaussian_mode(SEXP QvSEXP, SEXP XtXSEXP, SEXP XtySEXP, SEXP v1SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -203,7 +203,7 @@ END_RCPP
 }
 // solve_sparse_cholesky_constr
 Eigen::MatrixXd solve_sparse_cholesky_constr(const Eigen::SparseMatrix<double>& Qv, const Eigen::VectorXd& Cvxi, const Eigen::SparseMatrix<double>& Xv, const Eigen::SparseMatrix<double>& A, const Eigen::VectorXd& b);
-RcppExport SEXP _DLNMLPS_solve_sparse_cholesky_constr(SEXP QvSEXP, SEXP CvxiSEXP, SEXP XvSEXP, SEXP ASEXP, SEXP bSEXP) {
+RcppExport SEXP _dlnmLPS_solve_sparse_cholesky_constr(SEXP QvSEXP, SEXP CvxiSEXP, SEXP XvSEXP, SEXP ASEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -218,7 +218,7 @@ END_RCPP
 }
 // solve_sparse_cholesky_NB_constr
 Eigen::MatrixXd solve_sparse_cholesky_NB_constr(const Eigen::SparseMatrix<double>& Qv, const Eigen::SparseMatrix<double>& Wnb, const Eigen::SparseMatrix<double>& MVnb, const Eigen::SparseMatrix<double>& Xv, const Eigen::SparseMatrix<double>& A, const Eigen::VectorXd& b);
-RcppExport SEXP _DLNMLPS_solve_sparse_cholesky_NB_constr(SEXP QvSEXP, SEXP WnbSEXP, SEXP MVnbSEXP, SEXP XvSEXP, SEXP ASEXP, SEXP bSEXP) {
+RcppExport SEXP _dlnmLPS_solve_sparse_cholesky_NB_constr(SEXP QvSEXP, SEXP WnbSEXP, SEXP MVnbSEXP, SEXP XvSEXP, SEXP ASEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -234,7 +234,7 @@ END_RCPP
 }
 // solve_gaussian_mode_constr
 Eigen::VectorXd solve_gaussian_mode_constr(const Eigen::SparseMatrix<double>& Qv, const Eigen::SparseMatrix<double>& XtX, const Eigen::VectorXd& Xty, const double v1, const Eigen::SparseMatrix<double>& C);
-RcppExport SEXP _DLNMLPS_solve_gaussian_mode_constr(SEXP QvSEXP, SEXP XtXSEXP, SEXP XtySEXP, SEXP v1SEXP, SEXP CSEXP) {
+RcppExport SEXP _dlnmLPS_solve_gaussian_mode_constr(SEXP QvSEXP, SEXP XtXSEXP, SEXP XtySEXP, SEXP v1SEXP, SEXP CSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -249,7 +249,7 @@ END_RCPP
 }
 // determinant_Pv
 double determinant_Pv(const Eigen::SparseMatrix<double>& Pv);
-RcppExport SEXP _DLNMLPS_determinant_Pv(SEXP PvSEXP) {
+RcppExport SEXP _dlnmLPS_determinant_Pv(SEXP PvSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -260,7 +260,7 @@ END_RCPP
 }
 // XWX_func
 Eigen::SparseMatrix<double> XWX_func(const Eigen::VectorXd& Cvxi, const Eigen::SparseMatrix<double>& Xv, const Eigen::SparseMatrix<double>& tXv);
-RcppExport SEXP _DLNMLPS_XWX_func(SEXP CvxiSEXP, SEXP XvSEXP, SEXP tXvSEXP) {
+RcppExport SEXP _dlnmLPS_XWX_func(SEXP CvxiSEXP, SEXP XvSEXP, SEXP tXvSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -273,7 +273,7 @@ END_RCPP
 }
 // XWX_func_approx
 Eigen::SparseMatrix<double> XWX_func_approx(const Eigen::VectorXd& Cvxi, const Eigen::SparseMatrix<double>& Xv);
-RcppExport SEXP _DLNMLPS_XWX_func_approx(SEXP CvxiSEXP, SEXP XvSEXP) {
+RcppExport SEXP _dlnmLPS_XWX_func_approx(SEXP CvxiSEXP, SEXP XvSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -285,7 +285,7 @@ END_RCPP
 }
 // XX_func
 Eigen::SparseMatrix<double> XX_func(const Eigen::SparseMatrix<double>& Xv);
-RcppExport SEXP _DLNMLPS_XX_func(SEXP XvSEXP) {
+RcppExport SEXP _dlnmLPS_XX_func(SEXP XvSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -296,7 +296,7 @@ END_RCPP
 }
 // Predict_se_con
 Eigen::VectorXd Predict_se_con(const Eigen::SparseMatrix<double>& Prec, const Eigen::MatrixXd& Xpred, const Rcpp::IntegerVector& ind, const Eigen::SparseMatrix<double>& A);
-RcppExport SEXP _DLNMLPS_Predict_se_con(SEXP PrecSEXP, SEXP XpredSEXP, SEXP indSEXP, SEXP ASEXP) {
+RcppExport SEXP _dlnmLPS_Predict_se_con(SEXP PrecSEXP, SEXP XpredSEXP, SEXP indSEXP, SEXP ASEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -310,7 +310,7 @@ END_RCPP
 }
 // Predict_se
 Eigen::VectorXd Predict_se(const Eigen::SparseMatrix<double>& Prec, const Eigen::MatrixXd& Xpred, const Rcpp::IntegerVector& ind);
-RcppExport SEXP _DLNMLPS_Predict_se(SEXP PrecSEXP, SEXP XpredSEXP, SEXP indSEXP) {
+RcppExport SEXP _dlnmLPS_Predict_se(SEXP PrecSEXP, SEXP XpredSEXP, SEXP indSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -323,7 +323,7 @@ END_RCPP
 }
 // Predict_se_all_con
 Eigen::MatrixXd Predict_se_all_con(const Eigen::SparseMatrix<double>& Prec, const Eigen::MatrixXd& Xpred, const Rcpp::IntegerVector& ind_cb, const Rcpp::List& ind_cb_spat_list, const Eigen::SparseMatrix<double>& A);
-RcppExport SEXP _DLNMLPS_Predict_se_all_con(SEXP PrecSEXP, SEXP XpredSEXP, SEXP ind_cbSEXP, SEXP ind_cb_spat_listSEXP, SEXP ASEXP) {
+RcppExport SEXP _dlnmLPS_Predict_se_all_con(SEXP PrecSEXP, SEXP XpredSEXP, SEXP ind_cbSEXP, SEXP ind_cb_spat_listSEXP, SEXP ASEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -338,7 +338,7 @@ END_RCPP
 }
 // Predict_se_all
 Eigen::MatrixXd Predict_se_all(const Eigen::SparseMatrix<double>& Prec, const Eigen::MatrixXd& Xpred, const Rcpp::IntegerVector& ind_cb, const Rcpp::List& ind_cb_spat_list);
-RcppExport SEXP _DLNMLPS_Predict_se_all(SEXP PrecSEXP, SEXP XpredSEXP, SEXP ind_cbSEXP, SEXP ind_cb_spat_listSEXP) {
+RcppExport SEXP _dlnmLPS_Predict_se_all(SEXP PrecSEXP, SEXP XpredSEXP, SEXP ind_cbSEXP, SEXP ind_cb_spat_listSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -352,34 +352,34 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_DLNMLPS_Hutchinson_pD", (DL_FUNC) &_DLNMLPS_Hutchinson_pD, 3},
-    {"_DLNMLPS_Hutchinson_pD_con", (DL_FUNC) &_DLNMLPS_Hutchinson_pD_con, 4},
-    {"_DLNMLPS_simulate_from_precision", (DL_FUNC) &_DLNMLPS_simulate_from_precision, 2},
-    {"_DLNMLPS_simulate_from_precision_con", (DL_FUNC) &_DLNMLPS_simulate_from_precision_con, 3},
-    {"_DLNMLPS_poisson_loglik_samples_cpp", (DL_FUNC) &_DLNMLPS_poisson_loglik_samples_cpp, 7},
-    {"_DLNMLPS_gaussian_loglik_samples_cpp", (DL_FUNC) &_DLNMLPS_gaussian_loglik_samples_cpp, 7},
-    {"_DLNMLPS_nb_loglik_samples_cpp", (DL_FUNC) &_DLNMLPS_nb_loglik_samples_cpp, 7},
-    {"_DLNMLPS_logistic_loglik_samples_cpp", (DL_FUNC) &_DLNMLPS_logistic_loglik_samples_cpp, 7},
-    {"_DLNMLPS_Hess_logpxi", (DL_FUNC) &_DLNMLPS_Hess_logpxi, 3},
-    {"_DLNMLPS_Hess_logpxi_NB", (DL_FUNC) &_DLNMLPS_Hess_logpxi_NB, 4},
-    {"_DLNMLPS_solve_sparse_cholesky", (DL_FUNC) &_DLNMLPS_solve_sparse_cholesky, 4},
-    {"_DLNMLPS_solve_sparse_cholesky_NB", (DL_FUNC) &_DLNMLPS_solve_sparse_cholesky_NB, 5},
-    {"_DLNMLPS_solve_gaussian_mode", (DL_FUNC) &_DLNMLPS_solve_gaussian_mode, 4},
-    {"_DLNMLPS_solve_sparse_cholesky_constr", (DL_FUNC) &_DLNMLPS_solve_sparse_cholesky_constr, 5},
-    {"_DLNMLPS_solve_sparse_cholesky_NB_constr", (DL_FUNC) &_DLNMLPS_solve_sparse_cholesky_NB_constr, 6},
-    {"_DLNMLPS_solve_gaussian_mode_constr", (DL_FUNC) &_DLNMLPS_solve_gaussian_mode_constr, 5},
-    {"_DLNMLPS_determinant_Pv", (DL_FUNC) &_DLNMLPS_determinant_Pv, 1},
-    {"_DLNMLPS_XWX_func", (DL_FUNC) &_DLNMLPS_XWX_func, 3},
-    {"_DLNMLPS_XWX_func_approx", (DL_FUNC) &_DLNMLPS_XWX_func_approx, 2},
-    {"_DLNMLPS_XX_func", (DL_FUNC) &_DLNMLPS_XX_func, 1},
-    {"_DLNMLPS_Predict_se_con", (DL_FUNC) &_DLNMLPS_Predict_se_con, 4},
-    {"_DLNMLPS_Predict_se", (DL_FUNC) &_DLNMLPS_Predict_se, 3},
-    {"_DLNMLPS_Predict_se_all_con", (DL_FUNC) &_DLNMLPS_Predict_se_all_con, 5},
-    {"_DLNMLPS_Predict_se_all", (DL_FUNC) &_DLNMLPS_Predict_se_all, 4},
+    {"_dlnmLPS_Hutchinson_pD", (DL_FUNC) &_dlnmLPS_Hutchinson_pD, 3},
+    {"_dlnmLPS_Hutchinson_pD_con", (DL_FUNC) &_dlnmLPS_Hutchinson_pD_con, 4},
+    {"_dlnmLPS_simulate_from_precision", (DL_FUNC) &_dlnmLPS_simulate_from_precision, 2},
+    {"_dlnmLPS_simulate_from_precision_con", (DL_FUNC) &_dlnmLPS_simulate_from_precision_con, 3},
+    {"_dlnmLPS_poisson_loglik_samples_cpp", (DL_FUNC) &_dlnmLPS_poisson_loglik_samples_cpp, 7},
+    {"_dlnmLPS_gaussian_loglik_samples_cpp", (DL_FUNC) &_dlnmLPS_gaussian_loglik_samples_cpp, 7},
+    {"_dlnmLPS_nb_loglik_samples_cpp", (DL_FUNC) &_dlnmLPS_nb_loglik_samples_cpp, 7},
+    {"_dlnmLPS_logistic_loglik_samples_cpp", (DL_FUNC) &_dlnmLPS_logistic_loglik_samples_cpp, 7},
+    {"_dlnmLPS_Hess_logpxi", (DL_FUNC) &_dlnmLPS_Hess_logpxi, 3},
+    {"_dlnmLPS_Hess_logpxi_NB", (DL_FUNC) &_dlnmLPS_Hess_logpxi_NB, 4},
+    {"_dlnmLPS_solve_sparse_cholesky", (DL_FUNC) &_dlnmLPS_solve_sparse_cholesky, 4},
+    {"_dlnmLPS_solve_sparse_cholesky_NB", (DL_FUNC) &_dlnmLPS_solve_sparse_cholesky_NB, 5},
+    {"_dlnmLPS_solve_gaussian_mode", (DL_FUNC) &_dlnmLPS_solve_gaussian_mode, 4},
+    {"_dlnmLPS_solve_sparse_cholesky_constr", (DL_FUNC) &_dlnmLPS_solve_sparse_cholesky_constr, 5},
+    {"_dlnmLPS_solve_sparse_cholesky_NB_constr", (DL_FUNC) &_dlnmLPS_solve_sparse_cholesky_NB_constr, 6},
+    {"_dlnmLPS_solve_gaussian_mode_constr", (DL_FUNC) &_dlnmLPS_solve_gaussian_mode_constr, 5},
+    {"_dlnmLPS_determinant_Pv", (DL_FUNC) &_dlnmLPS_determinant_Pv, 1},
+    {"_dlnmLPS_XWX_func", (DL_FUNC) &_dlnmLPS_XWX_func, 3},
+    {"_dlnmLPS_XWX_func_approx", (DL_FUNC) &_dlnmLPS_XWX_func_approx, 2},
+    {"_dlnmLPS_XX_func", (DL_FUNC) &_dlnmLPS_XX_func, 1},
+    {"_dlnmLPS_Predict_se_con", (DL_FUNC) &_dlnmLPS_Predict_se_con, 4},
+    {"_dlnmLPS_Predict_se", (DL_FUNC) &_dlnmLPS_Predict_se, 3},
+    {"_dlnmLPS_Predict_se_all_con", (DL_FUNC) &_dlnmLPS_Predict_se_all_con, 5},
+    {"_dlnmLPS_Predict_se_all", (DL_FUNC) &_dlnmLPS_Predict_se_all, 4},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_DLNMLPS(DllInfo *dll) {
+RcppExport void R_init_dlnmLPS(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

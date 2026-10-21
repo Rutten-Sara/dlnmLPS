@@ -1,4 +1,4 @@
-#' Attributable risk from DLNMLPS model
+#' Attributable risk from dlnmLPS model
 #'
 #' This function calculated the attributable risk (attributable fraction and
 #' attributable number) from a fitted [DLNM_LPS] model.
@@ -7,7 +7,7 @@
 #'   defining the exposure-lag basis used in the model.
 #' @param cases A vector of cases or, only if `dir = "forw"`, a matrix of
 #'   future cases.
-#' @param model An object of class `"DLNMLPS"` returned by the [DLNM_LPS] function.
+#' @param model An object of class `"dlnmLPS"` returned by the [DLNM_LPS] function.
 #' @param cen A value  (or a vector of length 2 for `"joint.crossbasis"`)
 #'   specifying the centering (reference) exposure level used
 #'   for calculating relative risk predictions.

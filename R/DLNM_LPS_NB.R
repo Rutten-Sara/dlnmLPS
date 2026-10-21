@@ -518,7 +518,7 @@ DLNM_LPS_NB <- function(model,
                    "types" = types_term,
                    "family" = "NB")
 
-    class(output) <- "DLNMLPS"
+    class(output) <- "dlnmLPS"
     return(output)
 
 }

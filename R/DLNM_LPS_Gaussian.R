@@ -393,7 +393,7 @@ DLNM_LPS_Gaussian <- function(model,
                    "types" = types_term,
                    "family" = "Gaussian")
 
-    class(output) <- "DLNMLPS"
+    class(output) <- "dlnmLPS"
     return(output)
 
 }

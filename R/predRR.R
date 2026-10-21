@@ -1,4 +1,4 @@
-#' Generate Predictions from a DLNMLPS Model
+#' Generate Predictions from a dlnmLPS Model
 #'
 #' This function generates predictions from a fitted
 #' [DLNM_LPS] model over a specified grid of exposure and lag values. Predictions
@@ -6,7 +6,7 @@
 #'
 #' @param basis An object of class `"crossbasis"` or `"joint.crossbasis"`
 #'   defining the exposure-lag basis used in the model.
-#' @param model An object of class `"DLNMLPS"` returned by the [DLNM_LPS] function.
+#' @param model An object of class `"dlnmLPS"` returned by the [DLNM_LPS] function.
 #' @param at_x A numeric vector specifying constant exposure values over the
 #'   selected lag period, or a matrix specifying exposure histories over the
 #'   same lag period used during model estimation.
@@ -38,7 +38,7 @@
 #'   `by` variable, this is a (vector of) factor level(s) defining the
 #'   corresponding stratum.
 #'
-#' @returns An object of class `"DLNMLPS_pred"` containing the following
+#' @returns An object of class `"dlnmLPS_pred"` containing the following
 #' components (structured by value of the `by`-variable, if specified):
 #'
 #' \describe{
@@ -713,7 +713,7 @@ pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag = NULL, by
 
 
 
-  class(output) <- c("DLNMLPS_pred", kind_term)
+  class(output) <- c("dlnmLPS_pred", kind_term)
 
   return(output)
 

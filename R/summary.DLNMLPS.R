@@ -1,14 +1,14 @@
-#' Summarize a DLNMLPS model
+#' Summarize a dlnmLPS model
 #'
-#' Computes a summary of the fixed effects of a fitted `"DLNMLPS"` model.
+#' Computes a summary of the fixed effects of a fitted `"dlnmLPS"` model.
 #' The summary includes posterior means (modes), standard deviations, and
 #' approximate 95% credible intervals based on the Laplace approximation.
-#' @param object A fitted `"DLNMLPS"` model.
+#' @param object A fitted `"dlnmLPS"` model.
 #' @param ... Additional arguments to be passed.
-#' @returns An object of class \code{"summary.DLNMLPS"}.
+#' @returns An object of class \code{"summary.dlnmLPS"}.
 #' @export
 #'
-summary.DLNMLPS <- function(object,...){
+summary.dlnmLPS <- function(object,...){
 
   constraint_matrix <- object$constraints
 
@@ -57,17 +57,17 @@ summary.DLNMLPS <- function(object,...){
       pd.waic = object$`pd WAIC`,
       cpo = object$CPO
     ),
-    class = "summary.DLNMLPS"
+    class = "summary.dlnmLPS"
   )
 
 }
 
-#' Print a summary of a DLNMLPS model
+#' Print a summary of a dlnmLPS model
 #'
-#' @param x An object of class \code{"summary.DLNMLPS"}.
+#' @param x An object of class \code{"summary.dlnmLPS"}.
 #' @param ... Additional arguments to be passed.
 #' @export
-print.summary.DLNMLPS <- function(x, ...) {
+print.summary.dlnmLPS <- function(x, ...) {
 
   cat("\nCall:\n\n")
   cat(deparse1(x$call))

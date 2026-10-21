@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(DLNMLPS)
+library(dlnmLPS)
 ```
 
 
@@ -24,11 +24,11 @@ library(DLNMLPS)
 
 Classical distributed lag non-linear models (DLNMs) assume a common exposure-lag-response relationships across geographical areas. However, this relationship might be altered by an effect modifier that differs between spatial units. For example, the relationship between temperature and mortality may differ between regions according to the deprivation index.
 
-`DLNMLPS` provides methods for fitting effect-modified distributed lag non-linear models, allowing the exposure-lag-response relationship to vary according to a continuous or categorical covariate [@Rutten2026confounding]. This framework allows for flexible interactions between the DLNM and a possibly non-linear smooth covariate.
+`dlnmLPS` provides methods for fitting effect-modified distributed lag non-linear models, allowing the exposure-lag-response relationship to vary according to a continuous or categorical covariate [@Rutten2026confounding]. This framework allows for flexible interactions between the DLNM and a possibly non-linear smooth covariate.
 
-In this vignette, we demonstrate how to fit covariate-varying DLNMs using `DLNMLPS` and show how to predict and visualize the exposure-lag-response relationship.
+In this vignette, we demonstrate how to fit covariate-varying DLNMs using `dlnmLPS` and show how to predict and visualize the exposure-lag-response relationship.
 
-The basic functionality of `DLNMLPS`is introduced in `vignette("introduction_dlnmlps")`.
+The basic functionality of `dlnmLPS`is introduced in `vignette("introduction_dlnmlps")`.
 
 # Effect-modified DLNMs
 
@@ -59,7 +59,7 @@ dataset <- barcelona_temp |>
 ```
 
 ## Fitting an effect-modified DLNM
-The `DLNMLPS` package provides a lot of flexibility in modelling effect modification. In this example, we will fit four different models:
+The `dlnmLPS` package provides a lot of flexibility in modelling effect modification. In this example, we will fit four different models:
 
 - **Categorical effect modification**, a penalized DLNM modified by a categorical deprivation index;
 
@@ -298,7 +298,7 @@ It can be seen that a lower deprivation index, would result in a lower attributa
 
 # Summary
 
-In this vignette, we introduced the effect modifying functionality of `DLNMLPS`. We demonstrated how to fit four different models, differing in the flexibility of the effect modification. We used penalized splines to showcase the functionality of the package but similar models can be fitted with unpenalized splines. See also `vignette("introduction_dlnmlps")` for more information.
+In this vignette, we introduced the effect modifying functionality of `dlnmLPS`. We demonstrated how to fit four different models, differing in the flexibility of the effect modification. We used penalized splines to showcase the functionality of the package but similar models can be fitted with unpenalized splines. See also `vignette("introduction_dlnmlps")` for more information.
 
 
 # References

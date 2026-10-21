@@ -77,7 +77,7 @@
 #' Produces a plot. The function is called for its side effects and returns
 #' `NULL` invisibly.
 #'
-#' @seealso [contour.DLNMLPS_pred()],[pred_crossbasis()]
+#' @seealso [contour.dlnmLPS_pred()],[pred_crossbasis()]
 #'
 #' @examples
 #' data(barcelona_temp)
@@ -252,7 +252,7 @@
 #'
 #' @export
 
-plot.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, slice_by = NULL,
+plot.dlnmLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, slice_by = NULL,
                               ptype = "overall", multiple.plots = TRUE, show.legend = TRUE, CI = FALSE,
                               xlim = NULL, ylim = NULL, zlim = NULL,cols = NULL, xlab = NULL,
                               ylab = NULL, zlab = NULL, mar = NULL, ...){
@@ -281,7 +281,7 @@ plot.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NUL
           c(2,2))
 
     for (xi in 1:length(x)){
-      DLNMLPS_plot_ind(x[[xi]], slice_lag, slice_x , slice_y , ptype , FALSE, show.legend, CI ,
+      dlnmLPS_plot_ind(x[[xi]], slice_lag, slice_x , slice_y , ptype , FALSE, show.legend, CI ,
                        xlim , ylim , zlim ,cols , xlab ,
                        ylab , zlab , main = paste('By = ', x[[xi]]$by), ...)
     }
@@ -290,14 +290,14 @@ plot.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NUL
     graphics::par(mar = mar, mfrow = c(1,1))
     }else{
       graphics::par(mar = mar, mfrow = c(1,1))
-      DLNMLPS_plot_ind(x, slice_lag , slice_x , slice_y, ptype , TRUE, show.legend, CI ,
+      dlnmLPS_plot_ind(x, slice_lag , slice_x , slice_y, ptype , TRUE, show.legend, CI ,
                        xlim , ylim , zlim ,cols , xlab ,
                        ylab , zlab, ...)
     }
 
   }else{
     graphics::par(mar = mar, mfrow = c(1,1))
-    DLNMLPS_plot_ind(x, slice_lag , slice_x , slice_y, ptype , FALSE, show.legend, CI ,
+    dlnmLPS_plot_ind(x, slice_lag , slice_x , slice_y, ptype , FALSE, show.legend, CI ,
      xlim , ylim , zlim ,cols , xlab ,
      ylab , zlab, ...)
   }
@@ -306,7 +306,7 @@ plot.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NUL
 
 #' Plotting one curve of nested graph
 #' @noRd
-DLNMLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, ptype = "overall",
+dlnmLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, ptype = "overall",
                              multiple.plots = FALSE, show.legend = TRUE, CI = FALSE,
                              xlim = NULL, ylim = NULL, zlim = NULL,cols = NULL, xlab = NULL,
                              ylab = NULL, zlab = NULL, ...){
@@ -356,7 +356,7 @@ DLNMLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
 #' Contour plots of predicted outcomes
 #'
 #' Produce contour plots of predicted outcomes obtained from
-#' [pred_crossbasis()]. In contrast to [plot.DLNMLPS_pred()], this function only
+#' [pred_crossbasis()]. In contrast to [plot.dlnmLPS_pred()], this function only
 #' produces contour plots of surfaces and therefore is only available for
 #' plot configurations that result in a three-dimensional surface. For Poisson or
 #' negative binomial models with a log link, relative risks (RRs) are plotted;
@@ -365,11 +365,11 @@ DLNMLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
 #' outcome are plotted.
 #'
 #'
-#' @inheritParams plot.DLNMLPS_pred
+#' @inheritParams plot.dlnmLPS_pred
 #'
 #' @details
 #' This function provides contour representations of the three-dimensional
-#' surfaces available in [plot.DLNMLPS_pred()].
+#' surfaces available in [plot.dlnmLPS_pred()].
 #'
 #' The available plots are:
 #' \itemize{
@@ -389,7 +389,7 @@ DLNMLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
 #' @returns
 #' Produces a contour plot and returns `NULL` invisibly.
 #'
-#' @seealso [plot.DLNMLPS_pred()], [pred_crossbasis()]
+#' @seealso [plot.dlnmLPS_pred()], [pred_crossbasis()]
 #'
 #' @examples
 #' data(barcelona_temp)
@@ -562,7 +562,7 @@ DLNMLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
 #'
 #' @export
 
-contour.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, slice_by = NULL,
+contour.dlnmLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, slice_by = NULL,
                                  ptype = "overall", xlim = NULL, ylim = NULL, zlim = NULL,
                                  cols = NULL, xlab = NULL,ylab = NULL, zlab = NULL, mar = NULL, ...){
 
@@ -588,14 +588,14 @@ contour.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = 
   if(nested){
 
     for (xi in 1:length(x)){
-      DLNMLPS_contour_ind(x[[xi]], slice_lag, slice_x , slice_y , ptype ,
+      dlnmLPS_contour_ind(x[[xi]], slice_lag, slice_x , slice_y , ptype ,
                        xlim , ylim , zlim ,cols , xlab,
                        ylab , zlab, main = paste('By = ', x[[xi]]$by), ...)
     }
 
   }else{
 
-    DLNMLPS_contour_ind(x, slice_lag , slice_x, slice_y , ptype  ,
+    dlnmLPS_contour_ind(x, slice_lag , slice_x, slice_y , ptype  ,
                      xlim, ylim , zlim  ,cols , xlab  ,
                      ylab , zlab , ...)
   }
@@ -608,7 +608,7 @@ contour.DLNMLPS_pred <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = 
 
 #' Plotting one contour plot of nested graph
 #' @noRd
-DLNMLPS_contour_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, ptype = "overall",
+dlnmLPS_contour_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL, ptype = "overall",
                                  xlim = NULL, ylim = NULL, zlim = NULL,cols = NULL, xlab = NULL,
                                  ylab = NULL, zlab = NULL, ...){
 

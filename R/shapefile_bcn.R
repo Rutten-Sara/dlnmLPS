@@ -3,7 +3,7 @@
 #' Spatial boundaries of the 10 administrative districts of Barcelona,
 #' provided as an \code{sf} object. The dataset is used alongside the
 #' simulated \code{barcelona_temp} dataset to facilitate spatial
-#' visualisation and examples in the \code{DLNMLPS} package.
+#' visualisation and examples in the \code{dlnmLPS} package.
 #'
 #' @format An \code{sf} object with 10 features and 2 columns:
 #' \describe{

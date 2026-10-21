@@ -1,3 +1,3 @@
-#' @useDynLib DLNMLPS, .registration = TRUE
+#' @useDynLib dlnmLPS, .registration = TRUE
 #' @importFrom Rcpp evalCpp
 NULL

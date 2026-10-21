@@ -1,9 +1,9 @@
 ---
-title: "Introduction to DLNMLPS"
+title: "Introduction to dlnmLPS"
 output: rmarkdown::html_vignette
 bibliography: references.bib
 vignette: >
-  %\VignetteIndexEntry{Introduction to DLNMLPS}
+  %\VignetteIndexEntry{Introduction to dlnmLPS}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,28 +16,28 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(DLNMLPS)
+library(dlnmLPS)
 ```
 
 # Introduction
 
-The `DLNMLPS` package provides tools for fitting Distributed Lag Non-linear Models (DLNMs) [@gasparrini2010DLNM] within a Bayesian framework. 
+The `dlnmLPS` package provides tools for fitting Distributed Lag Non-linear Models (DLNMs) [@gasparrini2010DLNM] within a Bayesian framework. 
 
 DLNMs can require the estimation of a large number of basis coefficients to represent complex exposure-lag-response relationships. Penalized DLNMs provide a very flexible way to model these relationships, while still avoiding overfitting [@gasparrini2017penalized]. However, fitting penalized DLNMs can be computationally demanding because of the large number of model coefficients. Consequently, unpenalized DLNMs are often used in practice.
 
-`DLNMLPS` addresses this computational challenge by exploiting Laplace approximations, allowing both unpenalized and penalized DLNMs to be estimated efficiently within a Bayesian framework. This approach allows for fast estimation while accounting for uncertainty in the model parameters.
+`dlnmLPS` addresses this computational challenge by exploiting Laplace approximations, allowing both unpenalized and penalized DLNMs to be estimated efficiently within a Bayesian framework. This approach allows for fast estimation while accounting for uncertainty in the model parameters.
 
-This vignette provides an introduction to the basic functionality of `DLNMLPS` [@Rutten2026basis]. We first demonstrate how to install and load the package, then fit a basic DLNM without penalization. We subsequently show how the same type of model can be fitted using penalized splines.
+This vignette provides an introduction to the basic functionality of `dlnmLPS` [@Rutten2026basis]. We first demonstrate how to install and load the package, then fit a basic DLNM without penalization. We subsequently show how the same type of model can be fitted using penalized splines.
 
 The more advanced modelling options are demonstrated in separate vignettes (see `vignette("spatially-varying-dlnms")`, `vignette("effect-modified-dlnms")` and `vignette("joint-dlnms")`).
 
 # Installation
 
-The development version of `DLNMLPS` can be installed from GitHub using:
+The development version of `dlnmLPS` can be installed from GitHub using:
 
 ```{r install, eval = FALSE}
 # install.packages("remotes")
-remotes::install_github("Rutten-Sara/DLNMLPS")
+remotes::install_github("Rutten-Sara/dlnmLPS")
 ```
 
 
@@ -46,7 +46,7 @@ remotes::install_github("Rutten-Sara/DLNMLPS")
 ## Overview
 A distributed lag non-linear model (DLNM) describes an exposure-response relationship where the exposure can have a delayed effect. The association can be nonlinear in the exposure and lag dimension. The two dimensions are represented using spline basis functions.
 
-The following example demonstrates how to fit a basic DLNM using `DLNMLPS`.
+The following example demonstrates how to fit a basic DLNM using `dlnmLPS`.
 
 ## Example data
 For illustration, we use the following simulated example data:
@@ -197,7 +197,7 @@ plot(pred_unpenalized, ptype = "cross", ticktype="detailed",theta=230,
 Note that credible intervals cannot be requested for 3D plots or contour plots.
 
 ## Fitting a penalized DLNM
-Flexible basis functions can describe more complex exposure-lag-response relationships, but an overly flexible model can also result in overfitting. Penalization provides a way to control the smoothness of the estimated association. In `DLNMLPS`, penalized DLNMs are estimated using Laplacian P-splines.
+Flexible basis functions can describe more complex exposure-lag-response relationships, but an overly flexible model can also result in overfitting. Penalization provides a way to control the smoothness of the estimated association. In `dlnmLPS`, penalized DLNMs are estimated using Laplacian P-splines.
 
 A penalized DLNM can be fitted similarly as an unpenalized DLNM, but the order of the penalty needs to be supplied in the argument `arg` of `sm()`. Note that, by default, an additional lag penalty is specified, on top of the P-splines penalties, to encourage shrinkage towards a null effect at longer lags. To disable this penalty, specify `add.legpen`= "FALSE" within the `arg` argument.
 
@@ -247,7 +247,7 @@ plot(pred_unpenalized, ptype = "cross", ticktype="detailed",theta=230,
         nticks = 4, shade = 0.75,r=sqrt(3),d=5,cex.axis=0.5, cex.lab=0.5,border=NA)
 ```
 
-One of the advantages of Bayesian modelling, is that uncertainty quantification can easily be obtained. We already illustrated how to request exceedance probabilities, but also attributable risks can be calculated within a DLNM framework [@Gasparrini2014af]. Therefore, the `DLNMLPS` package provides the function `attributable_risk()`. For example, if we want to calculate the attributable fraction of temperature during the summer of 2007, using the average maximum temperature and total number of cases (over all Districts), we can use:
+One of the advantages of Bayesian modelling, is that uncertainty quantification can easily be obtained. We already illustrated how to request exceedance probabilities, but also attributable risks can be calculated within a DLNM framework [@Gasparrini2014af]. Therefore, the `dlnmLPS` package provides the function `attributable_risk()`. For example, if we want to calculate the attributable fraction of temperature during the summer of 2007, using the average maximum temperature and total number of cases (over all Districts), we can use:
 
 ```{r}
 # Calculate exposure and outcome timeseries
@@ -440,16 +440,16 @@ Little variation in the Leroux random effect over time can be observed.
 
 # Summary
 
-In this vignette, we introduced the basic functionality of `DLNMLPS`.
+In this vignette, we introduced the basic functionality of `dlnmLPS`.
 
 We demonstrated how to:
 
-1. install and load the `DLNMLPS` package;
+1. install and load the `dlnmLPS` package;
 2. fit a basic unpenalized DLNM;
 3. fit a penalized DLNM using Laplacian P-splines; and
 4. add spatial and temporal random effects.
 
-The next vignettes provide examples of more advanced applications of `DLNMLPS`, including spatially varying DLNMs (see `vignette("spatially-varying-dlnms")`), effect-modified DLNMs (see `vignette("effect-modified-dlnms")`), and DLNMs with bivariate exposures (see `vignette("joint-dlnms")`).
+The next vignettes provide examples of more advanced applications of `dlnmLPS`, including spatially varying DLNMs (see `vignette("spatially-varying-dlnms")`), effect-modified DLNMs (see `vignette("effect-modified-dlnms")`), and DLNMs with bivariate exposures (see `vignette("joint-dlnms")`).
 
 
 # References

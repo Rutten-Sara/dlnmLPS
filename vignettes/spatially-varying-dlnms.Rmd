@@ -16,18 +16,18 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(DLNMLPS)
+library(dlnmLPS)
 ```
 
 # Introduction
 
 A standard distributed lag non-linear model (DLNM) assumes that the exposure-lag-response curve is common across all locations. While this assumption can be useful, it may be too restrictive. In many settings, the association between exposure and response may vary across space. For example, the relationship between temperature and mortality may differ between regions due to differences in population characteristics, climate, land use or other local factors. 
 
-`DLNMLPS` provides methods for fitting spatially varying distributed lag non-linear models, allowing the exposure-lag-response association to differ between spatial locations [@Rutten2026spatially]. This provides a flexible framework for investigating both the exposure-response relationship, as well as geographical variation.  
+`dlnmLPS` provides methods for fitting spatially varying distributed lag non-linear models, allowing the exposure-lag-response association to differ between spatial locations [@Rutten2026spatially]. This provides a flexible framework for investigating both the exposure-response relationship, as well as geographical variation.  
 
-In this vignette, we demonstrate how to fit spatially varying DLNMs using `DLNMLPS`. We subsequently show how to obtain and visualize the estimated spatially varying exposure-lag-response curves.
+In this vignette, we demonstrate how to fit spatially varying DLNMs using `dlnmLPS`. We subsequently show how to obtain and visualize the estimated spatially varying exposure-lag-response curves.
 
-The basic functionality of `DLNMLPS`is introduced in `vignette("introduction_dlnmlps")`.
+The basic functionality of `dlnmLPS`is introduced in `vignette("introduction_dlnmlps")`.
 
 # Spatially varying DLNMs
 
@@ -280,7 +280,7 @@ ggplot2::ggplot(af_ci, ggplot2::aes(x = estimate, y = ID)) +
 
 # Summary
 
-In this vignette, we introduced the spatially varying functionality of `DLNMLPS`. We demonstrated how to fit four different types of spatially-varying DLNMs, differing in penalization and spatial structure. See also `vignette("introduction_dlnmlps")` for more information.
+In this vignette, we introduced the spatially varying functionality of `dlnmLPS`. We demonstrated how to fit four different types of spatially-varying DLNMs, differing in penalization and spatial structure. See also `vignette("introduction_dlnmlps")` for more information.
 
 
 # References

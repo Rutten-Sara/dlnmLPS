@@ -1,6 +1,6 @@
-#' DLNMLPS objects
+#' dlnmLPS objects
 #'
-#' Objects of class `"DLNMLPS"` as returned by [DLNM_LPS()].
+#' Objects of class `"dlnmLPS"` as returned by [DLNM_LPS()].
 #'
 #' @section Components:
 #' \describe{
@@ -21,5 +21,5 @@
 #'   \item{types}{A vector with the type of each model component.}
 #' }
 #'
-#' @name DLNMLPS_Object
+#' @name dlnmLPS_Object
 NULL

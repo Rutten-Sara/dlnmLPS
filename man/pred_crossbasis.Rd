@@ -2,7 +2,7 @@
 % Please edit documentation in R/predRR.R
 \name{pred_crossbasis}
 \alias{pred_crossbasis}
-\title{Generate Predictions from a DLNMLPS Model}
+\title{Generate Predictions from a dlnmLPS Model}
 \usage{
 pred_crossbasis(
   basis,
@@ -25,7 +25,7 @@ pred_crossbasis(
 \item{basis}{An object of class \code{"crossbasis"} or \code{"joint.crossbasis"}
 defining the exposure-lag basis used in the model.}
 
-\item{model}{An object of class \code{"DLNMLPS"} returned by the \link{DLNM_LPS} function.}
+\item{model}{An object of class \code{"dlnmLPS"} returned by the \link{DLNM_LPS} function.}
 
 \item{at_x}{A numeric vector specifying constant exposure values over the
 selected lag period, or a matrix specifying exposure histories over the
@@ -70,7 +70,7 @@ value(s) defining the level at which the effect is evaluated. For a factor
 corresponding stratum.}
 }
 \value{
-An object of class \code{"DLNMLPS_pred"} containing the following
+An object of class \code{"dlnmLPS_pred"} containing the following
 components (structured by value of the \code{by}-variable, if specified):
 
 \describe{

@@ -1,4 +1,4 @@
-Package: DLNMLPS
+Package: dlnmLPS
 Title: Flexible Bayesian Distributed Lag Non-Linear Models
 Version: 0.1.0
 Authors@R: c(

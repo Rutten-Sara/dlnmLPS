@@ -426,7 +426,7 @@ DLNM_LPS_pois <- function(model,
                    "types" = types_term,
                    "family" = "Poisson")
 
-    class(output) <- "DLNMLPS"
+    class(output) <- "dlnmLPS"
     return(output)
 
 }
