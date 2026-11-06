@@ -30,7 +30,7 @@
 #'     penalty should be specified in the lag dimension (for penalized settings)
 #'     to encourage shrinkage of the effect at longer lags. The additional lag
 #'     penalty matrix can be specified using `lagpen`: by default, this is a diagonal
-#'     matrix with entries corresponding to `0^2,1^2,...,(vl-1)^2`, with `vl`the
+#'     matrix with entries corresponding to `0^2,1^2,...,(vl-1)^2`, with `vl` the
 #'     degrees of freedom for the lag basis.
 #'     `diag((0:(vl - 1))^2)`.}
 #'     \item{`ps`, `ns`, `bs`}{Smooth functions based on P-splines,
@@ -41,7 +41,7 @@
 #'     \item{`ind`, `ICAR`, `Leroux`, `Convolution`}{Random
 #'     effects, including spatial random effects. Additional arguments
 #'     include spatial connectivity information through `map` and
-#'     `connect` (logical value indicating whether the spatial adjacancy
+#'     `connect` (logical value indicating whether the spatial adjacency
 #'     graph should be connected, defaults to `TRUE`).}
 #'     \item{`rw1`, `rw2`}{First- and second-order random walks.
 #'     Additional arguments include `cyclic` for specifying cyclic random

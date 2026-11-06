@@ -21,7 +21,7 @@
 #'   supported options are `Poisson` for the Poisson distribution,
 #'   `NB` for the negative binomial distribution, `Gaussian` for the normal
 #'   distribution (default) or `Bernoulli`/`Binomial` for binary data.
-#' @param Ntrials Number of trials per observation (for `family`=binomial).
+#' @param Ntrials Number of trials per observation (for `family`="Binomial").
 #' @param refit Optional number of additional model refinement iterations. Each
 #'   iteration updates the coefficient and hyperparameter estimates based on the
 #'   previous iteration. Default is `0`.
@@ -30,6 +30,7 @@
 #' the returned object and its components.
 #'
 #' @examples
+#' \dontrun{
 #' data(barcelona_temp)
 #' data(shapefile_bcn)
 #'
@@ -164,7 +165,7 @@
 #'     by = unique(dataset$District)
 #' )
 #'
-#' # Plot results (region-specific overal RR)
+#' # Plot results (region-specific overall RR)
 #' plot(pred_spat_max, ptype = "overall", CI = FALSE, xlab = "temp", ylab = "RR", ylim = c(0.9,3.0),
 #'     multiple.plots = FALSE)
 #'
@@ -198,7 +199,7 @@
 #'
 #' # Plot results (contour plot exposure-lag-response)
 #' contour(pred_conf_max, ptype = "cross", cols = function(n) hcl.colors(n, "Inferno"))
-#'
+#' }
 #'
 #' @export
 #'

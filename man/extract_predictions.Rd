@@ -40,15 +40,16 @@ overall cumulative risks.}
 }}
 }
 \value{
-A dataframe containing the requested exposures (and lags), predicted value,
+A data frame containing the requested exposures (and lags), predicted value,
 lower and upper bounds on the credible intervals (if requested in predictions),
 exceedance probabilities (if requested in predictions), and levels of the
 by-variable (if applicable).
 }
 \description{
-Help function to extract requested predictions from an object returned by \code{\link[=pred_crossbasis]{pred_crossbasis()}}.
+Helper function to extract requested predictions from an object returned by \code{\link[=pred_crossbasis]{pred_crossbasis()}}.
 }
 \examples{
+\dontrun{
 data(barcelona_temp)
 data(shapefile_bcn)
 
@@ -120,5 +121,6 @@ extract_predictions(
     slice_by = quantile(dataset$depriv,probs= c(0.10)),
     ptype = "matRRfit"
 )
+}
 
 }

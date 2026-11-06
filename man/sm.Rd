@@ -33,7 +33,7 @@ The additional argument \code{add.lagpen}
 penalty should be specified in the lag dimension (for penalized settings)
 to encourage shrinkage of the effect at longer lags. The additional lag
 penalty matrix can be specified using \code{lagpen}: by default, this is a diagonal
-matrix with entries corresponding to \verb{0^2,1^2,...,(vl-1)^2}, with \code{vl}the
+matrix with entries corresponding to \verb{0^2,1^2,...,(vl-1)^2}, with \code{vl} the
 degrees of freedom for the lag basis.
 \code{diag((0:(vl - 1))^2)}.}
 \item{\code{ps}, \code{ns}, \code{bs}}{Smooth functions based on P-splines,
@@ -44,7 +44,7 @@ penalty specifications.}
 \item{\code{ind}, \code{ICAR}, \code{Leroux}, \code{Convolution}}{Random
 effects, including spatial random effects. Additional arguments
 include spatial connectivity information through \code{map} and
-\code{connect} (logical value indicating whether the spatial adjacancy
+\code{connect} (logical value indicating whether the spatial adjacency
 graph should be connected, defaults to \code{TRUE}).}
 \item{\code{rw1}, \code{rw2}}{First- and second-order random walks.
 Additional arguments include \code{cyclic} for specifying cyclic random

@@ -1,6 +1,6 @@
 #' Attributable risk from dlnmLPS model
 #'
-#' This function calculated the attributable risk (attributable fraction and
+#' This function calculates the attributable risk (attributable fraction and
 #' attributable number) from a fitted [dlnmLPS] model.
 #'
 #' @param basis An object of class `"crossbasis"` or `"joint.crossbasis"`
@@ -38,7 +38,7 @@
 #' @param samples Set to `TRUE` if samples from the posterior distribution should be returned.
 #'   Samples can only be calculated for `tot = TRUE`.
 #' @param nsamples Number of samples from the posterior distribution to be returned.
-#'   (only for `nsamples = TRUE`).
+#'   (only when `samples = TRUE`).
 #' @param exc.threshold Numeric value defining the threshold used for exceedance
 #'   probability calculations of the attributable fraction. If `NULL` (default), no
 #'   exceedance probabilities are calculated.
@@ -51,9 +51,9 @@
 #'   \item{samples element}{List with samples from the posterior distribution of the total
 #'   attributable fraction `af` and total attributable number `an`. The group `ID`
 #'   (if applicable) and exceedance probabilities (if requested) are also reported.
-#'   For a non-NULL grouping structures, this output is structured per group.}
+#'   For non-NULL grouping structures, this output is structured per group.}
 #'   \item{fit element}{The fitted total `af`, `an`, and the group `ID`
-#'   if applicable. For a non-NULL grouping structures, this output is structured per group. }
+#'   if applicable. For non-NULL grouping structures, this output is structured per group. }
 #' }
 #'
 #'   If `samples = FALSE`, the list contains the fitted total `af`, `an`, and the group `ID`
@@ -62,6 +62,7 @@
 #'   structures, this output is structured per group.
 #'
 #' @examples
+#' \dontrun{
 #' data(barcelona_temp)
 #' data(shapefile_bcn)
 #'
@@ -233,7 +234,7 @@
 #'   tot = TRUE,
 #'   samples = TRUE  # Samples from posterior distribution
 #' )
-#'
+#' }
 #'
 #' @export
 #'

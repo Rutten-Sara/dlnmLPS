@@ -34,7 +34,7 @@
 #' @param xlab,ylab,zlab Axis labels.
 #' @param mar Figure margins.
 #' @param ... Additional graphical arguments passed to the underlying plotting
-#' functions. For 3D plots, additional arguments of `graphics::persp`can be passed.
+#' functions. For 3D plots, additional arguments of `graphics::persp` can be passed.
 #'
 #' @details
 #' The available plot types depend on whether the prediction object contains
@@ -77,9 +77,10 @@
 #' Produces a plot. The function is called for its side effects and returns
 #' `NULL` invisibly.
 #'
-#' @seealso [contour.dlnmLPS_pred()],[pred_crossbasis()]
+#' @seealso [contour.dlnmLPS_pred()], [pred_crossbasis()]
 #'
 #' @examples
+#' \dontrun{
 #' data(barcelona_temp)
 #' data(shapefile_bcn)
 #'
@@ -214,7 +215,7 @@
 #'     by = unique(dataset$District)
 #' )
 #'
-#' # Plot results (region-specific overal RR)
+#' # Plot results (region-specific overall RR)
 #' plot(pred_spat_max, ptype = "overall", CI = FALSE, xlab = "temp", ylab = "RR", ylim = c(0.9,3.0),
 #'     multiple.plots = FALSE)
 #'
@@ -248,7 +249,7 @@
 #'
 #' # Plot results (contour plot exposure-lag-response)
 #' contour(pred_conf_max, ptype = "cross", cols = function(n) hcl.colors(n, "Inferno"))
-#'
+#' }
 #'
 #' @export
 
@@ -392,6 +393,7 @@ dlnmLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
 #' @seealso [plot.dlnmLPS_pred()], [pred_crossbasis()]
 #'
 #' @examples
+#' \dontrun{
 #' data(barcelona_temp)
 #' data(shapefile_bcn)
 #'
@@ -447,7 +449,7 @@ dlnmLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
 #'     by = unique(dataset$District)
 #' )
 #'
-#' # Plot results (region-specific overal RR)
+#' # Plot results (region-specific overall RR)
 #' plot(pred_spat_max, ptype = "overall", CI = TRUE, xlab = "temp", ylab = "RR", ylim = c(0.9,3.0))
 #'
 #'
@@ -559,6 +561,7 @@ dlnmLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
 #'
 #' # Plot results (contour plot overall RR)
 #' contour(pred_max_min, ptype = "overall", cols = function(n) hcl.colors(n, "Inferno"))
+#' }
 #'
 #' @export
 

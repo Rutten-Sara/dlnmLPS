@@ -33,7 +33,7 @@ supported options are \code{Poisson} for the Poisson distribution,
 \code{NB} for the negative binomial distribution, \code{Gaussian} for the normal
 distribution (default) or \code{Bernoulli}/\code{Binomial} for binary data.}
 
-\item{Ntrials}{Number of trials per observation (for \code{family}=binomial).}
+\item{Ntrials}{Number of trials per observation (for \code{family}="Binomial").}
 
 \item{refit}{Optional number of additional model refinement iterations. Each
 iteration updates the coefficient and hyperparameter estimates based on the
@@ -53,6 +53,7 @@ covariate effects can be specified using natural splines, P-splines, or
 B-splines.
 }
 \examples{
+\dontrun{
 data(barcelona_temp)
 data(shapefile_bcn)
 
@@ -187,7 +188,7 @@ pred_spat_max <- pred_crossbasis(
     by = unique(dataset$District)
 )
 
-# Plot results (region-specific overal RR)
+# Plot results (region-specific overall RR)
 plot(pred_spat_max, ptype = "overall", CI = FALSE, xlab = "temp", ylab = "RR", ylim = c(0.9,3.0),
     multiple.plots = FALSE)
 
@@ -221,6 +222,6 @@ pred_conf_max <- pred_crossbasis(
 
 # Plot results (contour plot exposure-lag-response)
 contour(pred_conf_max, ptype = "cross", cols = function(n) hcl.colors(n, "Inferno"))
-
+}
 
 }

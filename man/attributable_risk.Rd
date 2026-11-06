@@ -71,7 +71,7 @@ Only for \code{basis} of class\code{"joint.crossbasis"}.}
 Samples can only be calculated for \code{tot = TRUE}.}
 
 \item{nsamples}{Number of samples from the posterior distribution to be returned.
-(only for \code{nsamples = TRUE}).}
+(only when \code{samples = TRUE}).}
 
 \item{exc.threshold}{Numeric value defining the threshold used for exceedance
 probability calculations of the attributable fraction. If \code{NULL} (default), no
@@ -86,9 +86,9 @@ Note that this option is only possible with \code{tot = TRUE}. The two elements 
 \item{samples element}{List with samples from the posterior distribution of the total
 attributable fraction \code{af} and total attributable number \code{an}. The group \code{ID}
 (if applicable) and exceedance probabilities (if requested) are also reported.
-For a non-NULL grouping structures, this output is structured per group.}
+For non-NULL grouping structures, this output is structured per group.}
 \item{fit element}{The fitted total \code{af}, \code{an}, and the group \code{ID}
-if applicable. For a non-NULL grouping structures, this output is structured per group. }
+if applicable. For non-NULL grouping structures, this output is structured per group. }
 }
 
 If \code{samples = FALSE}, the list contains the fitted total \code{af}, \code{an}, and the group \code{ID}
@@ -97,10 +97,11 @@ if applicable, when \code{tot = TRUE}. When \code{tot = FALSE}, this list contai
 structures, this output is structured per group.
 }
 \description{
-This function calculated the attributable risk (attributable fraction and
+This function calculates the attributable risk (attributable fraction and
 attributable number) from a fitted \link{dlnmLPS} model.
 }
 \examples{
+\dontrun{
 data(barcelona_temp)
 data(shapefile_bcn)
 
@@ -272,6 +273,6 @@ af2007_conf <- attributable_risk(
   tot = TRUE,
   samples = TRUE  # Samples from posterior distribution
 )
-
+}
 
 }

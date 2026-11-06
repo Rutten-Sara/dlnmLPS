@@ -13,7 +13,7 @@
 #' @param at_y A numeric vector or matrix analogous to `at_x`, specifying values
 #'   or histories for the second exposure when `basis` is of class
 #'   `"joint.crossbasis"`.
-#' @param cen A value  (or a vector of length 2 for `"joint.crossbasis"`)
+#' @param cen A value (or a vector of length 2 for `"joint.crossbasis"`)
 #'   specifying the centering (reference) exposure level used
 #'   for calculating relative risk predictions.
 #' @param lag Either an integer scalar specifying the maximum lag, or a vector
@@ -64,6 +64,7 @@
 #' }
 #'
 #' @examples
+#' \dontrun{
 #' data(barcelona_temp)
 #' data(shapefile_bcn)
 #'
@@ -198,7 +199,7 @@
 #'     by = unique(dataset$District)
 #' )
 #'
-#' # Plot results (region-specific overal RR)
+#' # Plot results (region-specific overall RR)
 #' plot(pred_spat_max, ptype = "overall", CI = FALSE, xlab = "temp", ylab = "RR", ylim = c(0.9,3.0),
 #'     multiple.plots = FALSE)
 #'
@@ -249,7 +250,7 @@
 #'
 #' # Plot results (contour plot exposure-lag-response)
 #' contour(pred_conf_max, ptype = "cross", cols = function(n) hcl.colors(n, "Inferno"))
-#'
+#' }
 #'
 #' @export
 
@@ -837,7 +838,7 @@ data_pred_1d <- function(basis, at_x, predlag, cen){
 
 #' Extract predictions
 #'
-#' Help function to extract requested predictions from an object returned by [pred_crossbasis()].
+#' Helper function to extract requested predictions from an object returned by [pred_crossbasis()].
 #'
 #' @param x An object returned by [pred_crossbasis()].
 #' @param slice_x Exposure values of the first exposure variable at which to
@@ -860,12 +861,13 @@ data_pred_1d <- function(basis, at_x, predlag, cen){
 #' }
 #'
 #' @returns
-#' A dataframe containing the requested exposures (and lags), predicted value,
+#' A data frame containing the requested exposures (and lags), predicted value,
 #' lower and upper bounds on the credible intervals (if requested in predictions),
 #' exceedance probabilities (if requested in predictions), and levels of the
 #' by-variable (if applicable).
 #'
 #' @examples
+#' \dontrun{
 #' data(barcelona_temp)
 #' data(shapefile_bcn)
 #'
@@ -937,6 +939,7 @@ data_pred_1d <- function(basis, at_x, predlag, cen){
 #'     slice_by = quantile(dataset$depriv,probs= c(0.10)),
 #'     ptype = "matRRfit"
 #')
+#' }
 #'
 #' @export
 #'

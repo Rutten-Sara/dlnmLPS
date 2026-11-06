@@ -4,12 +4,12 @@
 #' deprivation, and mortality data for 10 districts of Barcelona during
 #' the summer period from 2007 to 2011.
 #'
-#' The dataset is provided solely for illustrative and demonstration
-#' purposes, in particular for demonstrating the methods implemented
+#' The dataset is provided solely for illustrative and demonstrative
+#' purposes, in particular to demonstrate the methods implemented
 #' in the \code{dlnmLPS} package. The data are simulated and do not
 #' represent actual observations from Barcelona.
 #'
-#' @format A data frame with 6100 observations and 9 variables:
+#' @format A data frame with 6100 observations and 8 variables:
 #' \describe{
 #'   \item{date}{Date of observation. Data cover 1 June to 30 September
 #'   for each year from 2007 to 2011.}

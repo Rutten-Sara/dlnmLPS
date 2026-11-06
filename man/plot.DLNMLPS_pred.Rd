@@ -65,7 +65,7 @@ intervals are only available for two-dimensional plots.}
 \item{mar}{Figure margins.}
 
 \item{...}{Additional graphical arguments passed to the underlying plotting
-functions. For 3D plots, additional arguments of \code{graphics::persp}can be passed.}
+functions. For 3D plots, additional arguments of \code{graphics::persp} can be passed.}
 }
 \value{
 Produces a plot. The function is called for its side effects and returns
@@ -118,6 +118,7 @@ multiple curves in the same figure.
 Confidence intervals are only available for two-dimensional plots.
 }
 \examples{
+\dontrun{
 data(barcelona_temp)
 data(shapefile_bcn)
 
@@ -252,7 +253,7 @@ pred_spat_max <- pred_crossbasis(
     by = unique(dataset$District)
 )
 
-# Plot results (region-specific overal RR)
+# Plot results (region-specific overall RR)
 plot(pred_spat_max, ptype = "overall", CI = FALSE, xlab = "temp", ylab = "RR", ylim = c(0.9,3.0),
     multiple.plots = FALSE)
 
@@ -286,9 +287,9 @@ pred_conf_max <- pred_crossbasis(
 
 # Plot results (contour plot exposure-lag-response)
 contour(pred_conf_max, ptype = "cross", cols = function(n) hcl.colors(n, "Inferno"))
-
+}
 
 }
 \seealso{
-\code{\link[=contour.dlnmLPS_pred]{contour.dlnmLPS_pred()}},\code{\link[=pred_crossbasis]{pred_crossbasis()}}
+\code{\link[=contour.dlnmLPS_pred]{contour.dlnmLPS_pred()}}, \code{\link[=pred_crossbasis]{pred_crossbasis()}}
 }

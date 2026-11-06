@@ -35,7 +35,7 @@ same lag period used during model estimation.}
 or histories for the second exposure when \code{basis} is of class
 \code{"joint.crossbasis"}.}
 
-\item{cen}{A value  (or a vector of length 2 for \code{"joint.crossbasis"})
+\item{cen}{A value (or a vector of length 2 for \code{"joint.crossbasis"})
 specifying the centering (reference) exposure level used
 for calculating relative risk predictions.}
 
@@ -101,6 +101,7 @@ This function generates predictions from a fitted
 are computed relative to a user-defined reference (centering) value.
 }
 \examples{
+\dontrun{
 data(barcelona_temp)
 data(shapefile_bcn)
 
@@ -235,7 +236,7 @@ pred_spat_max <- pred_crossbasis(
     by = unique(dataset$District)
 )
 
-# Plot results (region-specific overal RR)
+# Plot results (region-specific overall RR)
 plot(pred_spat_max, ptype = "overall", CI = FALSE, xlab = "temp", ylab = "RR", ylim = c(0.9,3.0),
     multiple.plots = FALSE)
 
@@ -286,6 +287,6 @@ extract_predictions(
 
 # Plot results (contour plot exposure-lag-response)
 contour(pred_conf_max, ptype = "cross", cols = function(n) hcl.colors(n, "Inferno"))
-
+}
 
 }
