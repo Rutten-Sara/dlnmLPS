@@ -1,0 +1,35 @@
+url: https://rutten-sara.github.io/dlnmLPS/
+template:
+  bootstrap: 5
+  light-switch: yes
+  bslib:
+    bootswatch: minty
+    navbar-light-bg: '#78C2AD'
+    navbar-dark-bg: '#163C3A'
+articles:
+- title: Getting started
+  contents: introduction_dlnmlps
+- title: Advanced topics
+  contents:
+  - effect-modified-dlnms
+  - spatially-varying-dlnms
+  - joint-dlnms
+reference:
+- title: Data
+  contents:
+  - barcelona_temp
+  - shapefile_bcn
+- title: Functions
+  contents:
+  - joint.crossbasis
+  - dlnmLPS
+  - pred_crossbasis
+  - extract_predictions
+  - plot.dlnmLPS_pred
+  - contour.dlnmLPS_pred
+  - attributable_risk
+  - summary.dlnmLPS
+  - print.summary.dlnmLPS
+  - dlnmLPS_Object
+  - sm
+
