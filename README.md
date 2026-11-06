@@ -6,7 +6,7 @@
 ![Lifecycle](https://img.shields.io/badge/lifecycle-Experimental-orange)
 ![CodeSize](https://img.shields.io/github/languages/code-size/Rutten-Sara/dlnmLPS?color=orange&label=Code%20size&style=plastic)
 ![License](https://img.shields.io/badge/License-GPL%20%28%3E%3D%203%29-blue)
-![UserStars](https://img.shields.io/github/stars/Rutten-Sara/dlnmLPS?style=social)
+![UserStars](https://img.shields.io/github/stars/Rutten-Sara/dlnmLPS)
 <!-- badges: end -->
 
 **dlnmLPS** is an R package for fitting **d**istributed **l**ag **n**on-linear
