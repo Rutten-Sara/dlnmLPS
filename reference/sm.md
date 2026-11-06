@@ -50,7 +50,7 @@ sm(x, arg = NULL, by = NULL, arg.by = NULL)
       penalized settings) to encourage shrinkage of the effect at longer
       lags. The additional lag penalty matrix can be specified using
       `lagpen`: by default, this is a diagonal matrix with entries
-      corresponding to `0^2,1^2,...,(vl-1)^2`, with `vl`the degrees of
+      corresponding to `0^2,1^2,...,(vl-1)^2`, with `vl` the degrees of
       freedom for the lag basis. `diag((0:(vl - 1))^2)`.
 
   `ps`, `ns`, `bs`
@@ -66,7 +66,7 @@ sm(x, arg = NULL, by = NULL, arg.by = NULL)
   :   Random effects, including spatial random effects. Additional
       arguments include spatial connectivity information through `map`
       and `connect` (logical value indicating whether the spatial
-      adjacancy graph should be connected, defaults to `TRUE`).
+      adjacency graph should be connected, defaults to `TRUE`).
 
   `rw1`, `rw2`
 

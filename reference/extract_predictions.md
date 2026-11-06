@@ -1,6 +1,6 @@
 # Extract predictions
 
-Help function to extract requested predictions from an object returned
+Helper function to extract requested predictions from an object returned
 by
 [`pred_crossbasis()`](https://rutten-sara.github.io/dlnmLPS/reference/pred_crossbasis.md).
 
@@ -70,7 +70,7 @@ extract_predictions(
 
 ## Value
 
-A dataframe containing the requested exposures (and lags), predicted
+A data frame containing the requested exposures (and lags), predicted
 value, lower and upper bounds on the credible intervals (if requested in
 predictions), exceedance probabilities (if requested in predictions),
 and levels of the by-variable (if applicable).
@@ -78,6 +78,7 @@ and levels of the by-variable (if applicable).
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 data(barcelona_temp)
 data(shapefile_bcn)
 
@@ -139,11 +140,6 @@ extract_predictions(
     slice_x = c(28,30),
     ptype = "allRRfit"
 )
-#>    x      fit    lower    upper                 by
-#> 1 28 1.236969 1.148188 1.332615 -0.929699483475094
-#> 2 30 1.435580 1.158489 1.778947 -0.929699483475094
-#> 3 28 1.217482 1.132780 1.308517   1.21474771640633
-#> 4 30 1.620977 1.462298 1.796875   1.21474771640633
 
 # Extract lag-specific RR for 28 and 30 degrees Celsius, lag 0 and 8 and
 # for 10% deprivation percentile
@@ -154,9 +150,5 @@ extract_predictions(
     slice_by = quantile(dataset$depriv,probs= c(0.10)),
     ptype = "matRRfit"
 )
-#>    x lag       fit     lower    upper                 by
-#> 1 28   0 1.0840473 1.0422849 1.127483 -0.929699483475094
-#> 2 30   0 1.2925594 1.1909441 1.402845 -0.929699483475094
-#> 3 28   8 1.0175714 1.0054077 1.029882 -0.929699483475094
-#> 4 30   8 0.9985843 0.9716919 1.026221 -0.929699483475094
+} # }
 ```

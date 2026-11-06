@@ -1,6 +1,6 @@
 # Attributable risk from dlnmLPS model
 
-This function calculated the attributable risk (attributable fraction
+This function calculates the attributable risk (attributable fraction
 and attributable number) from a fitted
 [dlnmLPS](https://rutten-sara.github.io/dlnmLPS/reference/dlnmLPS.md)
 model.
@@ -109,7 +109,7 @@ attributable_risk(
 - nsamples:
 
   Number of samples from the posterior distribution to be returned.
-  (only for `nsamples = TRUE`).
+  (only when `samples = TRUE`).
 
 - exc.threshold:
 
@@ -130,12 +130,12 @@ are:
   List with samples from the posterior distribution of the total
   attributable fraction `af` and total attributable number `an`. The
   group `ID` (if applicable) and exceedance probabilities (if requested)
-  are also reported. For a non-NULL grouping structures, this output is
+  are also reported. For non-NULL grouping structures, this output is
   structured per group.
 
 - fit element:
 
-  The fitted total `af`, `an`, and the group `ID` if applicable. For a
+  The fitted total `af`, `an`, and the group `ID` if applicable. For
   non-NULL grouping structures, this output is structured per group.
 
 If `samples = FALSE`, the list contains the fitted total `af`, `an`, and
@@ -147,6 +147,7 @@ output is structured per group.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 data(barcelona_temp)
 data(shapefile_bcn)
 
@@ -318,5 +319,5 @@ af2007_conf <- attributable_risk(
   tot = TRUE,
   samples = TRUE  # Samples from posterior distribution
 )
-
+} # }
 ```

@@ -12,7 +12,7 @@ barcelona_temp
 
 ## Format
 
-A data frame with 6100 observations and 9 variables:
+A data frame with 6100 observations and 8 variables:
 
 - date:
 
@@ -53,8 +53,8 @@ Simulated data generated for the `dlnmLPS` package.
 
 ## Details
 
-The dataset is provided solely for illustrative and demonstration
-purposes, in particular for demonstrating the methods implemented in the
+The dataset is provided solely for illustrative and demonstrative
+purposes, in particular to demonstrate the methods implemented in the
 `dlnmLPS` package. The data are simulated and do not represent actual
 observations from Barcelona.
 

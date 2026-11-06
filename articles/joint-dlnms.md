@@ -34,7 +34,7 @@ For illustration, we use the following simulated example data:
 data(barcelona_temp)
 ```
 
-This simulated data set contains daily minimum, maximum and mean
+This simulated dataset contains daily minimum, maximum and mean
 temperature in all 10 districts of Barcelona during the summer period (1
 June–30 September) between 2007 and 2011. The population size,
 deprivation index and daily number of deaths are included for every

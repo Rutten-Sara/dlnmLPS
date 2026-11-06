@@ -70,7 +70,7 @@ For illustration, we use the following simulated example data:
 data(barcelona_temp)
 ```
 
-This simulated data set contains daily minimum, maximum and mean
+This simulated dataset contains daily minimum, maximum and mean
 temperature in all 10 districts of Barcelona during the summer period (1
 June–30 September) between 2007 and 2011. The population size,
 deprivation index and daily number of deaths are included for every
@@ -246,9 +246,9 @@ Although all requested predictions are represented in
 `pred_unpenalized`, retrieving specific parts of these predictions might
 require some manual searching. To avoid this, the wrapper function can
 be used to easily extract (parts of) these predictions in one
-user-friendly data set. For example, if we want to extract the overall
-RR predictions for a temperature of 22 and 30 degrees Celsius, we can
-use `ptype` = “allRRfit” and:
+user-friendly dataset. For example, if we want to extract the overall RR
+predictions for a temperature of 22 and 30 degrees Celsius, we can use
+`ptype` = “allRRfit” and:
 
 ``` r
 
