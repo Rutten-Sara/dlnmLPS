@@ -318,26 +318,26 @@ summary(model_max_spat)
 #> basis.max_unpenv1.l1            -0.006 0.047     -0.098   -0.006      0.086
 #> basis.max_unpenv1.l2            -0.070 0.046     -0.161   -0.070      0.020
 #> basis.max_unpenv1.l3             0.046 0.047     -0.046    0.046      0.138
-#> basis.max_unpenv1.l4            -0.102 0.046     -0.192   -0.102     -0.012
+#> basis.max_unpenv1.l4            -0.102 0.046     -0.193   -0.102     -0.012
 #> basis.max_unpenv2.l1             0.004 0.041     -0.076    0.004      0.084
 #> basis.max_unpenv2.l2            -0.095 0.040     -0.173   -0.095     -0.016
 #> basis.max_unpenv2.l3             0.101 0.042      0.020    0.101      0.183
-#> basis.max_unpenv2.l4            -0.098 0.040     -0.176   -0.098     -0.021
+#> basis.max_unpenv2.l4            -0.098 0.040     -0.176   -0.098     -0.020
 #> basis.max_unpenv3.l1             0.007 0.090     -0.169    0.007      0.183
 #> basis.max_unpenv3.l2            -0.268 0.090     -0.445   -0.268     -0.092
 #> basis.max_unpenv3.l3             0.241 0.091      0.062    0.241      0.420
 #> basis.max_unpenv3.l4            -0.257 0.090     -0.433   -0.257     -0.080
 #> basis.max_unpenv4.l1            -0.009 0.046     -0.100   -0.009      0.082
 #> basis.max_unpenv4.l2            -0.142 0.042     -0.224   -0.142     -0.060
-#> basis.max_unpenv4.l3             0.346 0.048      0.251    0.346      0.441
-#> basis.max_unpenv4.l4            -0.229 0.042     -0.312   -0.229     -0.147
+#> basis.max_unpenv4.l3             0.346 0.049      0.251    0.346      0.441
+#> basis.max_unpenv4.l4            -0.229 0.042     -0.312   -0.229     -0.146
 #> basis.max_unpenv1.l1:District01 -0.041 0.033     -0.105   -0.041      0.024
 #> basis.max_unpenv1.l1:District02 -0.005 0.029     -0.063   -0.005      0.052
 #> basis.max_unpenv1.l1:District03  0.001 0.033     -0.064    0.001      0.065
-#> basis.max_unpenv1.l1:District04 -0.023 0.035     -0.091   -0.023      0.046
+#> basis.max_unpenv1.l1:District04 -0.023 0.035     -0.092   -0.023      0.046
 #> basis.max_unpenv1.l1:District05  0.031 0.033     -0.033    0.031      0.096
 #> basis.max_unpenv1.l1:District06  0.045 0.033     -0.020    0.045      0.109
-#> basis.max_unpenv1.l1:District07  0.009 0.030     -0.050    0.009      0.069
+#> basis.max_unpenv1.l1:District07  0.009 0.031     -0.051    0.009      0.069
 #> basis.max_unpenv1.l1:District08 -0.013 0.033     -0.078   -0.013      0.053
 #> basis.max_unpenv1.l1:District09  0.019 0.032     -0.044    0.019      0.081
 #> basis.max_unpenv1.l1:District10 -0.023 0.033     -0.088   -0.023      0.041
@@ -346,25 +346,25 @@ summary(model_max_spat)
 #> basis.max_unpenv1.l2:District03  0.016 0.034     -0.050    0.016      0.082
 #> basis.max_unpenv1.l2:District04  0.013 0.036     -0.058    0.013      0.084
 #> basis.max_unpenv1.l2:District05  0.009 0.034     -0.057    0.009      0.075
-#> basis.max_unpenv1.l2:District06 -0.022 0.034     -0.088   -0.022      0.044
+#> basis.max_unpenv1.l2:District06 -0.022 0.034     -0.088   -0.022      0.045
 #> basis.max_unpenv1.l2:District07 -0.002 0.031     -0.063   -0.002      0.059
-#> basis.max_unpenv1.l2:District08  0.007 0.034     -0.059    0.007      0.072
+#> basis.max_unpenv1.l2:District08  0.007 0.034     -0.059    0.007      0.073
 #> basis.max_unpenv1.l2:District09  0.022 0.032     -0.042    0.022      0.085
 #> basis.max_unpenv1.l2:District10 -0.003 0.034     -0.069   -0.003      0.063
 #> basis.max_unpenv1.l3:District01  0.004 0.033     -0.061    0.004      0.069
-#> basis.max_unpenv1.l3:District02  0.007 0.029     -0.050    0.007      0.065
+#> basis.max_unpenv1.l3:District02  0.007 0.029     -0.051    0.007      0.065
 #> basis.max_unpenv1.l3:District03  0.005 0.033     -0.059    0.005      0.070
 #> basis.max_unpenv1.l3:District04 -0.002 0.035     -0.071   -0.002      0.067
 #> basis.max_unpenv1.l3:District05  0.016 0.033     -0.048    0.016      0.081
-#> basis.max_unpenv1.l3:District06  0.020 0.033     -0.045    0.020      0.084
+#> basis.max_unpenv1.l3:District06  0.020 0.033     -0.045    0.020      0.085
 #> basis.max_unpenv1.l3:District07 -0.006 0.030     -0.065   -0.006      0.054
-#> basis.max_unpenv1.l3:District08 -0.019 0.034     -0.085   -0.019      0.047
-#> basis.max_unpenv1.l3:District09 -0.009 0.032     -0.073   -0.009      0.054
+#> basis.max_unpenv1.l3:District08 -0.019 0.034     -0.086   -0.019      0.047
+#> basis.max_unpenv1.l3:District09 -0.010 0.032     -0.073   -0.010      0.054
 #> basis.max_unpenv1.l3:District10 -0.016 0.033     -0.080   -0.016      0.048
 #> basis.max_unpenv1.l4:District01  0.013 0.032     -0.050    0.013      0.076
 #> basis.max_unpenv1.l4:District02 -0.004 0.029     -0.062   -0.004      0.054
 #> basis.max_unpenv1.l4:District03  0.001 0.032     -0.062    0.001      0.064
-#> basis.max_unpenv1.l4:District04  0.006 0.035     -0.063    0.006      0.074
+#> basis.max_unpenv1.l4:District04  0.006 0.035     -0.063    0.006      0.075
 #> basis.max_unpenv1.l4:District05  0.001 0.033     -0.063    0.001      0.066
 #> basis.max_unpenv1.l4:District06 -0.002 0.032     -0.065   -0.002      0.061
 #> basis.max_unpenv1.l4:District07 -0.016 0.030     -0.076   -0.016      0.043
@@ -372,25 +372,25 @@ summary(model_max_spat)
 #> basis.max_unpenv1.l4:District09  0.007 0.031     -0.054    0.007      0.068
 #> basis.max_unpenv1.l4:District10 -0.013 0.033     -0.077   -0.013      0.051
 #> basis.max_unpenv2.l1:District01  0.018 0.033     -0.046    0.018      0.082
-#> basis.max_unpenv2.l1:District02 -0.004 0.029     -0.062   -0.004      0.053
-#> basis.max_unpenv2.l1:District03  0.006 0.033     -0.058    0.006      0.071
-#> basis.max_unpenv2.l1:District04 -0.002 0.035     -0.071   -0.002      0.068
-#> basis.max_unpenv2.l1:District05 -0.020 0.033     -0.085   -0.020      0.045
+#> basis.max_unpenv2.l1:District02 -0.004 0.030     -0.062   -0.004      0.053
+#> basis.max_unpenv2.l1:District03  0.006 0.033     -0.059    0.006      0.071
+#> basis.max_unpenv2.l1:District04 -0.001 0.035     -0.071   -0.001      0.068
+#> basis.max_unpenv2.l1:District05 -0.020 0.033     -0.086   -0.020      0.045
 #> basis.max_unpenv2.l1:District06 -0.018 0.033     -0.082   -0.018      0.046
 #> basis.max_unpenv2.l1:District07 -0.018 0.031     -0.078   -0.018      0.042
-#> basis.max_unpenv2.l1:District08  0.009 0.033     -0.055    0.009      0.073
+#> basis.max_unpenv2.l1:District08  0.009 0.033     -0.056    0.009      0.074
 #> basis.max_unpenv2.l1:District09  0.022 0.032     -0.042    0.022      0.085
 #> basis.max_unpenv2.l1:District10  0.008 0.033     -0.056    0.008      0.072
 #> basis.max_unpenv2.l2:District01 -0.019 0.033     -0.084   -0.019      0.046
-#> basis.max_unpenv2.l2:District02  0.000 0.030     -0.059    0.000      0.058
-#> basis.max_unpenv2.l2:District03 -0.003 0.033     -0.068   -0.003      0.063
+#> basis.max_unpenv2.l2:District02  0.000 0.030     -0.059    0.000      0.059
+#> basis.max_unpenv2.l2:District03 -0.003 0.034     -0.068   -0.003      0.063
 #> basis.max_unpenv2.l2:District04 -0.004 0.036     -0.075   -0.004      0.067
 #> basis.max_unpenv2.l2:District05 -0.007 0.034     -0.073   -0.007      0.060
 #> basis.max_unpenv2.l2:District06  0.048 0.033     -0.017    0.048      0.113
 #> basis.max_unpenv2.l2:District07  0.013 0.031     -0.048    0.013      0.074
 #> basis.max_unpenv2.l2:District08 -0.013 0.033     -0.078   -0.013      0.051
-#> basis.max_unpenv2.l2:District09  0.007 0.033     -0.057    0.007      0.071
-#> basis.max_unpenv2.l2:District10 -0.022 0.033     -0.088   -0.022      0.043
+#> basis.max_unpenv2.l2:District09  0.007 0.033     -0.057    0.007      0.072
+#> basis.max_unpenv2.l2:District10 -0.022 0.033     -0.088   -0.022      0.044
 #> basis.max_unpenv2.l3:District01  0.003 0.033     -0.061    0.003      0.067
 #> basis.max_unpenv2.l3:District02 -0.011 0.029     -0.069   -0.011      0.046
 #> basis.max_unpenv2.l3:District03 -0.004 0.033     -0.069   -0.004      0.061
@@ -398,9 +398,9 @@ summary(model_max_spat)
 #> basis.max_unpenv2.l3:District05 -0.025 0.033     -0.089   -0.025      0.040
 #> basis.max_unpenv2.l3:District06 -0.008 0.033     -0.073   -0.008      0.056
 #> basis.max_unpenv2.l3:District07  0.000 0.030     -0.060    0.000      0.059
-#> basis.max_unpenv2.l3:District08  0.022 0.033     -0.043    0.022      0.087
+#> basis.max_unpenv2.l3:District08  0.022 0.033     -0.043    0.022      0.088
 #> basis.max_unpenv2.l3:District09  0.043 0.033     -0.021    0.043      0.107
-#> basis.max_unpenv2.l3:District10 -0.005 0.033     -0.069   -0.005      0.058
+#> basis.max_unpenv2.l3:District10 -0.005 0.033     -0.069   -0.005      0.059
 #> basis.max_unpenv2.l4:District01  0.002 0.032     -0.060    0.002      0.064
 #> basis.max_unpenv2.l4:District02  0.008 0.029     -0.049    0.008      0.065
 #> basis.max_unpenv2.l4:District03  0.023 0.032     -0.039    0.023      0.085
@@ -417,28 +417,28 @@ summary(model_max_spat)
 #> basis.max_unpenv3.l1:District04  0.000 0.039     -0.077    0.000      0.077
 #> basis.max_unpenv3.l1:District05 -0.012 0.036     -0.083   -0.012      0.059
 #> basis.max_unpenv3.l1:District06  0.005 0.038     -0.070    0.005      0.080
-#> basis.max_unpenv3.l1:District07  0.006 0.033     -0.058    0.006      0.070
+#> basis.max_unpenv3.l1:District07  0.006 0.033     -0.058    0.006      0.071
 #> basis.max_unpenv3.l1:District08 -0.004 0.042     -0.085   -0.004      0.078
 #> basis.max_unpenv3.l1:District09  0.020 0.038     -0.055    0.020      0.094
 #> basis.max_unpenv3.l1:District10 -0.004 0.036     -0.075   -0.004      0.066
 #> basis.max_unpenv3.l2:District01  0.011 0.039     -0.065    0.011      0.086
-#> basis.max_unpenv3.l2:District02  0.004 0.032     -0.058    0.004      0.066
+#> basis.max_unpenv3.l2:District02  0.004 0.032     -0.059    0.004      0.066
 #> basis.max_unpenv3.l2:District03 -0.007 0.039     -0.083   -0.007      0.069
-#> basis.max_unpenv3.l2:District04 -0.014 0.039     -0.092   -0.014      0.063
-#> basis.max_unpenv3.l2:District05 -0.006 0.036     -0.078   -0.006      0.065
+#> basis.max_unpenv3.l2:District04 -0.014 0.040     -0.092   -0.014      0.063
+#> basis.max_unpenv3.l2:District05 -0.006 0.037     -0.078   -0.006      0.065
 #> basis.max_unpenv3.l2:District06  0.010 0.039     -0.065    0.010      0.086
 #> basis.max_unpenv3.l2:District07 -0.002 0.033     -0.067   -0.002      0.063
 #> basis.max_unpenv3.l2:District08  0.003 0.042     -0.079    0.003      0.086
-#> basis.max_unpenv3.l2:District09  0.003 0.038     -0.073    0.003      0.078
+#> basis.max_unpenv3.l2:District09  0.003 0.039     -0.073    0.003      0.078
 #> basis.max_unpenv3.l2:District10 -0.002 0.036     -0.073   -0.002      0.070
 #> basis.max_unpenv3.l3:District01 -0.012 0.038     -0.087   -0.012      0.062
 #> basis.max_unpenv3.l3:District02  0.006 0.031     -0.055    0.006      0.068
-#> basis.max_unpenv3.l3:District03 -0.013 0.038     -0.087   -0.013      0.061
+#> basis.max_unpenv3.l3:District03 -0.013 0.038     -0.087   -0.013      0.062
 #> basis.max_unpenv3.l3:District04 -0.008 0.039     -0.084   -0.008      0.068
 #> basis.max_unpenv3.l3:District05 -0.005 0.036     -0.076   -0.005      0.065
 #> basis.max_unpenv3.l3:District06  0.023 0.038     -0.051    0.023      0.097
-#> basis.max_unpenv3.l3:District07  0.005 0.033     -0.058    0.005      0.069
-#> basis.max_unpenv3.l3:District08 -0.007 0.041     -0.087   -0.007      0.074
+#> basis.max_unpenv3.l3:District07  0.005 0.033     -0.059    0.005      0.069
+#> basis.max_unpenv3.l3:District08 -0.007 0.041     -0.088   -0.007      0.074
 #> basis.max_unpenv3.l3:District09  0.009 0.038     -0.065    0.009      0.083
 #> basis.max_unpenv3.l3:District10  0.001 0.036     -0.069    0.001      0.071
 #> basis.max_unpenv3.l4:District01 -0.014 0.039     -0.089   -0.014      0.062
@@ -446,27 +446,27 @@ summary(model_max_spat)
 #> basis.max_unpenv3.l4:District03 -0.011 0.039     -0.087   -0.011      0.065
 #> basis.max_unpenv3.l4:District04 -0.012 0.039     -0.089   -0.012      0.065
 #> basis.max_unpenv3.l4:District05 -0.007 0.036     -0.079   -0.007      0.064
-#> basis.max_unpenv3.l4:District06  0.017 0.038     -0.058    0.017      0.092
+#> basis.max_unpenv3.l4:District06  0.017 0.038     -0.059    0.017      0.092
 #> basis.max_unpenv3.l4:District07  0.016 0.033     -0.049    0.016      0.080
 #> basis.max_unpenv3.l4:District08  0.013 0.042     -0.070    0.013      0.095
 #> basis.max_unpenv3.l4:District09 -0.008 0.038     -0.083   -0.008      0.067
 #> basis.max_unpenv3.l4:District10  0.005 0.036     -0.066    0.005      0.076
 #> basis.max_unpenv4.l1:District01  0.012 0.037     -0.061    0.012      0.084
-#> basis.max_unpenv4.l1:District02 -0.009 0.032     -0.072   -0.009      0.053
+#> basis.max_unpenv4.l1:District02 -0.009 0.032     -0.072   -0.009      0.054
 #> basis.max_unpenv4.l1:District03  0.002 0.038     -0.072    0.002      0.075
 #> basis.max_unpenv4.l1:District04 -0.007 0.039     -0.084   -0.007      0.070
-#> basis.max_unpenv4.l1:District05 -0.007 0.037     -0.079   -0.007      0.066
-#> basis.max_unpenv4.l1:District06 -0.018 0.036     -0.090   -0.018      0.053
-#> basis.max_unpenv4.l1:District07 -0.002 0.033     -0.067   -0.002      0.063
+#> basis.max_unpenv4.l1:District05 -0.007 0.037     -0.080   -0.007      0.066
+#> basis.max_unpenv4.l1:District06 -0.018 0.037     -0.090   -0.018      0.053
+#> basis.max_unpenv4.l1:District07 -0.002 0.033     -0.068   -0.002      0.063
 #> basis.max_unpenv4.l1:District08  0.003 0.038     -0.071    0.003      0.077
 #> basis.max_unpenv4.l1:District09  0.006 0.039     -0.071    0.006      0.083
 #> basis.max_unpenv4.l1:District10  0.021 0.036     -0.049    0.021      0.091
-#> basis.max_unpenv4.l2:District01  0.008 0.038     -0.066    0.008      0.081
+#> basis.max_unpenv4.l2:District01  0.008 0.038     -0.066    0.008      0.082
 #> basis.max_unpenv4.l2:District02 -0.003 0.032     -0.066   -0.003      0.060
 #> basis.max_unpenv4.l2:District03 -0.017 0.038     -0.092   -0.017      0.057
-#> basis.max_unpenv4.l2:District04 -0.006 0.039     -0.083   -0.006      0.071
+#> basis.max_unpenv4.l2:District04 -0.006 0.040     -0.084   -0.006      0.072
 #> basis.max_unpenv4.l2:District05 -0.001 0.037     -0.074   -0.001      0.071
-#> basis.max_unpenv4.l2:District06  0.012 0.037     -0.060    0.012      0.085
+#> basis.max_unpenv4.l2:District06  0.012 0.037     -0.061    0.012      0.085
 #> basis.max_unpenv4.l2:District07  0.010 0.033     -0.055    0.010      0.076
 #> basis.max_unpenv4.l2:District08  0.009 0.038     -0.066    0.009      0.084
 #> basis.max_unpenv4.l2:District09 -0.015 0.039     -0.092   -0.015      0.062
@@ -487,15 +487,15 @@ summary(model_max_spat)
 #> basis.max_unpenv4.l4:District04  0.021 0.039     -0.056    0.021      0.097
 #> basis.max_unpenv4.l4:District05  0.020 0.037     -0.053    0.020      0.092
 #> basis.max_unpenv4.l4:District06  0.018 0.036     -0.052    0.018      0.088
-#> basis.max_unpenv4.l4:District07 -0.008 0.033     -0.073   -0.008      0.056
+#> basis.max_unpenv4.l4:District07 -0.008 0.033     -0.073   -0.008      0.057
 #> basis.max_unpenv4.l4:District08 -0.013 0.037     -0.086   -0.013      0.059
 #> basis.max_unpenv4.l4:District09 -0.025 0.039     -0.101   -0.025      0.051
-#> basis.max_unpenv4.l4:District10 -0.020 0.036     -0.090   -0.020      0.049
-#> District01                      -0.115 0.127     -0.364   -0.115      0.133
+#> basis.max_unpenv4.l4:District10 -0.020 0.036     -0.090   -0.020      0.050
+#> District01                      -0.115 0.127     -0.363   -0.115      0.133
 #> District02                       0.077 0.112     -0.142    0.077      0.297
 #> District03                      -0.011 0.126     -0.258   -0.011      0.236
 #> District04                      -0.049 0.128     -0.300   -0.049      0.202
-#> District05                      -0.033 0.123     -0.273   -0.033      0.207
+#> District05                      -0.033 0.122     -0.273   -0.033      0.207
 #> District06                       0.202 0.126     -0.045    0.202      0.450
 #> District07                       0.009 0.115     -0.216    0.009      0.235
 #> District08                       0.016 0.134     -0.247    0.016      0.278
@@ -561,7 +561,7 @@ summary(model_max_spat)
 #> basis.max_unpenv1.l3:District06  0.020
 #> basis.max_unpenv1.l3:District07 -0.006
 #> basis.max_unpenv1.l3:District08 -0.019
-#> basis.max_unpenv1.l3:District09 -0.009
+#> basis.max_unpenv1.l3:District09 -0.010
 #> basis.max_unpenv1.l3:District10 -0.016
 #> basis.max_unpenv1.l4:District01  0.013
 #> basis.max_unpenv1.l4:District02 -0.004
@@ -576,7 +576,7 @@ summary(model_max_spat)
 #> basis.max_unpenv2.l1:District01  0.018
 #> basis.max_unpenv2.l1:District02 -0.004
 #> basis.max_unpenv2.l1:District03  0.006
-#> basis.max_unpenv2.l1:District04 -0.002
+#> basis.max_unpenv2.l1:District04 -0.001
 #> basis.max_unpenv2.l1:District05 -0.020
 #> basis.max_unpenv2.l1:District06 -0.018
 #> basis.max_unpenv2.l1:District07 -0.018
@@ -713,14 +713,14 @@ summary(model_max_spat)
 #> Hyperparameters:
 #> 
 #> Precision Leroux re District  21.12
-#> Precision RW year  4843
-#> Precision spatial DLNM basis.max_unpen  389.8
-#> Rho DLNM basis.max_unpen  0.511
-#> Rho Leroux re District  0.4611
+#> Precision RW year  4842
+#> Precision spatial DLNM basis.max_unpen  388.7
+#> Rho DLNM basis.max_unpen  0.5129
+#> Rho Leroux re District  0.4606
 #> 
 #> Model comparison:
 #> 
-#> DIC: 30375.68 ; Effective Parameters: 82.34236 
+#> DIC: 30375.69 ; Effective Parameters: 82.35752 
 
 # Make predictions
 pred_spat_max <- pred_crossbasis(
@@ -773,10 +773,10 @@ extract_predictions(
     ptype = "allRRfit"
 )
 #>    x      fit    lower    upper                 by
-#> 1 28 1.236967 1.148185 1.332613 -0.929699483475094
-#> 2 30 1.435575 1.158485 1.778942 -0.929699483475094
-#> 3 28 1.217480 1.132777 1.308515   1.21474771640633
-#> 4 30 1.620973 1.462294 1.796870   1.21474771640633
+#> 1 28 1.236969 1.148188 1.332615 -0.929699483475094
+#> 2 30 1.435580 1.158489 1.778947 -0.929699483475094
+#> 3 28 1.217482 1.132780 1.308517   1.21474771640633
+#> 4 30 1.620977 1.462298 1.796875   1.21474771640633
 
 # Extract lag-specific RR for 28 and 30 degrees Celsius, lag 0 and 8 and
 # for 10% deprivation percentile
@@ -788,10 +788,10 @@ extract_predictions(
     ptype = "matRRfit"
 )
 #>    x lag       fit     lower    upper                 by
-#> 1 28   0 1.0840469 1.0422846 1.127483 -0.929699483475094
-#> 2 30   0 1.2925590 1.1909438 1.402844 -0.929699483475094
+#> 1 28   0 1.0840473 1.0422849 1.127483 -0.929699483475094
+#> 2 30   0 1.2925594 1.1909441 1.402845 -0.929699483475094
 #> 3 28   8 1.0175714 1.0054077 1.029882 -0.929699483475094
-#> 4 30   8 0.9985841 0.9716917 1.026221 -0.929699483475094
+#> 4 30   8 0.9985843 0.9716919 1.026221 -0.929699483475094
 
 # Plot results (contour plot exposure-lag-response)
 contour(pred_conf_max, ptype = "cross", cols = function(n) hcl.colors(n, "Inferno"))

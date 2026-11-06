@@ -60,13 +60,13 @@
 <p><strong>dlnmLPS</strong> is an R package for fitting <strong>d</strong>istributed <strong>l</strong>ag <strong>n</strong>on-linear <strong>m</strong>odels within a Bayesian framework using <strong>L</strong>aplacian-<strong>P</strong>-<strong>S</strong>plines. It provides a flexible approach for modelling complex exposure-lag-response relationships, including relationships that vary spatially or according to pre-specified continuous or categorical modifiers, as well as exposure-lag-response relationships for two joint exposures. In addition to exposure-lag-response relationships, <code>dlnmLPS</code> allows other sources of heterogeneity to be incorporated, including smooth covariate effects, random effects and spatial and temporal structures.</p>
 <p>More specifically, <code>dlnmLPS</code> can be used to model:</p>
 <ul>
-<li><p><strong>distributed lag non-linear associations</strong>, allowing nonlinear exposure-response relationships over multiple time lags. DLNMs can be unpenalized (natural splines or B-splines) or penalized (P-splines);</p></li>
+<li><p><strong>distributed lag non-linear associations</strong>, allowing non-linear exposure-response relationships over multiple time lags. DLNMs can be unpenalized (natural splines or B-splines) or penalized (P-splines);</p></li>
 <li><p><strong>random effects</strong>, including independent random effects and spatially structured random effects (ICAR, BYM or Leroux). These random effects can possibly vary over time (according to an independent or random walk structure);</p></li>
 <li><p><strong>temporal random effects</strong>, including first- and second-order random-walk structures. These temporal effects can possibly depend on location (according to an independent, ICAR or Leroux structure);</p></li>
 <li><p><strong>smooth exposure effects</strong>, using natural splines (<code>ns</code>), B-splines (<code>bs</code>), or P-splines (<code>ps</code>); and</p></li>
 <li><p><strong>more complex DLNM extensions</strong>, including effect modification, spatially varying DLNMs, and models with bivariate exposures.</p></li>
 </ul>
-<p>The different components can be combined to construct models that account simultaneously for nonlinear exposure-response relationships, distributed lag effects, and spatial or temporal dependence. Supported outcome distributions are Poisson, negative binomial, binomial and Gaussian.</p>
+<p>The different components can be combined to construct models that account simultaneously for non-linear exposure-response relationships, distributed lag effects, and spatial or temporal dependence. Supported outcome distributions are Poisson, negative binomial, binomial and Gaussian.</p>
 <div class="section level2">
 <h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
 </h2>
@@ -83,7 +83,6 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"Rutten-Sara/dlnmLPS"</span><span class="op">)</span></span></code></pre></div>
-<p>Access to the repository is required to install the package.</p>
 <p>To install <code>dlnmLPS</code> together with its vignettes, containing short tutorials, use:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
@@ -112,7 +111,7 @@
 <div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
 </h2>
-<p><code>dlnmLPS</code>: a fast and flexible Bayesian tool for Distributed Lag Non-Linear Models. Copyright (C) 2026 Sara Rutten. This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
+<p><code>dlnmLPS</code>: a fast and flexible Bayesian tool for distributed lag non-linear Models. Copyright (C) 2026 Sara Rutten. This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
 <p><code>dlnmLPS</code> is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. See the <code>LICENSE</code> file for details.</p>
 </div>
 </div>

@@ -54,7 +54,7 @@ remotes::install_github("Rutten-Sara/dlnmLPS")
 
 A distributed lag non-linear model (DLNM) describes an exposure-response
 relationship where the exposure can have a delayed effect. The
-association can be nonlinear in the exposure and lag dimension. The two
+association can be non-linear in the exposure and lag dimension. The two
 dimensions are represented using spline basis functions.
 
 The following example demonstrates how to fit a basic DLNM using
