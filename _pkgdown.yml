@@ -6,6 +6,9 @@ template:
     bootswatch: minty
     navbar-light-bg: '#78C2AD'
     navbar-dark-bg: '#163C3A'
+  includes:
+    in_header: |
+      <meta name="google-site-verification" content="38StEJoKfLqaZDQGhsaVV_dbWNUa_AHcIU9dH7yNKi0" />
 articles:
 - title: Getting started
   contents: introduction_dlnmlps
