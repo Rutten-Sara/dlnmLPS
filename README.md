@@ -21,7 +21,7 @@ and spatial and temporal structures.
 
 More specifically, `dlnmLPS` can be used to model:
 
-- **distributed lag non-linear associations**, allowing nonlinear exposure-response relationships over multiple time lags. DLNMs can be unpenalized (natural splines or B-splines) or penalized (P-splines);
+- **distributed lag non-linear associations**, allowing non-linear exposure-response relationships over multiple time lags. DLNMs can be unpenalized (natural splines or B-splines) or penalized (P-splines);
 
 - **random effects**, including independent random effects and spatially structured random effects (ICAR, BYM or Leroux). These random effects can possibly vary over time (according to an independent or random walk structure);
 
@@ -32,7 +32,7 @@ More specifically, `dlnmLPS` can be used to model:
 - **more complex DLNM extensions**, including effect modification, spatially varying DLNMs, and models with bivariate exposures.
 
 The different components can be combined to construct models that account simultaneously 
-for nonlinear exposure-response relationships, distributed lag effects, and spatial or temporal dependence.
+for non-linear exposure-response relationships, distributed lag effects, and spatial or temporal dependence.
 Supported outcome distributions are Poisson, negative binomial, binomial and Gaussian.
 
 ## Documentation
@@ -55,7 +55,6 @@ GitHub repository using:
 # install.packages("remotes")
 remotes::install_github("Rutten-Sara/dlnmLPS")
 ```
-Access to the repository is required to install the package.
 
 To install `dlnmLPS` together with its vignettes, containing short tutorials, 
 use:
@@ -107,7 +106,7 @@ development version, and the package interface may change
 as functionality is developed and tested.
 
 ## License
-`dlnmLPS`: a fast and flexible Bayesian tool for Distributed Lag Non-Linear Models.
+`dlnmLPS`: a fast and flexible Bayesian tool for distributed lag non-linear Models.
 Copyright (C) 2026 Sara Rutten. 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
