@@ -21,7 +21,7 @@ and spatial and temporal structures.
 
 More specifically, `dlnmLPS` can be used to model:
 
-- **distributed lag nonlinear associations**, allowing nonlinear exposure-response relationships over multiple time lags. DLNMs can be unpenalized (natural splines or B-splines) or penalized (P-splines);
+- **distributed lag non-linear associations**, allowing nonlinear exposure-response relationships over multiple time lags. DLNMs can be unpenalized (natural splines or B-splines) or penalized (P-splines);
 
 - **random effects**, including independent random effects and spatially structured random effects (ICAR, BYM or Leroux). These random effects can possibly vary over time (according to an independent or random walk structure);
 
@@ -48,7 +48,7 @@ with examples illustrating how to specify and fit different models.
 
 ## Installation
 
-The development version of `dlnmLPS`, can be installed from the
+The development version of `dlnmLPS` can be installed from the
 GitHub repository using:
 
 ```r
@@ -76,7 +76,7 @@ browseVignettes("dlnmLPS")
 Associated literature:
 
 1. Rutten, S., Duarte, E., Neyens, T., Lauwaet, D., & Faes, C.
-   (2024). A penalized distributed-lag non-linear model for modeling
+   (2024). A penalized distributed lag non-linear model for modeling
    the joint delayed effect of two predictors: impact of minimum and
    maximum temperature on mortality. *medRxiv*.
    <https://doi.org/10.1101/2024.11.29.24318041>

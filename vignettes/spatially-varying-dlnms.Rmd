@@ -23,7 +23,7 @@ library(dlnmLPS)
 
 A standard distributed lag non-linear model (DLNM) assumes that the exposure-lag-response curve is common across all locations. While this assumption can be useful, it may be too restrictive. In many settings, the association between exposure and response may vary across space. For example, the relationship between temperature and mortality may differ between regions due to differences in population characteristics, climate, land use or other local factors. 
 
-`dlnmLPS` provides methods for fitting spatially varying distributed lag non-linear models, allowing the exposure-lag-response association to differ between spatial locations [@Rutten2026spatially]. This provides a flexible framework for investigating both the exposure-response relationship, as well as geographical variation.  
+`dlnmLPS` provides methods for fitting spatially varying distributed lag non-linear models, allowing the exposure-lag-response association to differ between spatial locations [@Rutten2026spatially]. This provides a flexible framework for investigating both the exposure-response relationship and geographical variation.  
 
 In this vignette, we demonstrate how to fit spatially varying DLNMs using `dlnmLPS`. We subsequently show how to obtain and visualize the estimated spatially varying exposure-lag-response curves.
 
@@ -157,7 +157,7 @@ model_typeIII$DIC; model_typeIII$WAIC; -sum(log(model_typeIII$CPO))
 model_typeIV$DIC; model_typeIV$WAIC; -sum(log(model_typeIV$CPO))
 ```
 
-Model Type IV is preferred based on all model selection criteria. To make predictions for temperatures between 22 degrees Celsius and 30 degrees Celsius, compared to a reference level of 25 degrees, and for the all districts, we use:
+Model Type IV is preferred based on all model selection criteria. To make predictions for temperatures between 22 degrees Celsius and 30 degrees Celsius, compared to a reference level of 25 degrees, and for all districts, we use:
 
 ```{r, fig.width = 6, fig.height = 8}
 pred_penalized <- pred_crossbasis(
@@ -172,7 +172,7 @@ pred_penalized <- pred_crossbasis(
 )
 ```
 
-Note that we also requested the region-specific exceedance probabilities. To extract specific predictions of interest, we can use the wrapper function `extract_predictions()`. For example, if we want to extract the overall RRs at 30 degrees and for the first fourth districts, we can use:
+Note that we also requested the region-specific exceedance probabilities. To extract specific predictions of interest, we can use the wrapper function `extract_predictions()`. For example, if we want to extract the overall RRs at 30 degrees and for the first four districts, we can use:
 
 ```{r}
 extract_predictions(pred_penalized, slice_x = 30, slice_by = unique(dataset$District)[1:4],
@@ -200,21 +200,21 @@ plot(pred_penalized, slice_x = 30, ptype = "slices", CI = FALSE, xlab = "lag", y
      multiple.plots = FALSE, show.legend = FALSE)
 ```
 
-The overall cumulative relationship, can be visualized for all districts using:
+The overall cumulative relationship can be visualized for all districts using:
 
 ```{r, fig.width = 6, fig.height = 4}
 plot(pred_penalized, ptype = "overall", CI = FALSE, xlab = "temperature", ylab = "RR", 
      multiple.plots = FALSE, show.legend = FALSE, col = "black")
 ```
 
-Moreover, the overall RR for all districts at a temperature value of 30 degrees Celsius, could also be presented on a map:
+Moreover, the overall RR for all districts at a temperature value of 30 degrees Celsius could also be presented on a map:
 
 ```{r, fig.width = 4, fig.height = 4}
 shapefile_bcn$rr <- sapply(pred_penalized, function(x) x$allRRfit[x$x == 30])
 tmap::tm_shape(shapefile_bcn) +
   tmap::tm_polygons(
     fill = "rr",
-    fill.scale = tmap::tm_scale_continuous(midpoint = 0,
+    fill.scale = tmap::tm_scale_continuous(midpoint = 1,
       values = hcl.colors(7, palette = "RdYlBu", rev = TRUE)),
     fill.legend = tmap::tm_legend(title = "RR at 30°C")
   )
@@ -238,7 +238,8 @@ It's also possible to calculate the region-specific attributable fractions for a
 ```{r}
 # Calculate exposure and outcome timeseries
 data2007_district <- dataset |>
-  dplyr::filter(year == 2007) 
+  dplyr::filter(year == 2007) |>
+  dplyr::arrange(District, date)
 
 # Calculate attributable risk
 af2007_district <- attributable_risk(

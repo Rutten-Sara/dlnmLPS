@@ -179,7 +179,7 @@ Again, an increased overall risk can be found for high temperatures. Finally, we
 contour(pred_unpenalized, ptype = "cross", xlab = "lag", ylab = "temperature")
 ```
 
-While a simple 3D plot can be requested using : 
+While a simple 3D plot can be requested using: 
 
 ```{r, fig.width = 6, fig.height = 4}
 plot(pred_unpenalized, ptype = "cross")
@@ -188,7 +188,7 @@ plot(pred_unpenalized, ptype = "cross")
 additional arguments of `graphics::persp` can be used to make the plot more visually appealing:
 
 ```{r, fig.width = 6, fig.height = 4}
-plot(pred_unpenalized, ptype = "cross", ticktype="detailed",theta=230,
+plot(pred_unpenalized, ptype = "cross", ticktype="detailed", theta=230,
         xlab = "lag", ylab = "temperature", zlab = "RR",
         ltheta=200,phi=30,lphi=30,
         nticks = 4, shade = 0.75,r=sqrt(3),d=5,cex.axis=0.5, cex.lab=0.5,border=NA)
@@ -199,7 +199,7 @@ Note that credible intervals cannot be requested for 3D plots or contour plots.
 ## Fitting a penalized DLNM
 Flexible basis functions can describe more complex exposure-lag-response relationships, but an overly flexible model can also result in overfitting. Penalization provides a way to control the smoothness of the estimated association. In `dlnmLPS`, penalized DLNMs are estimated using Laplacian P-splines.
 
-A penalized DLNM can be fitted similarly as an unpenalized DLNM, but the order of the penalty needs to be supplied in the argument `arg` of `sm()`. Note that, by default, an additional lag penalty is specified, on top of the P-splines penalties, to encourage shrinkage towards a null effect at longer lags. To disable this penalty, specify `add.legpen`= "FALSE" within the `arg` argument.
+A penalized DLNM can be fitted similarly as an unpenalized DLNM, but the order of the penalty needs to be supplied in the argument `arg` of `sm()`. Note that, by default, an additional lag penalty is specified, on top of the P-splines penalties, to encourage shrinkage towards a null effect at longer lags. To disable this penalty, specify `add.lagpen`= "FALSE" within the `arg` argument.
 
 ```{r}
 # Fit a penalized DLNM
@@ -231,7 +231,7 @@ Predictions can similarly be visualized:
 pred_penalized <- pred_crossbasis(
   basis = basis.max_pen,
   model = model_penalized,
-  at_x = seq(22,30,length = 50),
+  at_x = seq(22, 30, length = 50),
   cen = 25,
   lag = c(0,14),
   CI = TRUE
@@ -247,7 +247,7 @@ plot(pred_unpenalized, ptype = "cross", ticktype="detailed",theta=230,
         nticks = 4, shade = 0.75,r=sqrt(3),d=5,cex.axis=0.5, cex.lab=0.5,border=NA)
 ```
 
-One of the advantages of Bayesian modelling, is that uncertainty quantification can easily be obtained. We already illustrated how to request exceedance probabilities, but also attributable risks can be calculated within a DLNM framework [@Gasparrini2014af]. Therefore, the `dlnmLPS` package provides the function `attributable_risk()`. For example, if we want to calculate the attributable fraction of temperature during the summer of 2007, using the average maximum temperature and total number of cases (over all Districts), we can use:
+One of the advantages of Bayesian modelling is that uncertainty quantification can easily be obtained. We already illustrated how to request exceedance probabilities, but also attributable risks can be calculated within a DLNM framework [@Gasparrini2014af]. Therefore, the `dlnmLPS` package provides the function `attributable_risk()`. For example, if we want to calculate the attributable fraction of temperature during the summer of 2007, using the average maximum temperature and total number of cases (over all Districts), we can use:
 
 ```{r}
 # Calculate exposure and outcome timeseries
@@ -257,7 +257,8 @@ data2007 <- dataset |>
   dplyr::summarize(
     Tmax = mean(Tmax, na.rm = TRUE),
     dtot = sum(dtot, na.rm = TRUE)
-  )
+  )|>
+  dplyr::arrange(date)
 
 # Calculate attributable risk
 af2007 <- attributable_risk(
