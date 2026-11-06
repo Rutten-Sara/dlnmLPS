@@ -9,7 +9,6 @@
 ![UserStars](https://img.shields.io/github/stars/Rutten-Sara/dlnmLPS?style=social)
 <!-- badges: end -->
 
-
 **dlnmLPS** is an R package for fitting **d**istributed **l**ag **n**on-linear
 **m**odels within a Bayesian framework using **L**aplacian-**P**-**S**plines. It
 provides a flexible approach for modelling complex
