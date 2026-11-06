@@ -1,0 +1,769 @@
+# Plot predicted outcomes
+
+Plot predicted outcomes obtained from
+[`pred_crossbasis()`](https://rutten-sara.github.io/dlnmLPS/reference/pred_crossbasis.md).
+For Poisson or negative binomial models with a log link, relative risks
+(RRs) are plotted; for binomial models with a logit link, odds ratios
+(ORs) are plotted; and for Gaussian models with an identity link,
+additive differences in the outcome are plotted. Depending on `ptype`,
+the function produces overall exposure-response curves,
+exposure-lag-response surfaces, or slices through the
+exposure-lag-response surface.
+
+## Usage
+
+``` r
+# S3 method for class 'dlnmLPS_pred'
+plot(
+  x,
+  slice_lag = NULL,
+  slice_x = NULL,
+  slice_y = NULL,
+  slice_by = NULL,
+  ptype = "overall",
+  multiple.plots = TRUE,
+  show.legend = TRUE,
+  CI = FALSE,
+  xlim = NULL,
+  ylim = NULL,
+  zlim = NULL,
+  cols = NULL,
+  xlab = NULL,
+  ylab = NULL,
+  zlab = NULL,
+  mar = NULL,
+  ...
+)
+```
+
+## Arguments
+
+- x:
+
+  An object returned by
+  [`pred_crossbasis()`](https://rutten-sara.github.io/dlnmLPS/reference/pred_crossbasis.md).
+
+- slice_lag:
+
+  Lag value(s) at which to obtain slices. Integer or numeric vector.
+
+- slice_x:
+
+  Exposure values of the first exposure variable at which to obtain
+  slices. Integer or numeric vector.
+
+- slice_y:
+
+  Exposure values of the second exposure variable at which to obtain
+  slices (bivariate exposures only). Integer or numeric vector.
+
+- slice_by:
+
+  Optional argument to specify the levels of the by-variable to be
+  plotted. One value or multiple values supplied through a vector.
+
+- ptype:
+
+  Character string specifying the type of plot. One of:
+
+  `"overall"`
+
+  :   Overall cumulative exposure-response plot.
+
+  `"cross"`
+
+  :   Complete exposure-lag-response surface (only available for
+      univariate exposures).
+
+  `"slices"`
+
+  :   Slices through the exposure-lag-response surface.
+
+- multiple.plots:
+
+  Logical. Should the results of different by-levels be plotted in
+  different windows (default = TRUE)?
+
+- show.legend:
+
+  Logical. Should the legend appear on the plot (default = TRUE)?
+
+- CI:
+
+  Logical. Should confidence intervals be displayed (default = FALSE)?
+  Confidence intervals are only available for two-dimensional plots.
+
+- xlim, ylim, zlim:
+
+  Numeric vectors of length two giving axis limits.
+
+- cols:
+
+  Colours used for lines, surfaces or contours.
+
+- xlab, ylab, zlab:
+
+  Axis labels.
+
+- mar:
+
+  Figure margins.
+
+- ...:
+
+  Additional graphical arguments passed to the underlying plotting
+  functions. For 3D plots, additional arguments of
+  [`graphics::persp`](https://rdrr.io/r/graphics/persp.html)can be
+  passed.
+
+## Value
+
+Produces a plot. The function is called for its side effects and returns
+`NULL` invisibly.
+
+## Details
+
+The available plot types depend on whether the prediction object
+contains univariate or bivariate exposures.
+
+**`ptype = "overall"`**
+
+For univariate exposures, the overall cumulative exposure-response curve
+is plotted. No slicing variables (except for `slice_by`) may be
+specified.
+
+For bivariate exposures, the overall cumulative exposure-response is
+shown as a three-dimensional surface if no slicing variable (except for
+`slice_by`) is specified. Alternatively, either `slice_x` or `slice_y`
+(but not both) may be specified to obtain a two-dimensional cumulative
+exposure-response curve.
+
+**`ptype = "cross"`**
+
+Plots the exposure-lag-response surface for univariate exposures. This
+plot type is not available for bivariate exposures.
+
+**`ptype = "slices"`**
+
+Plots slices through the exposure-lag-response surface.
+
+For univariate exposures, at least one of `slice_lag` or `slice_x` must
+be specified.
+
+For bivariate exposures, at least one of `slice_lag`, `slice_x` or
+`slice_y` must be specified. If only one slicing variable is specified,
+the result is a three-dimensional surface. If two slicing variables are
+specified, the result is a two-dimensional curve.
+
+Three-dimensional plots can display only a single slice at a time. In
+contrast, two-dimensional plots may contain multiple slices, resulting
+in multiple curves in the same figure.
+
+Confidence intervals are only available for two-dimensional plots.
+
+## See also
+
+[`contour.dlnmLPS_pred()`](https://rutten-sara.github.io/dlnmLPS/reference/contour.DLNMLPS_pred.md),[`pred_crossbasis()`](https://rutten-sara.github.io/dlnmLPS/reference/pred_crossbasis.md)
+
+## Examples
+
+``` r
+data(barcelona_temp)
+data(shapefile_bcn)
+
+# Examples of applications
+
+dataset <- barcelona_temp |>
+  dplyr::mutate(
+    dow = weekdays(date),
+    year = lubridate::year(date),
+    month = lubridate::month(date)
+  )
+
+group <- factor(paste0(dataset$District, "-", dataset$year))
+
+
+### Example 1: Penalized and common DLNM
+
+# Create the (penalized) crossbasis
+basis.max <- dlnm::crossbasis(
+    dataset$Tmax,
+    argvar = list(df = 5, fun = "ps"),
+    arglag = list(df = 5, fun = "ps"),
+    lag = 14,
+    group = group
+)
+
+# Fit model
+model_max_common <- dlnmLPS(
+    dtot ~ 1 + factor(dow) +
+    sm(month, arg = list(type = "ns", df = 3)) +
+    sm(year, arg = list(type = "rw1")) +
+    sm(basis.max, arg = list(pen= 2)) +
+    sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+    data = dataset,
+    offset = log(pop),
+    model.comparison = list(DIC = TRUE),
+    family = "Poisson"
+)
+
+# Make predictions
+pred_max <- pred_crossbasis(
+     basis = basis.max,
+     model = model_max_common,
+     at_x = 22:30,
+     cen = 25,
+     lag = c(0,14),
+     CI = TRUE
+)
+
+# Plot results (lag-specific and overall RR)
+plot(pred_max, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, xlab = "temp", ylab = "RR")
+
+plot(pred_max, ptype = "overall", CI = TRUE, xlab = "temp", ylab = "RR")
+
+
+
+### Example 2: Penalized and common joint DLNM
+
+# Create the (penalized) joint crossbasis
+basis.max_min <- joint.crossbasis(
+    cbind(dataset$Tmax, dataset$Tmin),
+    argvar1 = list(df = 5, fun = "ps"),
+    argvar2 = list(df = 5, fun = "ps"),
+    arglag = list(df = 5, fun = "ps"),
+    lag = 14,
+    group = group
+)
+
+# Fit model
+model_joint_common <- dlnmLPS(
+    dtot ~ 1 + factor(dow) +
+    sm(month, arg = list(type = "ns", df = 3)) +
+    sm(year, arg = list(type = "rw1")) +
+    sm(basis.max_min, arg = list(pen= 2)) +
+    sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+    data = dataset,
+    offset = log(pop),
+    model.comparison = list(DIC = TRUE),
+    family = "Poisson"
+)
+
+# Make predictions
+pred_max_min <- pred_crossbasis(
+     basis = basis.max_min,
+     model = model_joint_common,
+     at_x = c(29,29,29,30,30,30,31,31,31),
+     at_y = c(20,21,22,20,21,22,20,21,22),
+     cen = c(25,15),
+     lag = c(0,14),
+     CI = TRUE
+)
+
+# Plot results (contour plot overall RR)
+contour(pred_max_min, ptype = "overall", cols = function(n) hcl.colors(n, "Inferno"))
+
+
+
+### Example 3: Unpenalized and spatially varying DLNM
+
+# Create the (unpenalized) crossbasis
+knots_max <- quantile(dataset$Tmax, probs = c(0.10,0.50,0.90))
+knots_lag <- dlnm::logknots(0:14, nk = 2)
+
+basis.max_unpen <- dlnm::crossbasis(
+    dataset$Tmax,
+    argvar=list(fun = "ns", knots = knots_max),
+    arglag=list(fun="ns", knots = knots_lag),
+    lag=14,
+    group=group
+)
+
+# Fit model
+model_max_spat <- dlnmLPS(
+    dtot ~ 1 + factor(dow) +
+    sm(month, arg = list(type = "ns", df = 3)) +
+    sm(year, arg = list(type = "rw1")) +
+    sm(basis.max_unpen, by = District,
+            arg.by = list(type = "Leroux", map = shapefile_bcn)) +
+    sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+    data = dataset,
+    offset = log(pop),
+    model.comparison = list(DIC = TRUE),
+    family = "Poisson")
+
+summary(model_max_spat)
+#> 
+#> Call:
+#> 
+#> dtot ~ 1 + sm(month, arg = list(type = "ns", df = 3)) + sm(year, arg = list(type = "rw1")) + sm(basis.max_unpen, by = District, arg.by = list(type = "Leroux", map = shapefile_bcn)) + sm(District, arg = list(type = "Leroux", map = shapefile_bcn)) + factor(dow)
+#> 
+#> Fixed effects:
+#> 
+#>                                   mean    sd 0.025quant 0.5quant 0.975quant
+#> (Intercept)                     -9.772 0.172    -10.110   -9.772     -9.434
+#> month1                          -0.181 0.013     -0.207   -0.181     -0.155
+#> month2                          -0.196 0.019     -0.233   -0.196     -0.158
+#> month3                           0.000 0.011     -0.021    0.000      0.020
+#> year2007                        -0.013 0.006     -0.025   -0.013     -0.001
+#> year2008                         0.002 0.005     -0.008    0.002      0.013
+#> year2009                         0.007 0.005     -0.004    0.007      0.018
+#> year2010                         0.006 0.006     -0.005    0.006      0.017
+#> year2011                        -0.003 0.007     -0.016   -0.003      0.010
+#> basis.max_unpenv1.l1            -0.006 0.047     -0.098   -0.006      0.086
+#> basis.max_unpenv1.l2            -0.070 0.046     -0.161   -0.070      0.020
+#> basis.max_unpenv1.l3             0.046 0.047     -0.046    0.046      0.138
+#> basis.max_unpenv1.l4            -0.102 0.046     -0.193   -0.102     -0.012
+#> basis.max_unpenv2.l1             0.004 0.041     -0.076    0.004      0.084
+#> basis.max_unpenv2.l2            -0.095 0.040     -0.173   -0.095     -0.016
+#> basis.max_unpenv2.l3             0.101 0.042      0.020    0.101      0.183
+#> basis.max_unpenv2.l4            -0.098 0.040     -0.176   -0.098     -0.020
+#> basis.max_unpenv3.l1             0.007 0.090     -0.169    0.007      0.183
+#> basis.max_unpenv3.l2            -0.268 0.090     -0.445   -0.268     -0.092
+#> basis.max_unpenv3.l3             0.241 0.091      0.062    0.241      0.420
+#> basis.max_unpenv3.l4            -0.257 0.090     -0.433   -0.257     -0.080
+#> basis.max_unpenv4.l1            -0.009 0.046     -0.100   -0.009      0.082
+#> basis.max_unpenv4.l2            -0.142 0.042     -0.224   -0.142     -0.060
+#> basis.max_unpenv4.l3             0.346 0.049      0.251    0.346      0.441
+#> basis.max_unpenv4.l4            -0.229 0.042     -0.312   -0.229     -0.146
+#> basis.max_unpenv1.l1:District01 -0.041 0.033     -0.105   -0.041      0.024
+#> basis.max_unpenv1.l1:District02 -0.005 0.029     -0.063   -0.005      0.052
+#> basis.max_unpenv1.l1:District03  0.001 0.033     -0.064    0.001      0.065
+#> basis.max_unpenv1.l1:District04 -0.023 0.035     -0.092   -0.023      0.046
+#> basis.max_unpenv1.l1:District05  0.031 0.033     -0.033    0.031      0.096
+#> basis.max_unpenv1.l1:District06  0.045 0.033     -0.020    0.045      0.109
+#> basis.max_unpenv1.l1:District07  0.009 0.031     -0.051    0.009      0.069
+#> basis.max_unpenv1.l1:District08 -0.013 0.033     -0.078   -0.013      0.053
+#> basis.max_unpenv1.l1:District09  0.019 0.032     -0.044    0.019      0.081
+#> basis.max_unpenv1.l1:District10 -0.023 0.033     -0.088   -0.023      0.041
+#> basis.max_unpenv1.l2:District01 -0.043 0.034     -0.109   -0.043      0.023
+#> basis.max_unpenv1.l2:District02  0.003 0.030     -0.056    0.003      0.062
+#> basis.max_unpenv1.l2:District03  0.016 0.034     -0.050    0.016      0.082
+#> basis.max_unpenv1.l2:District04  0.013 0.036     -0.058    0.013      0.084
+#> basis.max_unpenv1.l2:District05  0.009 0.034     -0.057    0.009      0.075
+#> basis.max_unpenv1.l2:District06 -0.022 0.034     -0.088   -0.022      0.045
+#> basis.max_unpenv1.l2:District07 -0.002 0.031     -0.063   -0.002      0.059
+#> basis.max_unpenv1.l2:District08  0.007 0.034     -0.059    0.007      0.073
+#> basis.max_unpenv1.l2:District09  0.022 0.032     -0.042    0.022      0.085
+#> basis.max_unpenv1.l2:District10 -0.003 0.034     -0.069   -0.003      0.063
+#> basis.max_unpenv1.l3:District01  0.004 0.033     -0.061    0.004      0.069
+#> basis.max_unpenv1.l3:District02  0.007 0.029     -0.051    0.007      0.065
+#> basis.max_unpenv1.l3:District03  0.005 0.033     -0.059    0.005      0.070
+#> basis.max_unpenv1.l3:District04 -0.002 0.035     -0.071   -0.002      0.067
+#> basis.max_unpenv1.l3:District05  0.016 0.033     -0.048    0.016      0.081
+#> basis.max_unpenv1.l3:District06  0.020 0.033     -0.045    0.020      0.085
+#> basis.max_unpenv1.l3:District07 -0.006 0.030     -0.065   -0.006      0.054
+#> basis.max_unpenv1.l3:District08 -0.019 0.034     -0.086   -0.019      0.047
+#> basis.max_unpenv1.l3:District09 -0.010 0.032     -0.073   -0.010      0.054
+#> basis.max_unpenv1.l3:District10 -0.016 0.033     -0.080   -0.016      0.048
+#> basis.max_unpenv1.l4:District01  0.013 0.032     -0.050    0.013      0.076
+#> basis.max_unpenv1.l4:District02 -0.004 0.029     -0.062   -0.004      0.054
+#> basis.max_unpenv1.l4:District03  0.001 0.032     -0.062    0.001      0.064
+#> basis.max_unpenv1.l4:District04  0.006 0.035     -0.063    0.006      0.075
+#> basis.max_unpenv1.l4:District05  0.001 0.033     -0.063    0.001      0.066
+#> basis.max_unpenv1.l4:District06 -0.002 0.032     -0.065   -0.002      0.061
+#> basis.max_unpenv1.l4:District07 -0.016 0.030     -0.076   -0.016      0.043
+#> basis.max_unpenv1.l4:District08  0.007 0.032     -0.057    0.007      0.071
+#> basis.max_unpenv1.l4:District09  0.007 0.031     -0.054    0.007      0.068
+#> basis.max_unpenv1.l4:District10 -0.013 0.033     -0.077   -0.013      0.051
+#> basis.max_unpenv2.l1:District01  0.018 0.033     -0.046    0.018      0.082
+#> basis.max_unpenv2.l1:District02 -0.004 0.030     -0.062   -0.004      0.053
+#> basis.max_unpenv2.l1:District03  0.006 0.033     -0.059    0.006      0.071
+#> basis.max_unpenv2.l1:District04 -0.001 0.035     -0.071   -0.001      0.068
+#> basis.max_unpenv2.l1:District05 -0.020 0.033     -0.086   -0.020      0.045
+#> basis.max_unpenv2.l1:District06 -0.018 0.033     -0.082   -0.018      0.046
+#> basis.max_unpenv2.l1:District07 -0.018 0.031     -0.078   -0.018      0.042
+#> basis.max_unpenv2.l1:District08  0.009 0.033     -0.056    0.009      0.074
+#> basis.max_unpenv2.l1:District09  0.022 0.032     -0.042    0.022      0.085
+#> basis.max_unpenv2.l1:District10  0.008 0.033     -0.056    0.008      0.072
+#> basis.max_unpenv2.l2:District01 -0.019 0.033     -0.084   -0.019      0.046
+#> basis.max_unpenv2.l2:District02  0.000 0.030     -0.059    0.000      0.059
+#> basis.max_unpenv2.l2:District03 -0.003 0.034     -0.068   -0.003      0.063
+#> basis.max_unpenv2.l2:District04 -0.004 0.036     -0.075   -0.004      0.067
+#> basis.max_unpenv2.l2:District05 -0.007 0.034     -0.073   -0.007      0.060
+#> basis.max_unpenv2.l2:District06  0.048 0.033     -0.017    0.048      0.113
+#> basis.max_unpenv2.l2:District07  0.013 0.031     -0.048    0.013      0.074
+#> basis.max_unpenv2.l2:District08 -0.013 0.033     -0.078   -0.013      0.051
+#> basis.max_unpenv2.l2:District09  0.007 0.033     -0.057    0.007      0.072
+#> basis.max_unpenv2.l2:District10 -0.022 0.033     -0.088   -0.022      0.044
+#> basis.max_unpenv2.l3:District01  0.003 0.033     -0.061    0.003      0.067
+#> basis.max_unpenv2.l3:District02 -0.011 0.029     -0.069   -0.011      0.046
+#> basis.max_unpenv2.l3:District03 -0.004 0.033     -0.069   -0.004      0.061
+#> basis.max_unpenv2.l3:District04 -0.014 0.035     -0.083   -0.014      0.054
+#> basis.max_unpenv2.l3:District05 -0.025 0.033     -0.089   -0.025      0.040
+#> basis.max_unpenv2.l3:District06 -0.008 0.033     -0.073   -0.008      0.056
+#> basis.max_unpenv2.l3:District07  0.000 0.030     -0.060    0.000      0.059
+#> basis.max_unpenv2.l3:District08  0.022 0.033     -0.043    0.022      0.088
+#> basis.max_unpenv2.l3:District09  0.043 0.033     -0.021    0.043      0.107
+#> basis.max_unpenv2.l3:District10 -0.005 0.033     -0.069   -0.005      0.059
+#> basis.max_unpenv2.l4:District01  0.002 0.032     -0.060    0.002      0.064
+#> basis.max_unpenv2.l4:District02  0.008 0.029     -0.049    0.008      0.065
+#> basis.max_unpenv2.l4:District03  0.023 0.032     -0.039    0.023      0.085
+#> basis.max_unpenv2.l4:District04  0.018 0.035     -0.050    0.018      0.086
+#> basis.max_unpenv2.l4:District05  0.010 0.033     -0.054    0.010      0.074
+#> basis.max_unpenv2.l4:District06 -0.007 0.031     -0.068   -0.007      0.055
+#> basis.max_unpenv2.l4:District07 -0.014 0.030     -0.073   -0.014      0.045
+#> basis.max_unpenv2.l4:District08 -0.017 0.032     -0.079   -0.017      0.045
+#> basis.max_unpenv2.l4:District09 -0.014 0.031     -0.076   -0.014      0.047
+#> basis.max_unpenv2.l4:District10 -0.009 0.032     -0.072   -0.009      0.053
+#> basis.max_unpenv3.l1:District01 -0.003 0.038     -0.079   -0.003      0.072
+#> basis.max_unpenv3.l1:District02  0.007 0.032     -0.055    0.007      0.069
+#> basis.max_unpenv3.l1:District03 -0.014 0.038     -0.090   -0.014      0.061
+#> basis.max_unpenv3.l1:District04  0.000 0.039     -0.077    0.000      0.077
+#> basis.max_unpenv3.l1:District05 -0.012 0.036     -0.083   -0.012      0.059
+#> basis.max_unpenv3.l1:District06  0.005 0.038     -0.070    0.005      0.080
+#> basis.max_unpenv3.l1:District07  0.006 0.033     -0.058    0.006      0.071
+#> basis.max_unpenv3.l1:District08 -0.004 0.042     -0.085   -0.004      0.078
+#> basis.max_unpenv3.l1:District09  0.020 0.038     -0.055    0.020      0.094
+#> basis.max_unpenv3.l1:District10 -0.004 0.036     -0.075   -0.004      0.066
+#> basis.max_unpenv3.l2:District01  0.011 0.039     -0.065    0.011      0.086
+#> basis.max_unpenv3.l2:District02  0.004 0.032     -0.059    0.004      0.066
+#> basis.max_unpenv3.l2:District03 -0.007 0.039     -0.083   -0.007      0.069
+#> basis.max_unpenv3.l2:District04 -0.014 0.040     -0.092   -0.014      0.063
+#> basis.max_unpenv3.l2:District05 -0.006 0.037     -0.078   -0.006      0.065
+#> basis.max_unpenv3.l2:District06  0.010 0.039     -0.065    0.010      0.086
+#> basis.max_unpenv3.l2:District07 -0.002 0.033     -0.067   -0.002      0.063
+#> basis.max_unpenv3.l2:District08  0.003 0.042     -0.079    0.003      0.086
+#> basis.max_unpenv3.l2:District09  0.003 0.039     -0.073    0.003      0.078
+#> basis.max_unpenv3.l2:District10 -0.002 0.036     -0.073   -0.002      0.070
+#> basis.max_unpenv3.l3:District01 -0.012 0.038     -0.087   -0.012      0.062
+#> basis.max_unpenv3.l3:District02  0.006 0.031     -0.055    0.006      0.068
+#> basis.max_unpenv3.l3:District03 -0.013 0.038     -0.087   -0.013      0.062
+#> basis.max_unpenv3.l3:District04 -0.008 0.039     -0.084   -0.008      0.068
+#> basis.max_unpenv3.l3:District05 -0.005 0.036     -0.076   -0.005      0.065
+#> basis.max_unpenv3.l3:District06  0.023 0.038     -0.051    0.023      0.097
+#> basis.max_unpenv3.l3:District07  0.005 0.033     -0.059    0.005      0.069
+#> basis.max_unpenv3.l3:District08 -0.007 0.041     -0.088   -0.007      0.074
+#> basis.max_unpenv3.l3:District09  0.009 0.038     -0.065    0.009      0.083
+#> basis.max_unpenv3.l3:District10  0.001 0.036     -0.069    0.001      0.071
+#> basis.max_unpenv3.l4:District01 -0.014 0.039     -0.089   -0.014      0.062
+#> basis.max_unpenv3.l4:District02  0.002 0.032     -0.060    0.002      0.064
+#> basis.max_unpenv3.l4:District03 -0.011 0.039     -0.087   -0.011      0.065
+#> basis.max_unpenv3.l4:District04 -0.012 0.039     -0.089   -0.012      0.065
+#> basis.max_unpenv3.l4:District05 -0.007 0.036     -0.079   -0.007      0.064
+#> basis.max_unpenv3.l4:District06  0.017 0.038     -0.059    0.017      0.092
+#> basis.max_unpenv3.l4:District07  0.016 0.033     -0.049    0.016      0.080
+#> basis.max_unpenv3.l4:District08  0.013 0.042     -0.070    0.013      0.095
+#> basis.max_unpenv3.l4:District09 -0.008 0.038     -0.083   -0.008      0.067
+#> basis.max_unpenv3.l4:District10  0.005 0.036     -0.066    0.005      0.076
+#> basis.max_unpenv4.l1:District01  0.012 0.037     -0.061    0.012      0.084
+#> basis.max_unpenv4.l1:District02 -0.009 0.032     -0.072   -0.009      0.054
+#> basis.max_unpenv4.l1:District03  0.002 0.038     -0.072    0.002      0.075
+#> basis.max_unpenv4.l1:District04 -0.007 0.039     -0.084   -0.007      0.070
+#> basis.max_unpenv4.l1:District05 -0.007 0.037     -0.080   -0.007      0.066
+#> basis.max_unpenv4.l1:District06 -0.018 0.037     -0.090   -0.018      0.053
+#> basis.max_unpenv4.l1:District07 -0.002 0.033     -0.068   -0.002      0.063
+#> basis.max_unpenv4.l1:District08  0.003 0.038     -0.071    0.003      0.077
+#> basis.max_unpenv4.l1:District09  0.006 0.039     -0.071    0.006      0.083
+#> basis.max_unpenv4.l1:District10  0.021 0.036     -0.049    0.021      0.091
+#> basis.max_unpenv4.l2:District01  0.008 0.038     -0.066    0.008      0.082
+#> basis.max_unpenv4.l2:District02 -0.003 0.032     -0.066   -0.003      0.060
+#> basis.max_unpenv4.l2:District03 -0.017 0.038     -0.092   -0.017      0.057
+#> basis.max_unpenv4.l2:District04 -0.006 0.040     -0.084   -0.006      0.072
+#> basis.max_unpenv4.l2:District05 -0.001 0.037     -0.074   -0.001      0.071
+#> basis.max_unpenv4.l2:District06  0.012 0.037     -0.061    0.012      0.085
+#> basis.max_unpenv4.l2:District07  0.010 0.033     -0.055    0.010      0.076
+#> basis.max_unpenv4.l2:District08  0.009 0.038     -0.066    0.009      0.084
+#> basis.max_unpenv4.l2:District09 -0.015 0.039     -0.092   -0.015      0.062
+#> basis.max_unpenv4.l2:District10  0.003 0.036     -0.068    0.003      0.074
+#> basis.max_unpenv4.l3:District01 -0.002 0.037     -0.075   -0.002      0.070
+#> basis.max_unpenv4.l3:District02 -0.009 0.032     -0.071   -0.009      0.054
+#> basis.max_unpenv4.l3:District03  0.001 0.038     -0.074    0.001      0.076
+#> basis.max_unpenv4.l3:District04 -0.001 0.039     -0.077   -0.001      0.076
+#> basis.max_unpenv4.l3:District05 -0.002 0.037     -0.075   -0.002      0.070
+#> basis.max_unpenv4.l3:District06 -0.012 0.037     -0.085   -0.012      0.060
+#> basis.max_unpenv4.l3:District07 -0.001 0.033     -0.066   -0.001      0.064
+#> basis.max_unpenv4.l3:District08  0.010 0.039     -0.066    0.010      0.086
+#> basis.max_unpenv4.l3:District09  0.023 0.039     -0.054    0.023      0.101
+#> basis.max_unpenv4.l3:District10 -0.006 0.036     -0.076   -0.006      0.064
+#> basis.max_unpenv4.l4:District01 -0.011 0.037     -0.083   -0.011      0.061
+#> basis.max_unpenv4.l4:District02  0.008 0.032     -0.054    0.008      0.071
+#> basis.max_unpenv4.l4:District03  0.012 0.037     -0.061    0.012      0.085
+#> basis.max_unpenv4.l4:District04  0.021 0.039     -0.056    0.021      0.097
+#> basis.max_unpenv4.l4:District05  0.020 0.037     -0.053    0.020      0.092
+#> basis.max_unpenv4.l4:District06  0.018 0.036     -0.052    0.018      0.088
+#> basis.max_unpenv4.l4:District07 -0.008 0.033     -0.073   -0.008      0.057
+#> basis.max_unpenv4.l4:District08 -0.013 0.037     -0.086   -0.013      0.059
+#> basis.max_unpenv4.l4:District09 -0.025 0.039     -0.101   -0.025      0.051
+#> basis.max_unpenv4.l4:District10 -0.020 0.036     -0.090   -0.020      0.050
+#> District01                      -0.115 0.127     -0.363   -0.115      0.133
+#> District02                       0.077 0.112     -0.142    0.077      0.297
+#> District03                      -0.011 0.126     -0.258   -0.011      0.236
+#> District04                      -0.049 0.128     -0.300   -0.049      0.202
+#> District05                      -0.033 0.122     -0.273   -0.033      0.207
+#> District06                       0.202 0.126     -0.045    0.202      0.450
+#> District07                       0.009 0.115     -0.216    0.009      0.235
+#> District08                       0.016 0.134     -0.247    0.016      0.278
+#> District09                      -0.003 0.125     -0.248   -0.003      0.243
+#> District10                      -0.094 0.121     -0.332   -0.094      0.144
+#> factor(dow)Monday                0.015 0.012     -0.009    0.015      0.038
+#> factor(dow)Saturday              0.018 0.012     -0.006    0.018      0.042
+#> factor(dow)Sunday                0.020 0.012     -0.004    0.020      0.044
+#> factor(dow)Thursday              0.002 0.012     -0.022    0.002      0.026
+#> factor(dow)Tuesday               0.009 0.012     -0.015    0.009      0.032
+#> factor(dow)Wednesday             0.012 0.012     -0.011    0.012      0.036
+#>                                   mode
+#> (Intercept)                     -9.772
+#> month1                          -0.181
+#> month2                          -0.196
+#> month3                           0.000
+#> year2007                        -0.013
+#> year2008                         0.002
+#> year2009                         0.007
+#> year2010                         0.006
+#> year2011                        -0.003
+#> basis.max_unpenv1.l1            -0.006
+#> basis.max_unpenv1.l2            -0.070
+#> basis.max_unpenv1.l3             0.046
+#> basis.max_unpenv1.l4            -0.102
+#> basis.max_unpenv2.l1             0.004
+#> basis.max_unpenv2.l2            -0.095
+#> basis.max_unpenv2.l3             0.101
+#> basis.max_unpenv2.l4            -0.098
+#> basis.max_unpenv3.l1             0.007
+#> basis.max_unpenv3.l2            -0.268
+#> basis.max_unpenv3.l3             0.241
+#> basis.max_unpenv3.l4            -0.257
+#> basis.max_unpenv4.l1            -0.009
+#> basis.max_unpenv4.l2            -0.142
+#> basis.max_unpenv4.l3             0.346
+#> basis.max_unpenv4.l4            -0.229
+#> basis.max_unpenv1.l1:District01 -0.041
+#> basis.max_unpenv1.l1:District02 -0.005
+#> basis.max_unpenv1.l1:District03  0.001
+#> basis.max_unpenv1.l1:District04 -0.023
+#> basis.max_unpenv1.l1:District05  0.031
+#> basis.max_unpenv1.l1:District06  0.045
+#> basis.max_unpenv1.l1:District07  0.009
+#> basis.max_unpenv1.l1:District08 -0.013
+#> basis.max_unpenv1.l1:District09  0.019
+#> basis.max_unpenv1.l1:District10 -0.023
+#> basis.max_unpenv1.l2:District01 -0.043
+#> basis.max_unpenv1.l2:District02  0.003
+#> basis.max_unpenv1.l2:District03  0.016
+#> basis.max_unpenv1.l2:District04  0.013
+#> basis.max_unpenv1.l2:District05  0.009
+#> basis.max_unpenv1.l2:District06 -0.022
+#> basis.max_unpenv1.l2:District07 -0.002
+#> basis.max_unpenv1.l2:District08  0.007
+#> basis.max_unpenv1.l2:District09  0.022
+#> basis.max_unpenv1.l2:District10 -0.003
+#> basis.max_unpenv1.l3:District01  0.004
+#> basis.max_unpenv1.l3:District02  0.007
+#> basis.max_unpenv1.l3:District03  0.005
+#> basis.max_unpenv1.l3:District04 -0.002
+#> basis.max_unpenv1.l3:District05  0.016
+#> basis.max_unpenv1.l3:District06  0.020
+#> basis.max_unpenv1.l3:District07 -0.006
+#> basis.max_unpenv1.l3:District08 -0.019
+#> basis.max_unpenv1.l3:District09 -0.010
+#> basis.max_unpenv1.l3:District10 -0.016
+#> basis.max_unpenv1.l4:District01  0.013
+#> basis.max_unpenv1.l4:District02 -0.004
+#> basis.max_unpenv1.l4:District03  0.001
+#> basis.max_unpenv1.l4:District04  0.006
+#> basis.max_unpenv1.l4:District05  0.001
+#> basis.max_unpenv1.l4:District06 -0.002
+#> basis.max_unpenv1.l4:District07 -0.016
+#> basis.max_unpenv1.l4:District08  0.007
+#> basis.max_unpenv1.l4:District09  0.007
+#> basis.max_unpenv1.l4:District10 -0.013
+#> basis.max_unpenv2.l1:District01  0.018
+#> basis.max_unpenv2.l1:District02 -0.004
+#> basis.max_unpenv2.l1:District03  0.006
+#> basis.max_unpenv2.l1:District04 -0.001
+#> basis.max_unpenv2.l1:District05 -0.020
+#> basis.max_unpenv2.l1:District06 -0.018
+#> basis.max_unpenv2.l1:District07 -0.018
+#> basis.max_unpenv2.l1:District08  0.009
+#> basis.max_unpenv2.l1:District09  0.022
+#> basis.max_unpenv2.l1:District10  0.008
+#> basis.max_unpenv2.l2:District01 -0.019
+#> basis.max_unpenv2.l2:District02  0.000
+#> basis.max_unpenv2.l2:District03 -0.003
+#> basis.max_unpenv2.l2:District04 -0.004
+#> basis.max_unpenv2.l2:District05 -0.007
+#> basis.max_unpenv2.l2:District06  0.048
+#> basis.max_unpenv2.l2:District07  0.013
+#> basis.max_unpenv2.l2:District08 -0.013
+#> basis.max_unpenv2.l2:District09  0.007
+#> basis.max_unpenv2.l2:District10 -0.022
+#> basis.max_unpenv2.l3:District01  0.003
+#> basis.max_unpenv2.l3:District02 -0.011
+#> basis.max_unpenv2.l3:District03 -0.004
+#> basis.max_unpenv2.l3:District04 -0.014
+#> basis.max_unpenv2.l3:District05 -0.025
+#> basis.max_unpenv2.l3:District06 -0.008
+#> basis.max_unpenv2.l3:District07  0.000
+#> basis.max_unpenv2.l3:District08  0.022
+#> basis.max_unpenv2.l3:District09  0.043
+#> basis.max_unpenv2.l3:District10 -0.005
+#> basis.max_unpenv2.l4:District01  0.002
+#> basis.max_unpenv2.l4:District02  0.008
+#> basis.max_unpenv2.l4:District03  0.023
+#> basis.max_unpenv2.l4:District04  0.018
+#> basis.max_unpenv2.l4:District05  0.010
+#> basis.max_unpenv2.l4:District06 -0.007
+#> basis.max_unpenv2.l4:District07 -0.014
+#> basis.max_unpenv2.l4:District08 -0.017
+#> basis.max_unpenv2.l4:District09 -0.014
+#> basis.max_unpenv2.l4:District10 -0.009
+#> basis.max_unpenv3.l1:District01 -0.003
+#> basis.max_unpenv3.l1:District02  0.007
+#> basis.max_unpenv3.l1:District03 -0.014
+#> basis.max_unpenv3.l1:District04  0.000
+#> basis.max_unpenv3.l1:District05 -0.012
+#> basis.max_unpenv3.l1:District06  0.005
+#> basis.max_unpenv3.l1:District07  0.006
+#> basis.max_unpenv3.l1:District08 -0.004
+#> basis.max_unpenv3.l1:District09  0.020
+#> basis.max_unpenv3.l1:District10 -0.004
+#> basis.max_unpenv3.l2:District01  0.011
+#> basis.max_unpenv3.l2:District02  0.004
+#> basis.max_unpenv3.l2:District03 -0.007
+#> basis.max_unpenv3.l2:District04 -0.014
+#> basis.max_unpenv3.l2:District05 -0.006
+#> basis.max_unpenv3.l2:District06  0.010
+#> basis.max_unpenv3.l2:District07 -0.002
+#> basis.max_unpenv3.l2:District08  0.003
+#> basis.max_unpenv3.l2:District09  0.003
+#> basis.max_unpenv3.l2:District10 -0.002
+#> basis.max_unpenv3.l3:District01 -0.012
+#> basis.max_unpenv3.l3:District02  0.006
+#> basis.max_unpenv3.l3:District03 -0.013
+#> basis.max_unpenv3.l3:District04 -0.008
+#> basis.max_unpenv3.l3:District05 -0.005
+#> basis.max_unpenv3.l3:District06  0.023
+#> basis.max_unpenv3.l3:District07  0.005
+#> basis.max_unpenv3.l3:District08 -0.007
+#> basis.max_unpenv3.l3:District09  0.009
+#> basis.max_unpenv3.l3:District10  0.001
+#> basis.max_unpenv3.l4:District01 -0.014
+#> basis.max_unpenv3.l4:District02  0.002
+#> basis.max_unpenv3.l4:District03 -0.011
+#> basis.max_unpenv3.l4:District04 -0.012
+#> basis.max_unpenv3.l4:District05 -0.007
+#> basis.max_unpenv3.l4:District06  0.017
+#> basis.max_unpenv3.l4:District07  0.016
+#> basis.max_unpenv3.l4:District08  0.013
+#> basis.max_unpenv3.l4:District09 -0.008
+#> basis.max_unpenv3.l4:District10  0.005
+#> basis.max_unpenv4.l1:District01  0.012
+#> basis.max_unpenv4.l1:District02 -0.009
+#> basis.max_unpenv4.l1:District03  0.002
+#> basis.max_unpenv4.l1:District04 -0.007
+#> basis.max_unpenv4.l1:District05 -0.007
+#> basis.max_unpenv4.l1:District06 -0.018
+#> basis.max_unpenv4.l1:District07 -0.002
+#> basis.max_unpenv4.l1:District08  0.003
+#> basis.max_unpenv4.l1:District09  0.006
+#> basis.max_unpenv4.l1:District10  0.021
+#> basis.max_unpenv4.l2:District01  0.008
+#> basis.max_unpenv4.l2:District02 -0.003
+#> basis.max_unpenv4.l2:District03 -0.017
+#> basis.max_unpenv4.l2:District04 -0.006
+#> basis.max_unpenv4.l2:District05 -0.001
+#> basis.max_unpenv4.l2:District06  0.012
+#> basis.max_unpenv4.l2:District07  0.010
+#> basis.max_unpenv4.l2:District08  0.009
+#> basis.max_unpenv4.l2:District09 -0.015
+#> basis.max_unpenv4.l2:District10  0.003
+#> basis.max_unpenv4.l3:District01 -0.002
+#> basis.max_unpenv4.l3:District02 -0.009
+#> basis.max_unpenv4.l3:District03  0.001
+#> basis.max_unpenv4.l3:District04 -0.001
+#> basis.max_unpenv4.l3:District05 -0.002
+#> basis.max_unpenv4.l3:District06 -0.012
+#> basis.max_unpenv4.l3:District07 -0.001
+#> basis.max_unpenv4.l3:District08  0.010
+#> basis.max_unpenv4.l3:District09  0.023
+#> basis.max_unpenv4.l3:District10 -0.006
+#> basis.max_unpenv4.l4:District01 -0.011
+#> basis.max_unpenv4.l4:District02  0.008
+#> basis.max_unpenv4.l4:District03  0.012
+#> basis.max_unpenv4.l4:District04  0.021
+#> basis.max_unpenv4.l4:District05  0.020
+#> basis.max_unpenv4.l4:District06  0.018
+#> basis.max_unpenv4.l4:District07 -0.008
+#> basis.max_unpenv4.l4:District08 -0.013
+#> basis.max_unpenv4.l4:District09 -0.025
+#> basis.max_unpenv4.l4:District10 -0.020
+#> District01                      -0.115
+#> District02                       0.077
+#> District03                      -0.011
+#> District04                      -0.049
+#> District05                      -0.033
+#> District06                       0.202
+#> District07                       0.009
+#> District08                       0.016
+#> District09                      -0.003
+#> District10                      -0.094
+#> factor(dow)Monday                0.015
+#> factor(dow)Saturday              0.018
+#> factor(dow)Sunday                0.020
+#> factor(dow)Thursday              0.002
+#> factor(dow)Tuesday               0.009
+#> factor(dow)Wednesday             0.012
+#> 
+#> Hyperparameters:
+#> 
+#> Precision Leroux re District  21.12
+#> Precision RW year  4842
+#> Precision spatial DLNM basis.max_unpen  388.7
+#> Rho DLNM basis.max_unpen  0.5129
+#> Rho Leroux re District  0.4606
+#> 
+#> Model comparison:
+#> 
+#> DIC: 30375.4 ; Effective Parameters: 82.21462 
+
+# Make predictions
+pred_spat_max <- pred_crossbasis(
+    basis.max_unpen,
+    model_max_spat,
+    at_x = 22:30,
+    cen = 25,
+    lag = c(0,14),
+    CI = TRUE,
+    by = unique(dataset$District)
+)
+
+# Plot results (region-specific overal RR)
+plot(pred_spat_max, ptype = "overall", CI = FALSE, xlab = "temp", ylab = "RR", ylim = c(0.9,3.0),
+    multiple.plots = FALSE)
+
+
+
+### Example 4: Unpenalized and deprivation-varying DLNM
+
+# Fit model
+model_max_conf <- dlnmLPS(
+    dtot ~ 1 + factor(dow) +
+    sm(month, arg = list(type = "ns", df = 3)) +
+    sm(year, arg = list(type = "rw1")) +
+    sm(depriv, arg = list(type = "ns", df = 3)) +
+    sm(basis.max_unpen, by = depriv,
+            arg.by = list(type = "ns", df = 3)) +
+    sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+    data = dataset,
+    offset = log(pop),
+    model.comparison = list(DIC = TRUE),
+    family = "Poisson")
+
+# Make predictions
+pred_conf_max <- pred_crossbasis(
+    basis.max_unpen,
+    model_max_conf,
+    at_x = 22:30,
+    cen = 25,
+    lag = c(0,14),
+    CI = TRUE,
+    by = quantile(dataset$depriv,probs= c(0.10, 0.90))
+)
+
+# Plot results (contour plot exposure-lag-response)
+contour(pred_conf_max, ptype = "cross", cols = function(n) hcl.colors(n, "Inferno"))
+
+
+
+```
