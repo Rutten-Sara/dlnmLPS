@@ -60,7 +60,7 @@
 <p><strong>dlnmLPS</strong> is an R package for fitting <strong>d</strong>istributed <strong>l</strong>ag <strong>n</strong>on-linear <strong>m</strong>odels within a Bayesian framework using <strong>L</strong>aplacian-<strong>P</strong>-<strong>S</strong>plines. It provides a flexible approach for modelling complex exposure-lag-response relationships, including relationships that vary spatially or according to pre-specified continuous or categorical modifiers, as well as exposure-lag-response relationships for two joint exposures. In addition to exposure-lag-response relationships, <code>dlnmLPS</code> allows other sources of heterogeneity to be incorporated, including smooth covariate effects, random effects and spatial and temporal structures.</p>
 <p>More specifically, <code>dlnmLPS</code> can be used to model:</p>
 <ul>
-<li><p><strong>distributed lag nonlinear associations</strong>, allowing nonlinear exposure-response relationships over multiple time lags. DLNMs can be unpenalized (natural splines or B-splines) or penalized (P-splines);</p></li>
+<li><p><strong>distributed lag non-linear associations</strong>, allowing nonlinear exposure-response relationships over multiple time lags. DLNMs can be unpenalized (natural splines or B-splines) or penalized (P-splines);</p></li>
 <li><p><strong>random effects</strong>, including independent random effects and spatially structured random effects (ICAR, BYM or Leroux). These random effects can possibly vary over time (according to an independent or random walk structure);</p></li>
 <li><p><strong>temporal random effects</strong>, including first- and second-order random-walk structures. These temporal effects can possibly depend on location (according to an independent, ICAR or Leroux structure);</p></li>
 <li><p><strong>smooth exposure effects</strong>, using natural splines (<code>ns</code>), B-splines (<code>bs</code>), or P-splines (<code>ps</code>); and</p></li>
@@ -79,7 +79,7 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>The development version of <code>dlnmLPS</code>, can be installed from the GitHub repository using:</p>
+<p>The development version of <code>dlnmLPS</code> can be installed from the GitHub repository using:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"Rutten-Sara/dlnmLPS"</span><span class="op">)</span></span></code></pre></div>
@@ -97,7 +97,7 @@
 </h2>
 <p>Associated literature:</p>
 <ol style="list-style-type: decimal">
-<li><p>Rutten, S., Duarte, E., Neyens, T., Lauwaet, D., &amp; Faes, C. (2024). A penalized distributed-lag non-linear model for modeling the joint delayed effect of two predictors: impact of minimum and maximum temperature on mortality. <em>medRxiv</em>. <a href="https://doi.org/10.1101/2024.11.29.24318041" class="external-link uri">https://doi.org/10.1101/2024.11.29.24318041</a></p></li>
+<li><p>Rutten, S., Duarte, E., Neyens, T., Lauwaet, D., &amp; Faes, C. (2024). A penalized distributed lag non-linear model for modeling the joint delayed effect of two predictors: impact of minimum and maximum temperature on mortality. <em>medRxiv</em>. <a href="https://doi.org/10.1101/2024.11.29.24318041" class="external-link uri">https://doi.org/10.1101/2024.11.29.24318041</a></p></li>
 <li><p>Rutten, S., Sumalinab, B., Gressani, O., Neyens, T., Duarte, E., Hens, N., &amp; Faes, C. (2026). Penalized distributed lag non-linear models for small area data using Laplacian-P-splines. <em>Statistics and Computing</em>, 36(1), 38. <a href="https://doi.org/10.1007/s11222-025-10790-9" class="external-link uri">https://doi.org/10.1007/s11222-025-10790-9</a></p></li>
 <li><p>Rutten, S., Neyens, T., Duarte, E., Gasparrini, A., &amp; Faes, C. (2026). Distributed lag non-linear models with spatial effect modification using Laplacian P-splines. <em>Environmental and Ecological Statistics</em>. <a href="https://doi.org/10.1007/s10651-026-00739-0" class="external-link uri">https://doi.org/10.1007/s10651-026-00739-0</a></p></li>
 <li><p>Rutten, S., Neyens, T., Duarte, E., Gasparrini, A., &amp; Faes, C. (2026). Spatially varying distributed lag non-linear models using Laplacian P-splines. <em>arXiv preprint arXiv:2604.09012</em>. <a href="https://doi.org/10.48550/arXiv.2604.09012" class="external-link uri">https://doi.org/10.48550/arXiv.2604.09012</a></p></li>

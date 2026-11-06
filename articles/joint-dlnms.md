@@ -8,7 +8,7 @@ library(dlnmLPS)
 ## Introduction
 
 Traditionally, distributed lag non-linear models (DLNMs) are used to
-model the effect of one, possibly delayed and non-linear, exposure on an
+model the effect of one, possibly delayed and non-linear exposure on an
 outcome. However, interest might be in the joint effect of two
 (bivariate) exposures. For example, the effect of maximum and minimum
 temperature on mortality might be synergistic, requiring a joint
@@ -39,7 +39,7 @@ temperature in all 10 districts of Barcelona during the summer period (1
 June–30 September) between 2007 and 2011. The population size,
 deprivation index and daily number of deaths are included for every
 district. For this example, we will investigate how maximum and minimum
-temperature jointly impact mortality. The outcome and exposure variable
+temperatures jointly impact mortality. The outcome and exposure variable
 can then be inspected:
 
 ``` r
@@ -73,7 +73,7 @@ dataset <- barcelona_temp |>
 
 While fitting a joint DLNM requires an extension of the basic
 functionality of DLNMs, fitting a model with an additive DLNM of maximum
-and minimum temperature is straightforward.
+and minimum temperatures is straightforward.
 
 We include month as natural splines with 3 degrees of freedom, year as a
 random walk of order one, day of the week as a factor and District as an
@@ -182,7 +182,7 @@ model_penalized <- dlnmLPS(dtot ~ factor(dow) +
                               family = "Poisson")
 ```
 
-To visualize this mode, we need a grid of realistic maximum and minimum
+To visualize this model, we need a grid of realistic maximum and minimum
 temperature combinations. A prediction is made for every `at_x`-`at_y`
 pair, rather than for cross-pairs. This also implies that the length of
 both vectors should be equal. A centering value now consists of a vector
@@ -280,7 +280,7 @@ and risk after five days:
 
 ``` r
 
-contour(pred_penalized, slice_lag = 5, xlab = "maximumimum temperature", ylab = "minimum temperature",
+contour(pred_penalized, slice_lag = 5, xlab = "maximum temperature", ylab = "minimum temperature",
         ptype = "slices")
 ```
 
@@ -294,7 +294,8 @@ timeseries and of the backward perspective:
 
 # Calculate exposure and outcome timeseries
 data2007_district <- dataset |>
-  dplyr::filter(year == 2007) 
+  dplyr::filter(year == 2007) |>
+  dplyr::arrange(District, date)
 
 # Calculate attributable risk
 af2007_district <- attributable_risk(
@@ -310,7 +311,7 @@ af2007_district <- attributable_risk(
   samples = TRUE)
 ```
 
-These results could then for be visualized as:
+These results could then be visualized as:
 
 ``` r
 

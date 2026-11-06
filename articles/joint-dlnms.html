@@ -71,7 +71,7 @@
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>Traditionally, distributed lag non-linear models (DLNMs) are used to
-model the effect of one, possibly delayed and non-linear, exposure on an
+model the effect of one, possibly delayed and non-linear exposure on an
 outcome. However, interest might be in the joint effect of two
 (bivariate) exposures. For example, the effect of maximum and minimum
 temperature on mortality might be synergistic, requiring a joint
@@ -98,7 +98,7 @@ temperature in all 10 districts of Barcelona during the summer period (1
 June–30 September) between 2007 and 2011. The population size,
 deprivation index and daily number of deaths are included for every
 district. For this example, we will investigate how maximum and minimum
-temperature jointly impact mortality. The outcome and exposure variable
+temperatures jointly impact mortality. The outcome and exposure variable
 can then be inspected:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Inspect the data</span></span>
@@ -126,7 +126,7 @@ day of the week, year and month.</p>
 </h3>
 <p>While fitting a joint DLNM requires an extension of the basic
 functionality of DLNMs, fitting a model with an additive DLNM of maximum
-and minimum temperature is straightforward.</p>
+and minimum temperatures is straightforward.</p>
 <p>We include month as natural splines with 3 degrees of freedom, year
 as a random walk of order one, day of the week as a factor and District
 as an (independent) random effect. Fitting a penalized additive DLNM,
@@ -222,7 +222,7 @@ freedom and a second order penalty, can be fitted using:</p>
 <span>                              offset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span>,</span>
 <span>                              model.comparison <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>DIC <span class="op">=</span> <span class="cn">TRUE</span>, WAIC <span class="op">=</span> <span class="cn">TRUE</span>, CPO <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>                              family <span class="op">=</span> <span class="st">"Poisson"</span><span class="op">)</span></span></code></pre></div>
-<p>To visualize this mode, we need a grid of realistic maximum and
+<p>To visualize this model, we need a grid of realistic maximum and
 minimum temperature combinations. A prediction is made for every
 <code>at_x</code>-<code>at_y</code> pair, rather than for cross-pairs.
 This also implies that the length of both vectors should be equal. A
@@ -293,7 +293,7 @@ lag relationship for specific exposure levels:</p>
 <p><img src="joint-dlnms_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="576"></p>
 <p>and risk after five days:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/contour.html" class="external-link">contour</a></span><span class="op">(</span><span class="va">pred_penalized</span>, slice_lag <span class="op">=</span> <span class="fl">5</span>, xlab <span class="op">=</span> <span class="st">"maximumimum temperature"</span>, ylab <span class="op">=</span> <span class="st">"minimum temperature"</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/contour.html" class="external-link">contour</a></span><span class="op">(</span><span class="va">pred_penalized</span>, slice_lag <span class="op">=</span> <span class="fl">5</span>, xlab <span class="op">=</span> <span class="st">"maximum temperature"</span>, ylab <span class="op">=</span> <span class="st">"minimum temperature"</span>,</span>
 <span>        ptype <span class="op">=</span> <span class="st">"slices"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="joint-dlnms_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="576"></p>
 <p>The attributable fraction in 2007 can also be calculated for example.
@@ -302,7 +302,8 @@ timeseries and of the backward perspective:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate exposure and outcome timeseries</span></span>
 <span><span class="va">data2007_district</span> <span class="op">&lt;-</span> <span class="va">dataset</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fl">2007</span><span class="op">)</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fl">2007</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">District</span>, <span class="va">date</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Calculate attributable risk</span></span>
 <span><span class="va">af2007_district</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/attributable_risk.html">attributable_risk</a></span><span class="op">(</span></span>
@@ -316,7 +317,7 @@ timeseries and of the backward perspective:</p>
 <span>  dir <span class="op">=</span> <span class="st">"back"</span>,</span>
 <span>  tot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  samples <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>These results could then for be visualized as:</p>
+<p>These results could then be visualized as:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract results</span></span>
 <span><span class="va">af_ci</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">af2007_district</span><span class="op">$</span><span class="va">samples</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>

@@ -321,7 +321,7 @@ contour(pred_unpenalized, ptype = "cross", xlab = "lag", ylab = "temperature")
 
 ![](introduction_dlnmlps_files/figure-html/unnamed-chunk-14-1.png)
 
-While a simple 3D plot can be requested using :
+While a simple 3D plot can be requested using:
 
 ``` r
 
@@ -336,7 +336,7 @@ to make the plot more visually appealing:
 
 ``` r
 
-plot(pred_unpenalized, ptype = "cross", ticktype="detailed",theta=230,
+plot(pred_unpenalized, ptype = "cross", ticktype="detailed", theta=230,
         xlab = "lag", ylab = "temperature", zlab = "RR",
         ltheta=200,phi=30,lphi=30,
         nticks = 4, shade = 0.75,r=sqrt(3),d=5,cex.axis=0.5, cex.lab=0.5,border=NA)
@@ -360,7 +360,7 @@ order of the penalty needs to be supplied in the argument `arg` of
 [`sm()`](https://rutten-sara.github.io/dlnmLPS/reference/sm.md). Note
 that, by default, an additional lag penalty is specified, on top of the
 P-splines penalties, to encourage shrinkage towards a null effect at
-longer lags. To disable this penalty, specify `add.legpen`= “FALSE”
+longer lags. To disable this penalty, specify `add.lagpen`= “FALSE”
 within the `arg` argument.
 
 ``` r
@@ -489,7 +489,7 @@ Predictions can similarly be visualized:
 pred_penalized <- pred_crossbasis(
   basis = basis.max_pen,
   model = model_penalized,
-  at_x = seq(22,30,length = 50),
+  at_x = seq(22, 30, length = 50),
   cen = 25,
   lag = c(0,14),
   CI = TRUE
@@ -531,7 +531,7 @@ plot(pred_unpenalized, ptype = "cross", ticktype="detailed",theta=230,
 
 ![](introduction_dlnmlps_files/figure-html/unnamed-chunk-19-5.png)
 
-One of the advantages of Bayesian modelling, is that uncertainty
+One of the advantages of Bayesian modelling is that uncertainty
 quantification can easily be obtained. We already illustrated how to
 request exceedance probabilities, but also attributable risks can be
 calculated within a DLNM framework (Gasparrini and Leone 2014).
@@ -550,7 +550,8 @@ data2007 <- dataset |>
   dplyr::summarize(
     Tmax = mean(Tmax, na.rm = TRUE),
     dtot = sum(dtot, na.rm = TRUE)
-  )
+  )|>
+  dplyr::arrange(date)
 
 # Calculate attributable risk
 af2007 <- attributable_risk(

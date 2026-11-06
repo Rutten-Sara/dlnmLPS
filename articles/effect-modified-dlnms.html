@@ -71,7 +71,7 @@
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>Classical distributed lag non-linear models (DLNMs) assume a common
-exposure-lag-response relationships across geographical areas. However,
+exposure-lag-response relationship across geographical areas. However,
 this relationship might be altered by an effect modifier that differs
 between spatial units. For example, the relationship between temperature
 and mortality may differ between regions according to the deprivation
@@ -141,7 +141,8 @@ modified by a continuous deprivation index, using a linear
 interaction;</p></li>
 <li><p><strong>Smooth unpenalized effect modification</strong>, a
 penalized DLNM modified by a continuous deprivation index, expressed by
-natural splines using 2 knots (on the 10% and 90% percentile);</p></li>
+natural splines using 2 knots (on the 10th and 90th
+percentile);</p></li>
 <li><p><strong>Smooth penalized effect modification</strong>, a
 penalized DLNM modified by a continuous deprivation index, expressed by
 penalized splines using 5 df.</p></li>
@@ -215,7 +216,7 @@ using natural splines with two knots. The model can be fitted as:</p>
 <p>Lastly, in the fourth model, we include an interaction with
 deprivation index using penalized splines:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Fit an penalized smooth modified DLNM</span></span>
+<code class="sourceCode R"><span><span class="co"># Fit a penalized smooth modified DLNM</span></span>
 <span><span class="va">model4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dlnmLPS.html">dlnmLPS</a></span><span class="op">(</span><span class="va">dtot</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">dow</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="../reference/sm.html">sm</a></span><span class="op">(</span><span class="va">depriv</span>, arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"ps"</span>, df <span class="op">=</span> <span class="fl">5</span>, pen <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>                        <span class="fu"><a href="../reference/sm.html">sm</a></span><span class="op">(</span><span class="va">basis.max_pen</span>, arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>pen <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
 <span>                           by <span class="op">=</span> <span class="va">depriv</span>, arg.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"ps"</span>, df <span class="op">=</span> <span class="fl">5</span>, pen <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -248,10 +249,10 @@ comparison criteria DIC, WAIC and CPO:</p>
 <span><span class="co">#&gt; [1] 15190.91</span></span></code></pre></div>
 <p>The fourth model is preferred based on all model selection criteria.
 Using this model, we predict the exposure-lag-response curve for three
-different levels of the deprivation index (2.5%, 50% and 97.5%) at
-temperatures between 22 and 30 degrees Celsius, relative to a centering
-value of 25 degrees. We also request the probability that the logarithm
-of the relative risk exceeds 0:</p>
+different levels of the deprivation index (2.5th, 50th and 97.5th
+percentile) at temperatures between 22 and 30 degrees Celsius, relative
+to a centering value of 25 degrees. We also request the probability that
+the logarithm of the relative risk exceeds 0:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pred_penalized</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pred_crossbasis.html">pred_crossbasis</a></span><span class="op">(</span></span>
 <span>  basis <span class="op">=</span> <span class="va">basis.max_pen</span>,</span>
@@ -281,7 +282,7 @@ deprivation quantiles 2.5% and 97.5%, we can use:</p>
 <span><span class="co">#&gt; 7 22   2 1.0071232 0.9591593 1.057486 0.61221631  1.45</span></span>
 <span><span class="co">#&gt; 8 30   2 1.0870012 1.0501871 1.125106 0.99999896  1.45</span></span></code></pre></div>
 <p>To plot the exposure-response relationship at lag 0, 3 and 8 for the
-2.5%, 50% and 97.5% percentile deprivation indices, we can use:</p>
+2.5th, 50th and 97.5th percentile deprivation indices, we can use:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pred_penalized</span>, slice_lag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">3</span>,<span class="fl">8</span><span class="op">)</span>, ptype <span class="op">=</span> <span class="st">"slices"</span>, CI <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>     xlab <span class="op">=</span> <span class="st">"temperature"</span>, ylab <span class="op">=</span> <span class="st">"RR"</span><span class="op">)</span></span></code></pre></div>
@@ -294,7 +295,7 @@ index on one plot. Note that this option is only available for an
 integer (and not a vector) slice value or overall RR-curve. Furthermore,
 the option <code>slice_by</code> allows to specify only a subset of the
 predicted <code>by</code>-values. For example, if we only want to plot
-the 2.5% and 97.5% deprivation percentiles, we can use:</p>
+the 2.5th and 97.5th deprivation percentiles, we can use:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pred_penalized</span>, slice_x <span class="op">=</span> <span class="fl">30</span>, </span>
 <span>     slice_by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">$</span><span class="va">depriv</span>,probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>,<span class="fl">0.975</span><span class="op">)</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span>, </span>
@@ -306,8 +307,8 @@ the 2.5% and 97.5% deprivation percentiles, we can use:</p>
 <span>     multiple.plots <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="effect-modified-dlnms_files/figure-html/unnamed-chunk-13-2.png" class="r-plt" alt="" width="576"></p>
 <p>At high temperatures, there is some evidence that the overall RR is
-lower for municipalities with a low deprivation index. A contour plot of
-the exposure-lag-response relationship can also be made for different
+lower for districts with a low deprivation index. A contour plot of the
+exposure-lag-response relationship can also be made for different
 deprivation levels:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/contour.html" class="external-link">contour</a></span><span class="op">(</span><span class="va">pred_penalized</span>, ptype <span class="op">=</span> <span class="st">"cross"</span>, xlab <span class="op">=</span> <span class="st">"lag"</span>, ylab <span class="op">=</span> <span class="st">"temperature"</span><span class="op">)</span></span></code></pre></div>
@@ -318,7 +319,8 @@ index and deaths, and the backward perspective, we get:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate exposure and outcome timeseries</span></span>
 <span><span class="va">data2007_district</span> <span class="op">&lt;-</span> <span class="va">dataset</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fl">2007</span><span class="op">)</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fl">2007</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">District</span>, <span class="va">date</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Calculate attributable risk</span></span>
 <span><span class="va">af2007_district</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/attributable_risk.html">attributable_risk</a></span><span class="op">(</span></span>
@@ -334,7 +336,7 @@ index and deaths, and the backward perspective, we get:</p>
 <span>  samples <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>We could for example also calculate a counterfactual attributable
 fraction, in which the deprivation index in every area is equal to the
-2.5% deprivation percentile.</p>
+2.5th deprivation percentile.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate counterfactual attributable risk</span></span>
 <span><span class="va">depriv_lower</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">data2007_district</span><span class="op">$</span><span class="va">depriv</span>, probs <span class="op">=</span> <span class="fl">0.025</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span></span>
@@ -387,16 +389,16 @@ fraction, in which the deprivation index in every area is equal to the
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Attributable fraction"</span>, y <span class="op">=</span> <span class="st">"District"</span>,colour <span class="op">=</span> <span class="st">"Scenario"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="effect-modified-dlnms_files/figure-html/unnamed-chunk-17-1.png" class="r-plt" alt="" width="384"></p>
-<p>It can be seen that a lower deprivation index, would result in a
-lower attributable fraction for some districts.</p>
+<p>It can be seen that a lower deprivation index would result in a lower
+attributable fraction for some districts.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p>In this vignette, we introduced the effect modifying functionality of
-<code>dlnmLPS</code>. We demonstrated how to fit four different models,
-differing in the flexibility of the effect modification. We used
+<p>In this vignette, we introduced the effect-modification functionality
+of <code>dlnmLPS</code>. We demonstrated how to fit four different
+models, differing in the flexibility of the effect modification. We used
 penalized splines to showcase the functionality of the package but
 similar models can be fitted with unpenalized splines. See also
 <code><a href="../articles/introduction_dlnmlps.html">vignette("introduction_dlnmlps")</a></code> for more information.</p>

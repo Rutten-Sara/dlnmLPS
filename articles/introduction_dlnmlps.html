@@ -324,14 +324,14 @@ requested using:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/contour.html" class="external-link">contour</a></span><span class="op">(</span><span class="va">pred_unpenalized</span>, ptype <span class="op">=</span> <span class="st">"cross"</span>, xlab <span class="op">=</span> <span class="st">"lag"</span>, ylab <span class="op">=</span> <span class="st">"temperature"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_dlnmlps_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="576"></p>
-<p>While a simple 3D plot can be requested using :</p>
+<p>While a simple 3D plot can be requested using:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pred_unpenalized</span>, ptype <span class="op">=</span> <span class="st">"cross"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_dlnmlps_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="576"></p>
 <p>additional arguments of <code><a href="https://rdrr.io/r/graphics/persp.html" class="external-link">graphics::persp</a></code> can be used to
 make the plot more visually appealing:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pred_unpenalized</span>, ptype <span class="op">=</span> <span class="st">"cross"</span>, ticktype<span class="op">=</span><span class="st">"detailed"</span>,theta<span class="op">=</span><span class="fl">230</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pred_unpenalized</span>, ptype <span class="op">=</span> <span class="st">"cross"</span>, ticktype<span class="op">=</span><span class="st">"detailed"</span>, theta<span class="op">=</span><span class="fl">230</span>,</span>
 <span>        xlab <span class="op">=</span> <span class="st">"lag"</span>, ylab <span class="op">=</span> <span class="st">"temperature"</span>, zlab <span class="op">=</span> <span class="st">"RR"</span>,</span>
 <span>        ltheta<span class="op">=</span><span class="fl">200</span>,phi<span class="op">=</span><span class="fl">30</span>,lphi<span class="op">=</span><span class="fl">30</span>,</span>
 <span>        nticks <span class="op">=</span> <span class="fl">4</span>, shade <span class="op">=</span> <span class="fl">0.75</span>,r<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>,d<span class="op">=</span><span class="fl">5</span>,cex.axis<span class="op">=</span><span class="fl">0.5</span>, cex.lab<span class="op">=</span><span class="fl">0.5</span>,border<span class="op">=</span><span class="cn">NA</span><span class="op">)</span></span></code></pre></div>
@@ -352,7 +352,7 @@ the order of the penalty needs to be supplied in the argument
 <code>arg</code> of <code><a href="../reference/sm.html">sm()</a></code>. Note that, by default, an
 additional lag penalty is specified, on top of the P-splines penalties,
 to encourage shrinkage towards a null effect at longer lags. To disable
-this penalty, specify <code>add.legpen</code>= “FALSE” within the
+this penalty, specify <code>add.lagpen</code>= “FALSE” within the
 <code>arg</code> argument.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fit a penalized DLNM</span></span>
@@ -471,7 +471,7 @@ which are the estimated hyperparameters (penalties):</p>
 <code class="sourceCode R"><span><span class="va">pred_penalized</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pred_crossbasis.html">pred_crossbasis</a></span><span class="op">(</span></span>
 <span>  basis <span class="op">=</span> <span class="va">basis.max_pen</span>,</span>
 <span>  model <span class="op">=</span> <span class="va">model_penalized</span>,</span>
-<span>  at_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">22</span>,<span class="fl">30</span>,length <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>,</span>
+<span>  at_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">22</span>, <span class="fl">30</span>, length <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>,</span>
 <span>  cen <span class="op">=</span> <span class="fl">25</span>,</span>
 <span>  lag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">14</span><span class="op">)</span>,</span>
 <span>  CI <span class="op">=</span> <span class="cn">TRUE</span></span>
@@ -494,7 +494,7 @@ which are the estimated hyperparameters (penalties):</p>
 <span>        ltheta<span class="op">=</span><span class="fl">200</span>,phi<span class="op">=</span><span class="fl">30</span>,lphi<span class="op">=</span><span class="fl">30</span>,</span>
 <span>        nticks <span class="op">=</span> <span class="fl">4</span>, shade <span class="op">=</span> <span class="fl">0.75</span>,r<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>,d<span class="op">=</span><span class="fl">5</span>,cex.axis<span class="op">=</span><span class="fl">0.5</span>, cex.lab<span class="op">=</span><span class="fl">0.5</span>,border<span class="op">=</span><span class="cn">NA</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_dlnmlps_files/figure-html/unnamed-chunk-19-5.png" class="r-plt" alt="" width="576"></p>
-<p>One of the advantages of Bayesian modelling, is that uncertainty
+<p>One of the advantages of Bayesian modelling is that uncertainty
 quantification can easily be obtained. We already illustrated how to
 request exceedance probabilities, but also attributable risks can be
 calculated within a DLNM framework <span class="citation">(Gasparrini
@@ -511,7 +511,8 @@ of cases (over all Districts), we can use:</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span></span>
 <span>    Tmax <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Tmax</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    dtot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">dtot</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
+<span>  <span class="op">)</span><span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Calculate attributable risk</span></span>
 <span><span class="va">af2007</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/attributable_risk.html">attributable_risk</a></span><span class="op">(</span></span>

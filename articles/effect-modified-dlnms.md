@@ -8,7 +8,7 @@ library(dlnmLPS)
 ## Introduction
 
 Classical distributed lag non-linear models (DLNMs) assume a common
-exposure-lag-response relationships across geographical areas. However,
+exposure-lag-response relationship across geographical areas. However,
 this relationship might be altered by an effect modifier that differs
 between spatial units. For example, the relationship between temperature
 and mortality may differ between regions according to the deprivation
@@ -88,7 +88,7 @@ modification. In this example, we will fit four different models:
 
 - **Smooth unpenalized effect modification**, a penalized DLNM modified
   by a continuous deprivation index, expressed by natural splines using
-  2 knots (on the 10% and 90% percentile);
+  2 knots (on the 10th and 90th percentile);
 
 - **Smooth penalized effect modification**, a penalized DLNM modified by
   a continuous deprivation index, expressed by penalized splines using 5
@@ -177,7 +177,7 @@ index using penalized splines:
 
 ``` r
 
-# Fit an penalized smooth modified DLNM
+# Fit a penalized smooth modified DLNM
 model4 <- dlnmLPS(dtot ~ factor(dow) + sm(depriv, arg = list(type = "ps", df = 5, pen = 2)) +
                         sm(basis.max_pen, arg = list(pen = 2),
                            by = depriv, arg.by = list(type = "ps", df = 5, pen = 2)) +
@@ -216,10 +216,10 @@ model4$DIC; model4$WAIC; -sum(log(model4$CPO))
 
 The fourth model is preferred based on all model selection criteria.
 Using this model, we predict the exposure-lag-response curve for three
-different levels of the deprivation index (2.5%, 50% and 97.5%) at
-temperatures between 22 and 30 degrees Celsius, relative to a centering
-value of 25 degrees. We also request the probability that the logarithm
-of the relative risk exceeds 0:
+different levels of the deprivation index (2.5th, 50th and 97.5th
+percentile) at temperatures between 22 and 30 degrees Celsius, relative
+to a centering value of 25 degrees. We also request the probability that
+the logarithm of the relative risk exceeds 0:
 
 ``` r
 
@@ -258,7 +258,7 @@ extract_predictions(pred_penalized, slice_x = c(22,30), slice_lag = c(0,2),
 ```
 
 To plot the exposure-response relationship at lag 0, 3 and 8 for the
-2.5%, 50% and 97.5% percentile deprivation indices, we can use:
+2.5th, 50th and 97.5th percentile deprivation indices, we can use:
 
 ``` r
 
@@ -275,7 +275,7 @@ visualizing the results for different levels of the deprivation index on
 one plot. Note that this option is only available for an integer (and
 not a vector) slice value or overall RR-curve. Furthermore, the option
 `slice_by` allows to specify only a subset of the predicted `by`-values.
-For example, if we only want to plot the 2.5% and 97.5% deprivation
+For example, if we only want to plot the 2.5th and 97.5th deprivation
 percentiles, we can use:
 
 ``` r
@@ -297,8 +297,8 @@ plot(pred_penalized, slice_by = round(quantile(dataset$depriv, probs = c(0.025,0
 ![](effect-modified-dlnms_files/figure-html/unnamed-chunk-13-2.png)
 
 At high temperatures, there is some evidence that the overall RR is
-lower for municipalities with a low deprivation index. A contour plot of
-the exposure-lag-response relationship can also be made for different
+lower for districts with a low deprivation index. A contour plot of the
+exposure-lag-response relationship can also be made for different
 deprivation levels:
 
 ``` r
@@ -316,7 +316,8 @@ deaths, and the backward perspective, we get:
 
 # Calculate exposure and outcome timeseries
 data2007_district <- dataset |>
-  dplyr::filter(year == 2007) 
+  dplyr::filter(year == 2007) |>
+  dplyr::arrange(District, date)
 
 # Calculate attributable risk
 af2007_district <- attributable_risk(
@@ -334,7 +335,7 @@ af2007_district <- attributable_risk(
 
 We could for example also calculate a counterfactual attributable
 fraction, in which the deprivation index in every area is equal to the
-2.5% deprivation percentile.
+2.5th deprivation percentile.
 
 ``` r
 
@@ -396,12 +397,12 @@ ggplot2::ggplot(af_plot_df, ggplot2::aes(x = estimate, y = ID, colour = scenario
 
 ![](effect-modified-dlnms_files/figure-html/unnamed-chunk-17-1.png)
 
-It can be seen that a lower deprivation index, would result in a lower
+It can be seen that a lower deprivation index would result in a lower
 attributable fraction for some districts.
 
 ## Summary
 
-In this vignette, we introduced the effect modifying functionality of
+In this vignette, we introduced the effect-modification functionality of
 `dlnmLPS`. We demonstrated how to fit four different models, differing
 in the flexibility of the effect modification. We used penalized splines
 to showcase the functionality of the package but similar models can be

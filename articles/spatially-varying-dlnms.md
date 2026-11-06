@@ -19,7 +19,7 @@ climate, land use or other local factors.
 non-linear models, allowing the exposure-lag-response association to
 differ between spatial locations (Rutten et al. 2026). This provides a
 flexible framework for investigating both the exposure-response
-relationship, as well as geographical variation.
+relationship and geographical variation.
 
 In this vignette, we demonstrate how to fit spatially varying DLNMs
 using `dlnmLPS`. We subsequently show how to obtain and visualize the
@@ -192,7 +192,7 @@ model_typeII$DIC; model_typeII$WAIC; -sum(log(model_typeII$CPO))
 #> [1] 30385.72
 #> [1] 15192.82
 model_typeIII$DIC; model_typeIII$WAIC; -sum(log(model_typeIII$CPO))
-#> [1] 30375.75
+#> [1] 30375.74
 #> [1] 30377.85
 #> [1] 15188.8
 model_typeIV$DIC; model_typeIV$WAIC; -sum(log(model_typeIV$CPO))
@@ -204,7 +204,7 @@ model_typeIV$DIC; model_typeIV$WAIC; -sum(log(model_typeIV$CPO))
 Model Type IV is preferred based on all model selection criteria. To
 make predictions for temperatures between 22 degrees Celsius and 30
 degrees Celsius, compared to a reference level of 25 degrees, and for
-the all districts, we use:
+all districts, we use:
 
 ``` r
 
@@ -225,7 +225,7 @@ probabilities. To extract specific predictions of interest, we can use
 the wrapper function
 [`extract_predictions()`](https://rutten-sara.github.io/dlnmLPS/reference/extract_predictions.md).
 For example, if we want to extract the overall RRs at 30 degrees and for
-the first fourth districts, we can use:
+the first four districts, we can use:
 
 ``` r
 
@@ -274,7 +274,7 @@ plot(pred_penalized, slice_x = 30, ptype = "slices", CI = FALSE, xlab = "lag", y
 
 ![](spatially-varying-dlnms_files/figure-html/unnamed-chunk-12-1.png)
 
-The overall cumulative relationship, can be visualized for all districts
+The overall cumulative relationship can be visualized for all districts
 using:
 
 ``` r
@@ -286,7 +286,7 @@ plot(pred_penalized, ptype = "overall", CI = FALSE, xlab = "temperature", ylab =
 ![](spatially-varying-dlnms_files/figure-html/unnamed-chunk-13-1.png)
 
 Moreover, the overall RR for all districts at a temperature value of 30
-degrees Celsius, could also be presented on a map:
+degrees Celsius could also be presented on a map:
 
 ``` r
 
@@ -294,7 +294,7 @@ shapefile_bcn$rr <- sapply(pred_penalized, function(x) x$allRRfit[x$x == 30])
 tmap::tm_shape(shapefile_bcn) +
   tmap::tm_polygons(
     fill = "rr",
-    fill.scale = tmap::tm_scale_continuous(midpoint = 0,
+    fill.scale = tmap::tm_scale_continuous(midpoint = 1,
       values = hcl.colors(7, palette = "RdYlBu", rev = TRUE)),
     fill.legend = tmap::tm_legend(title = "RR at 30°C")
   )
@@ -333,7 +333,8 @@ backward perspective, we get:
 
 # Calculate exposure and outcome timeseries
 data2007_district <- dataset |>
-  dplyr::filter(year == 2007) 
+  dplyr::filter(year == 2007) |>
+  dplyr::arrange(District, date)
 
 # Calculate attributable risk
 af2007_district <- attributable_risk(
