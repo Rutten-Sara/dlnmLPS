@@ -49,7 +49,7 @@ with examples illustrating how to specify and fit different models.
 ## Installation
 
 The development version of `dlnmLPS`, can be installed from the
-private GitHub repository using:
+GitHub repository using:
 
 ```r
 # install.packages("remotes")
