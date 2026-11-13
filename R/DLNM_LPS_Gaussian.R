@@ -5,6 +5,8 @@ dlnmLPS_Gaussian <- function(model,
                   offset,
                   model.comparison,
                   refit,
+                  maxit,
+                  maxit.hyper,
                   base_env){
 
 
@@ -144,6 +146,24 @@ dlnmLPS_Gaussian <- function(model,
     Wcb <- Reduce(Matrix::cbind2, Wcb_blocks)
   }
 
+  # Names elements
+  n_cols <- vapply(Wcb_blocks, ncol, integer(1))
+  end_idx <- cumsum(n_cols)
+  start_idx <- end_idx - n_cols + 1
+
+  block_indices <- Map(
+    seq.int,
+    start_idx,
+    end_idx
+  )
+
+  Wcb_indices <- lapply(
+    unique(names(Wcb_blocks)),
+    function(nm) unlist(block_indices[names(Wcb_blocks) == nm])
+  )
+
+  names(Wcb_indices) <- unique(names(Wcb_blocks))
+
   rm(Wcb_blocks)
 
   pen_dlnm <- setup$pen_dlnm
@@ -171,6 +191,11 @@ dlnmLPS_Gaussian <- function(model,
                                    x = constants$zeta), "generalMatrix")
 
     }), Pv.list)
+
+    Wcb_indices <- lapply(Wcb_indices, function(x) x + 1)
+    Wcb_indices <- c(list("intercept" = 1), Wcb_indices)
+    types_term <- c("intercept", types_term)
+    sm_list <- c(list(NULL), sm_list)
   }
 
 
@@ -269,12 +294,20 @@ dlnmLPS_Gaussian <- function(model,
       }
 
       # Mode a posteriori estimate of v
-      v_mode <- stats::optim(par = v_init,
+      opt_result <- stats::optim(par = v_init,
                              fn = log_pv,
                              xi = xi_init,
                              error_y = error_y_init,
-                             method="Nelder-Mead",
-                             control = list(fnscale = -1, reltol = 1e-8))$par
+                             method="BFGS",
+                             control = list(fnscale = -1, reltol = 1e-8,
+                                            maxit = maxit.hyper))
+      if(refit == 0){
+        if(opt_result$convergence !=0){
+          warning("Hyperparameter optimization did not converge")
+        }
+      }
+
+      v_mode <- opt_result$par
 
       # Estimate of xi (regression parameter)
       rm(Qv_init)
@@ -304,12 +337,21 @@ dlnmLPS_Gaussian <- function(model,
           error_y_mode <- y-offset-as.numeric(Wcb%*%xi_mode)
 
 
-          v_mode <- stats::optim(par = v_mode,
+          opt_result <- stats::optim(par = v_mode,
                                  fn = log_pv,
                                  xi = xi_mode,
                                  error_y = error_y_mode,
                                  method="BFGS",
-                                 control = list(fnscale = -1, reltol = 1e-8))$par
+                                 control = list(fnscale = -1, reltol = 1e-8,
+                                                maxit = maxit.hyper))
+
+          if(refit_iter == refit){
+            if(opt_result$convergence !=0){
+              warning("Hyperparameter optimization did not converge")
+            }
+          }
+
+          v_mode = opt_result$v_mode
 
 
           Qv_mode <- Qv(v_mode)
@@ -380,6 +422,7 @@ dlnmLPS_Gaussian <- function(model,
                    "xi_mode" = xi_mode,
                    "Prec" = Prec,
                    "Xpred" = Wcb,
+                   "indices_terms" = Wcb_indices,
                    "y" = y,
                    "offset"= offset,
                    "smooth" = sm_list,

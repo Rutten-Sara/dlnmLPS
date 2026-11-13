@@ -19,8 +19,11 @@
 #' @param arg A list specifying additional arguments. The argument
 #'   `arg$type` determines the type of component:
 #'   \describe{
-#'     \item{`crossbasis`}{A penalized or unpenalized DLNM cross-basis.
-#'     Objects of class `crossbasis` are recognized
+#'     \item{`crossbasis`}{A penalized or unpenalized DLNM cross-basis (constructed
+#'     using `ps`, `ns` or `bs`, with the same spline basis type
+#'     for the exposure and lag dimensions). The spline specifications,
+#'     such as degrees of freedom or knot locations, may differ between
+#'     the two dimensions. Objects of class `crossbasis` are recognized
 #'     automatically and therefore do not need to be specified explicitly in
 #'     `arg$type`. The additional argument `pen` can be specified, where
 #'     `NULL` specifies an unpenalized basis and an integer
@@ -40,7 +43,7 @@
 #'     penalty specifications.}
 #'     \item{`ind`, `ICAR`, `Leroux`, `Convolution`}{Random
 #'     effects, including spatial random effects. Additional arguments
-#'     include spatial connectivity information through `map` and
+#'     include spatial connectivity information through `map` (sf-object) and
 #'     `connect` (logical value indicating whether the spatial adjacency
 #'     graph should be connected, defaults to `TRUE`).}
 #'     \item{`rw1`, `rw2`}{First- and second-order random walks.
@@ -71,9 +74,11 @@
 #'     those passed to the corresponding spline constructors, such as
 #'     `df`, `knots`, `intercept`, `Boundary.knots`, `degree`, and
 #'     penalty specifications.}
+#'      \item{`linear`, `factor`}{Linear relationship or according to
+#'      a categorical (factor) variable.}
 #'     \item{`ind`, `ICAR`, `Leroux`}{Random effects, including spatial
 #'     random effects. Additional arguments include spatial connectivity
-#'     information through `map` and `connect` (logical value indicating
+#'     information through `map` (sf-object) and `connect` (logical value indicating
 #'     whether the spatial adjacency graph should be connected, defaults
 #'     to `TRUE`).}
 #'     \item{`rw1`, `rw2`}{First- and second-order random walks.

@@ -182,7 +182,7 @@ pred_penalized <- pred_crossbasis(
 We can again extract specific predictions of interest using `extract_predictions()`. For example, if we want to extract the lag-specific RRs at the first three `x` and `y` combinations, we can use:
 
 ```{r}
-extract_predictions(pred_penalized, slice_x = df$x[1:3], slice_y = df$y[1:3], ptype = "allRRfit")
+extract_predictions(pred_penalized, slice_x = df$x[1:3], slice_y = df$y[1:3], ptype = "matRRfit")
 ```
 
 A contour plot and 3D plot of the overall cumulative RR can be made:

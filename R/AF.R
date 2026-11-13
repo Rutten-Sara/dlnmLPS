@@ -259,11 +259,14 @@ attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, 
   rhs <-  model$model[[3]]
   all_terms <- split_terms(rhs)
 
-  index_term <- grepl(gsub("\\s+", "", deparse(substitute(basis))),
-                      gsub("\\s+", "", all_terms),
-                      fixed = TRUE)
+  index_term <- deparse(substitute(basis))==
+    names(model$indices_terms)
 
-  kind_term <- model$types[which(index_term)-1]
+  if(is.null(index_term)){
+    stop("Name of the basis does not match a model term.")
+  }
+
+  kind_term <- model$types[which(index_term)]
 
   if(kind_term %in% c("spatial DLNM", "joint spatial DLNM")){
     group = by
@@ -353,9 +356,8 @@ attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, 
   }
 
   # Extract the model
-    index <- grepl(gsub("\\s+", "", deparse(substitute(basis))),
-                   gsub("\\s+", "", colnames(model$Xpred)),
-                   fixed = TRUE)
+  index <- unname(unlist(model$indices_terms[deparse(substitute(basis))==
+                                               names(model$indices_terms)]))
 
     coef <- model$xi_mode
     Prec <- model$Prec
@@ -391,12 +393,12 @@ attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, 
 
 
     dim_basis <- ncol(basis)
-    ind_cb <- which(index)[1:dim_basis]
+    ind_cb <- index[1:dim_basis]
     xi_mode_cb = coef[ind_cb]
 
     # Effect-modified basis: interaction with effect-modification
     if (kind_term %in% c("modified DLNM", "joint modified DLNM")){
-      type_smooth <- model$smooth[[which(index_term)-1]]
+      type_smooth <- model$smooth[[which(index_term)]]
       output = list()
 
       if("ns" %in% class(type_smooth)){
@@ -416,8 +418,9 @@ attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, 
       } else if (!is.null(attributes(type_smooth)$Dimnames[[1]])){
         z = NULL
         for(by.value in 1:length(by)){
-          index_by <- grepl(by[by.value], attributes(type_smooth)$Dimnames[[2]],
-                     fixed = TRUE)
+          by_options <- sub(".*?as.factor\\(sm_args_iter\\$by\\)", "",
+                            attributes(type_smooth)$Dimnames[[2]], perl = TRUE)
+          index_by <- by[by.value] == by_options
           z_part <-rep(0,length(attributes(type_smooth)$Dimnames[[2]]))
           z_part[index_by] =1
           z <- rbind(z,matrix(z_part, nrow = 1))
@@ -465,11 +468,15 @@ attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, 
       dlist <- split(data_list, data_list$group)
       output_list = list()
 
+      # Names matching
+      name_x <- deparse(normalize_sm_call(all_terms[[which(index_term)]])$x)
+      name_by <- deparse(normalize_sm_call(all_terms[[which(index_term)]])$by)
+      names_districts <- unname(extract_areas(colnames(model$Xpred)[index[-(1:dim_basis)]],
+                                              name_x,name_by ))
       for(i in unique(names(dlist))){
-        ind_spat_ID <- grepl(i, colnames(model$Xpred),
-                             fixed = TRUE)
+        ind_spat_ID <- names_districts == as.character(i)
 
-        ind_spat <- index & ind_spat_ID
+        ind_spat <- intersect(index, index[dim_basis]+which(ind_spat_ID))
 
         xi_mode_cb_spat_i = coef[ind_spat]
         ##########################
@@ -537,12 +544,11 @@ attributable_risk <- function(basis, cases, model, cen, x, y = NULL, by = NULL, 
 
     if(kind_term %in% c("spatial DLNM", "joint spatial DLNM")){
       for(i in names(output_list)){
-        ind_spat_ID <- grepl(i, colnames(model$Xpred),
-                             fixed = TRUE)
+        ind_spat_ID <- names_districts == as.character(i)
 
         afsim <- apply(coefsim,2, function(coefi) {
 
-          ind_cb_spat_af <-  index & ind_spat_ID
+          ind_cb_spat_af <-  intersect(index, index[dim_basis]+which(ind_spat_ID))
           coefi <- c(coefi[ind_cb],coefi[ind_cb_spat_af])
 
 

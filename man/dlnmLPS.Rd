@@ -11,7 +11,9 @@ dlnmLPS(
   model.comparison = list(DIC = FALSE, WAIC = FALSE, CPO = FALSE),
   family = "Gaussian",
   Ntrials = NULL,
-  refit = 0
+  refit = 0,
+  maxit = 500,
+  maxit.hyper = 1000
 )
 }
 \arguments{
@@ -38,6 +40,12 @@ distribution (default) or \code{Bernoulli}/\code{Binomial} for binary data.}
 \item{refit}{Optional number of additional model refinement iterations. Each
 iteration updates the coefficient and hyperparameter estimates based on the
 previous iteration. Default is \code{0}.}
+
+\item{maxit}{The maximum number of iterations in the optimization of
+the model parameters.}
+
+\item{maxit.hyper}{The maximum number of iterations in the optimization of
+the model hyperparameters.}
 }
 \value{
 A list of class \code{"dlnmLPS"}. See \link{dlnmLPS_Object} for a description of

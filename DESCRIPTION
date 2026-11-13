@@ -39,4 +39,5 @@ Depends:
     R (>= 4.1.0)
 LazyData: true
 VignetteBuilder: knitr
-URL: https://rutten-sara.github.io/dlnmLPS/
+URL: https://rutten-sara.github.io/dlnmLPS/, https://github.com/rutten-sara/dlnmLPS
+BugReports: https://github.com/rutten-sara/dlnmLPS/issues

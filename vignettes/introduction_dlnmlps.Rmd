@@ -199,7 +199,7 @@ Note that credible intervals cannot be requested for 3D plots or contour plots.
 ## Fitting a penalized DLNM
 Flexible basis functions can describe more complex exposure-lag-response relationships, but an overly flexible model can also result in overfitting. Penalization provides a way to control the smoothness of the estimated association. In `dlnmLPS`, penalized DLNMs are estimated using Laplacian P-splines.
 
-A penalized DLNM can be fitted similarly as an unpenalized DLNM, but the order of the penalty needs to be supplied in the argument `arg` of `sm()`. Note that, by default, an additional lag penalty is specified, on top of the P-splines penalties, to encourage shrinkage towards a null effect at longer lags. To disable this penalty, specify `add.lagpen`= "FALSE" within the `arg` argument.
+A penalized DLNM can be fitted similarly as an unpenalized DLNM, but the order of the penalty needs to be supplied in the argument `arg` of `sm()`. Note that, by default, an additional lag penalty is specified, on top of the P-splines penalties, to encourage shrinkage towards a null effect at longer lags. To disable this penalty, specify `add.lagpen`= FALSE within the `arg` argument.
 
 ```{r}
 # Fit a penalized DLNM
@@ -241,7 +241,7 @@ plot(pred_penalized, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, xlab = "
 plot(pred_penalized, slice_x = 30, ptype = "slices", CI = TRUE, xlab = "lag", ylab = "RR")
 plot(pred_penalized, ptype = "overall", CI = TRUE, xlab = "temperature", ylab = "RR")
 contour(pred_penalized, ptype = "cross", xlab = "lag", ylab = "temperature")
-plot(pred_unpenalized, ptype = "cross", ticktype="detailed",theta=230,
+plot(pred_penalized, ptype = "cross", ticktype="detailed",theta=230,
         xlab = "lag", ylab = "temperature", zlab = "RR",
         ltheta=200,phi=30,lphi=30,
         nticks = 4, shade = 0.75,r=sqrt(3),d=5,cex.axis=0.5, cex.lab=0.5,border=NA)
@@ -363,7 +363,7 @@ model_penalized$DIC; model_penalized$WAIC; -sum(log(model_penalized$CPO))
 
 ## Spatial and temporal random effects
 
-Through a smooth function `sm()`, we can also include spatial and temporal random effects. An area-specific random effect can be included independently (`type` = "ind") or spatially structured (`type` = "Leroux", `type` = "ICAR" or `type` = "BYM"). In case of spatially structured random effects, a map with the spatial structure can be supplied through `map` within the `arg` argument. A first or second order random walk on time can also be supplied through `type` = "rw1" or `type` = "rw2".
+Through a smooth function `sm()`, we can also include spatial and temporal random effects. An area-specific random effect can be included independently (`type` = "ind") or spatially structured (`type` = "Leroux", `type` = "ICAR" or `type` = "Convolution"). In case of spatially structured random effects, a map with the spatial structure can be supplied through `map` within the `arg` argument. A first or second order random walk on time can also be supplied through `type` = "rw1" or `type` = "rw2".
 
 A time-varying spatial random effect or spatially-varying time random effect can also be requested using the arguments `by` and `arg.by`.
 

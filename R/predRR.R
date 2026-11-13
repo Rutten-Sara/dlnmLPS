@@ -59,8 +59,13 @@
 #'   \item{allRRfit}{Matrix of exponentiated associations from `allfit`.}
 #'   \item{Qlower_allRRfit}{Matrix of exponentiated bounds from `Qlower_allfit`.}
 #'   \item{Qupper_allRRfit}{Matrix of exponentiated bounds from `Qupper_allfit`.}
-#'   \item{exc_prob_matfit}{Matrix of exceedance probabilities for matfit, if requested.}
-#'   \item{exc_prob_allfit}{Vector of exceedance probabilities for allfit, if requested.}
+#'   \item{exc.prob_matfit}{Matrix of exceedance probabilities for matfit, if requested.}
+#'   \item{exc.prob_allfit}{Vector of exceedance probabilities for allfit, if requested.}
+#'   \item{x}{Exposure values at_x.}
+#'   \item{y}{Exposure values at_y.}
+#'   \item{lag}{Lag range.}
+#'   \item{by}{Level or value of the `by` variable (if applicable).}
+#'   \item{family}{The distribution family of the model.}
 #' }
 #'
 #' @examples
@@ -265,19 +270,21 @@ pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag = NULL, by
 
   constraint_matrix <- model$constraints
 
-  index <- grepl(gsub("\\s+", "", deparse(substitute(basis))),
-                 gsub("\\s+", "", colnames(model$Xpred)),
-                 fixed = TRUE)
+  index <- unname(unlist(model$indices_terms[deparse(substitute(basis))==
+                                               names(model$indices_terms)]))
 
+
+  if(is.null(index)){
+    stop("Name of the basis does not match a model term.")
+  }
 
   rhs <-  model$model[[3]]
   all_terms <- split_terms(rhs)
 
-  index_term <- grepl(gsub("\\s+", "", deparse(substitute(basis))),
-                 gsub("\\s+", "", all_terms),
-                 fixed = TRUE)
+  index_term <- deparse(substitute(basis))==
+    names(model$indices_terms)
 
-  kind_term <- model$types[which(index_term)-1]
+  kind_term <- model$types[which(index_term)]
 
   dim_basis <- ncol(basis)
 
@@ -296,7 +303,7 @@ pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag = NULL, by
 
 
 
-  ind_cb <- which(index)[1:dim_basis]
+  ind_cb <- index[1:dim_basis]
   xi_mode_cb = mode[ind_cb]
 
 
@@ -480,15 +487,19 @@ pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag = NULL, by
 
     ind.cb_spat_list = list()
 
+    # Names matching
+    name_x <- deparse(normalize_sm_call(all_terms[[which(index_term)]])$x)
+    name_by <- deparse(normalize_sm_call(all_terms[[which(index_term)]])$by)
+    names_districts <- unname(extract_areas(colnames(model$Xpred)[index[-(1:dim_basis)]],
+      name_x,name_by ))
+
     for(i in factor(by)){
+      ind_spat_ID <- names_districts == as.character(i)
 
-      ind_spat_ID <- grepl(i, colnames(model$Xpred),
-                           fixed = TRUE)
-
-      ind_spat <- index & ind_spat_ID
+      ind_spat <- intersect(index, index[dim_basis]+which(ind_spat_ID))
 
       xi_mode_cb_spat_i = mode[ind_spat]
-      ind.cb_spat_list[[i]] = which(ind_spat)
+      ind.cb_spat_list[[i]] = ind_spat
 
       ##########################
       logpredX <- as.numeric(Xpred_full %*% c(xi_mode_cb, xi_mode_cb_spat_i))
@@ -567,7 +578,7 @@ pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag = NULL, by
 
 
   } else if (kind_term %in% c("modified DLNM", "joint modified DLNM")){
-    type_smooth <- model$smooth[[which(index_term)-1]]
+    type_smooth <- model$smooth[[which(index_term)]]
     output = list()
 
     for(by.value in 1:length(by)){
@@ -587,8 +598,9 @@ pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag = NULL, by
                                   degree = attributes(type_smooth)$degree,
                                   intercept = attributes(type_smooth)$intercept))
     } else if (!is.null(attributes(type_smooth)$Dimnames[[1]])){
-      index_by <- grepl(by[by.value], attributes(type_smooth)$Dimnames[[2]],
-                        fixed = TRUE)
+      by_options <- sub(".*?as.factor\\(sm_args_iter\\$by\\)", "",
+                        attributes(type_smooth)$Dimnames[[2]], perl = TRUE)
+      index_by <- by[by.value] == by_options
       arg.by <-rep(0,length(attributes(type_smooth)$Dimnames[[2]]))
       arg.by[index_by] =1
       arg.by <- matrix(arg.by, nrow = 1)
@@ -627,9 +639,9 @@ pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag = NULL, by
 
     if( CI ){
       if(is.null(constraint_matrix)){
-        sd_logpredX <- Predict_se(prec_xi,Xpred_full,which(index))
+        sd_logpredX <- Predict_se(prec_xi,Xpred_full,index)
       }else{
-        sd_logpredX <- Predict_se_con(prec_xi,Xpred_full,which(index), constraint_matrix)
+        sd_logpredX <- Predict_se_con(prec_xi,Xpred_full,index, constraint_matrix)
       }
 
       quantiles <- mapply(function(mean_val, sd_val) {
@@ -655,10 +667,10 @@ pred_crossbasis <- function(basis, model, at_x, at_y = NULL, cen, lag = NULL, by
 
     if(CI | CI.all){
       if(is.null(constraint_matrix)){
-        sd_all <- Predict_se(prec_xi,Xpredall,which(index))
+        sd_all <- Predict_se(prec_xi,Xpredall,index)
 
       }else{
-        sd_all <- Predict_se_con(prec_xi,Xpredall,which(index), constraint_matrix)
+        sd_all <- Predict_se_con(prec_xi,Xpredall,index, constraint_matrix)
       }
       quantiles_all <- mapply(function(mean_val, sd_val) {
         stats::qnorm(p = c((1-ci.level)/2, (1+ci.level)/2), mean = mean_val, sd = sd_val)
@@ -1121,3 +1133,35 @@ extract_predictions_one <- function(x, slice_x = NULL, slice_y = NULL, slice_lag
 
 }
 
+
+
+#' Extraction of area indicators
+#' @noRd
+extract_areas <- function(x, name_x, name_by) {
+  vapply(x, function(s) {
+    start_x <- regexpr(name_x, s, fixed = TRUE)[1]
+
+    if (start_x == -1) return(NA_character_)
+
+    start_colon <- regexpr(
+      ":",
+      substring(s, start_x + nchar(name_x)),
+      fixed = TRUE
+    )[1]
+
+    if (start_colon == -1) return(NA_character_)
+
+    start_by <- regexpr(
+      name_by,
+      substring(s, start_x + nchar(name_x) + start_colon),
+      fixed = TRUE
+    )[1]
+
+    if (start_by == -1) return(NA_character_)
+
+    substring(
+      s,
+      start_x + nchar(name_x) + start_colon + start_by - 1 + nchar(name_by)
+    )
+  }, character(1))
+}

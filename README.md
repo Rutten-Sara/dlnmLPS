@@ -23,7 +23,7 @@ More specifically, `dlnmLPS` can be used to model:
 
 - **distributed lag non-linear associations**, allowing non-linear exposure-response relationships over multiple time lags. DLNMs can be unpenalized (natural splines or B-splines) or penalized (P-splines);
 
-- **random effects**, including independent random effects and spatially structured random effects (ICAR, BYM or Leroux). These random effects can possibly vary over time (according to an independent or random walk structure);
+- **random effects**, including independent random effects and spatially structured random effects (ICAR, Convolution or Leroux). These random effects can possibly vary over time (according to an independent or random walk structure);
 
 - **temporal random effects**, including first- and second-order random-walk structures. These temporal effects can possibly depend on location (according to an independent, ICAR or Leroux structure);
 
@@ -60,15 +60,25 @@ To install `dlnmLPS` together with its vignettes, containing short tutorials,
 use:
 ```r
 # install.packages("remotes")
-remotes::install_github("Rutten-Sara/dlnmLPS", build_vignettes = TRUE)
+remotes::install_github("Rutten-Sara/dlnmLPS", build_vignettes = TRUE, dependencies = TRUE)
 ```
 
-Afterwards, the vignettes can be requested using:
+Building the vignettes may take a few minutes, depending on your system. Afterwards, 
+the vignettes can be requested using:
 
 ```r
 browseVignettes("dlnmLPS")
 ```
 
+### System requirements
+Installing `dlnmLPS` from source requires a working C++ compiler:
+
+- Windows: Rtools (compatible with your installed R version).
+
+- macOS: Xcode Command Line Tools.
+
+- Linux: A C++ compiler and the system libraries required by the "sf" package 
+(GDAL, GEOS and PROJ).
 
 ## Citation
 

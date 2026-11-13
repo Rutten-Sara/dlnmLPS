@@ -7,7 +7,7 @@
 #' components, such as spatial random effects and random walks. Smooth
 #' covariate effects can be specified using natural splines, P-splines, or
 #' B-splines.
-#'
+#' @import sf
 #' @param model A model formula. Smooth terms specified using [sm] can be
 #'   included on the right-hand side to define random effects, random walks,
 #'   DLNM cross-basis terms, or other smooth functions.
@@ -25,6 +25,10 @@
 #' @param refit Optional number of additional model refinement iterations. Each
 #'   iteration updates the coefficient and hyperparameter estimates based on the
 #'   previous iteration. Default is `0`.
+#' @param maxit The maximum number of iterations in the optimization of
+#'   the model parameters.
+#' @param maxit.hyper The maximum number of iterations in the optimization of
+#'   the model hyperparameters.
 #'
 #' @returns A list of class `"dlnmLPS"`. See [dlnmLPS_Object] for a description of
 #' the returned object and its components.
@@ -207,7 +211,8 @@ dlnmLPS <- function(model,
                          data = NULL,
                          offset = NULL,
                          model.comparison = list(DIC = FALSE, WAIC = FALSE, CPO = FALSE),
-                         family = "Gaussian", Ntrials = NULL, refit = 0){
+                         family = "Gaussian", Ntrials = NULL, refit = 0,
+                         maxit = 500, maxit.hyper = 1000){
 
   model.comparison <- utils::modifyList(
     list(DIC = F, WAIC = F, CPO = F),
@@ -224,6 +229,8 @@ dlnmLPS <- function(model,
                               offset,
                               model.comparison,
                               refit,
+                              maxit,
+                              maxit.hyper,
                               base_env)
   }else if (family %in%  c("Binomial", "binomial", "Bernoulli", "bernoulli")){
     if(family %in% c("Bernoulli", "bernoulli")){
@@ -237,6 +244,8 @@ dlnmLPS <- function(model,
                                 model.comparison,
                                 Ntrials,
                                 refit,
+                                maxit,
+                                maxit.hyper,
                                 base_env)
 
   }else if (family %in% c("NB","nb")){
@@ -245,6 +254,8 @@ dlnmLPS <- function(model,
                              offset,
                              model.comparison,
                              refit,
+                             maxit,
+                             maxit.hyper,
                              base_env)
 
   }else if (family %in% c("Gaussian", "gaussian")){
@@ -253,6 +264,8 @@ dlnmLPS <- function(model,
                          offset,
                          model.comparison,
                          refit,
+                         maxit,
+                         maxit.hyper,
                          base_env)
 
   }else{

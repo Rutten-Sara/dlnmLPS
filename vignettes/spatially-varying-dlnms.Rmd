@@ -71,7 +71,7 @@ In this example, we fit four different types of DLNMs, differing in penalization
 
 We include month as natural splines with 3 degrees of freedom, year as a random walk of order one, day of the week as a factor and District as a random effect.
 
-Fitting all of these models is very similar. First of all, we can fit models of Type I and Type III, by using an unpenalized crossbasis and let it vary by District. Spatially-independent DLNMs can be requested using `fun` = "ind", while Leroux-varying DLNMs can be specified using `fun` = "Leroux". For the latter, a map containing the neighbourhood structure needs to be provided as well. 
+Fitting all of these models is very similar. First of all, we can fit models of Type I and Type III, by using an unpenalized crossbasis and let it vary by District. Spatially-independent DLNMs can be requested using `type` = "ind", while Leroux-varying DLNMs can be specified using `type` = "Leroux". For the latter, a map containing the neighbourhood structure needs to be provided as well. 
 
 ```{r}
 # Fit a spatially varying unpenalized DLNM
@@ -231,7 +231,7 @@ plot(pred_penalized, ptype = "cross", ticktype="detailed",theta=230,
         slice_by = unique(dataset$District)[1:4])
 ```
 
-Similarly, a contour plot could also be made. In general, plots show that differences between the different municipalities in the temperature-mortality relationship are relatively small.
+Similarly, a contour plot could also be made. In general, plots show that differences between the different districts in the temperature-mortality relationship are relatively small.
 
 It's also possible to calculate the region-specific attributable fractions for a specific year, for example 2007. For a spatially-varying DLNM, the output is automatically grouped using the `by` variable, and hence the `group` argument does not need to be specified. Adopting the backward perspective, we get:
 

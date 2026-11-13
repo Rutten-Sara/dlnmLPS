@@ -22,8 +22,11 @@ effects or other structured effects.}
 \item{arg}{A list specifying additional arguments. The argument
 \code{arg$type} determines the type of component:
 \describe{
-\item{\code{crossbasis}}{A penalized or unpenalized DLNM cross-basis.
-Objects of class \code{crossbasis} are recognized
+\item{\code{crossbasis}}{A penalized or unpenalized DLNM cross-basis (constructed
+using \code{ps}, \code{ns} or \code{bs}, with the same spline basis type
+for the exposure and lag dimensions). The spline specifications,
+such as degrees of freedom or knot locations, may differ between
+the two dimensions. Objects of class \code{crossbasis} are recognized
 automatically and therefore do not need to be specified explicitly in
 \code{arg$type}. The additional argument \code{pen} can be specified, where
 \code{NULL} specifies an unpenalized basis and an integer
@@ -43,7 +46,7 @@ those passed to the corresponding spline constructors, such as
 penalty specifications.}
 \item{\code{ind}, \code{ICAR}, \code{Leroux}, \code{Convolution}}{Random
 effects, including spatial random effects. Additional arguments
-include spatial connectivity information through \code{map} and
+include spatial connectivity information through \code{map} (sf-object) and
 \code{connect} (logical value indicating whether the spatial adjacency
 graph should be connected, defaults to \code{TRUE}).}
 \item{\code{rw1}, \code{rw2}}{First- and second-order random walks.
@@ -76,9 +79,11 @@ natural splines, or B-splines. Additional arguments can include
 those passed to the corresponding spline constructors, such as
 \code{df}, \code{knots}, \code{intercept}, \code{Boundary.knots}, \code{degree}, and
 penalty specifications.}
+\item{\code{linear}, \code{factor}}{Linear relationship or according to
+a categorical (factor) variable.}
 \item{\code{ind}, \code{ICAR}, \code{Leroux}}{Random effects, including spatial
 random effects. Additional arguments include spatial connectivity
-information through \code{map} and \code{connect} (logical value indicating
+information through \code{map} (sf-object) and \code{connect} (logical value indicating
 whether the spatial adjacency graph should be connected, defaults
 to \code{TRUE}).}
 \item{\code{rw1}, \code{rw2}}{First- and second-order random walks.

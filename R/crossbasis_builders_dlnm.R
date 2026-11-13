@@ -26,7 +26,7 @@ build_component_dlnm<-function(state, sm_args_iter, term, all_terms, constants){
     colnames(Wcb_part), sep = ""
   )
 
-  Wcb <- add_wcb_block(Wcb, Wcb_part)
+  Wcb <- add_wcb_block(Wcb, Wcb_part, deparse(normalize_sm_call(all_terms[[term]])$x))
   constraint_matrix[[term]] <- Matrix::Matrix(0,1,ncol(Wcb_part))
 
   penorder <- sm_args_iter$arg$pen
@@ -43,14 +43,14 @@ build_component_dlnm<-function(state, sm_args_iter, term, all_terms, constants){
 
     # Penalty for exposure
     Dx <- Matrix::Diagonal(vx+1, x = NULL)
-    for (k in 1:penorder) Dx <- Matrix::diff(Dx)
+    for (k in seq_len(penorder)) Dx <- Matrix::diff(Dx)
     Px <- Matrix::t(Dx) %*% Dx
     Px <- Px[-1,-1]
     Px <- Px + Matrix::Diagonal(vx, x = 1e-12)
 
     # Penalty for lag variable
     Dl <- Matrix::Diagonal(vl, x = NULL)
-    for (k in 1:penorder) Dl <- Matrix::diff(Dl)
+    for (k in seq_len(penorder)) Dl <- Matrix::diff(Dl)
     Pl <- Matrix::t(Dl) %*% Dl
     Pl <- Pl + Matrix::Diagonal(vl, x = 1e-12)
 
@@ -145,7 +145,7 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
     colnames(Wcb_part), sep = ""
   )
 
-  Wcb <- add_wcb_block(Wcb, Wcb_part)
+  Wcb <- add_wcb_block(Wcb, Wcb_part, deparse(normalize_sm_call(all_terms[[term]])$x))
   penorder <- sm_args_iter$arg$pen
   add_lag_penalty <- sm_args_iter$arg$add.lagpen
   lag_penalty <- sm_args_iter$arg$lagpen
@@ -177,7 +177,8 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
 
 
   # Global design matrix
-  Wcb <- add_wcb_block(Wcb, interaction_matrix)
+  Wcb <- add_wcb_block(Wcb, interaction_matrix,
+                       deparse(normalize_sm_call(all_terms[[term]])$x))
 
   rm(crossbasis_spat, Mat_crossbasis_spat, Z.rand_spat, interaction_matrix)
 
@@ -190,14 +191,14 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
 
     # Penalty for exposure
     Dx <- Matrix::Diagonal(vx+1, x = NULL)
-    for (k in 1:penorder) Dx <- Matrix::diff(Dx)
+    for (k in seq_len(penorder)) Dx <- Matrix::diff(Dx)
     Px <- Matrix::t(Dx) %*% Dx
     Px <- Px[-1,-1]
     Px <- Px + Matrix::Diagonal(vx, x = 1e-12)
 
     # Penalty for lag variable
     Dl <- Matrix::Diagonal(vl, x = NULL)
-    for (k in 1:penorder) Dl <- Matrix::diff(Dl)
+    for (k in seq_len(penorder)) Dl <- Matrix::diff(Dl)
     Pl <- Matrix::t(Dl) %*% Dl
     Pl <- Pl + Matrix::Diagonal(vl, x = 1e-12)
 
@@ -281,7 +282,9 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
     constraint_matrix[[term]] <- Matrix::Matrix(0,1,ncol(Wcb_part)*(1+q.rand))
 
     } else if (sm_args_iter$arg.by$type == "ICAR"){
-      neig.map <- build_neighbor_map(sm_args_iter$arg.by$map, connect = sm_args_iter$arg.by$connect)
+      map_build <- prepare_spatial_data(map = sm_args_iter$arg.by$map,region = sm_args_iter$by,
+                                        id_col = deparse(normalize_sm_call(all_terms[[term]])$by))
+      neig.map <- build_neighbor_map(map_build, connect = sm_args_iter$arg.by$connect)
       Rn <- make_graph_precision(neig.map, q.rand)
 
       if(add_lag_penalty){
@@ -327,7 +330,9 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
 
 
     }  else if (sm_args_iter$arg.by$type == "Leroux"){
-      neig.map <- build_neighbor_map(sm_args_iter$arg.by$map, connect = sm_args_iter$arg.by$connect)
+      map_build <- prepare_spatial_data(map = sm_args_iter$arg.by$map,region = sm_args_iter$by,
+                                        id_col = deparse(normalize_sm_call(all_terms[[term]])$by))
+      neig.map <- build_neighbor_map(map_build, connect = sm_args_iter$arg.by$connect)
       Rn <- make_graph_precision(neig.map, q.rand)
 
       if(add_lag_penalty){
@@ -417,7 +422,9 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
         constraint_matrix[[term]] <- Matrix::Matrix(0,1,ncol(Wcb_part)*(1+q.rand))
 
       } else if (sm_args_iter$arg.by$type == "ICAR"){
-        neig.map <- build_neighbor_map(sm_args_iter$arg.by$map, connect = sm_args_iter$arg.by$connect)
+        map_build <- prepare_spatial_data(map = sm_args_iter$arg.by$map,region = sm_args_iter$by,
+                                          id_col = deparse(normalize_sm_call(all_terms[[term]])$by))
+        neig.map <- build_neighbor_map(map_build, connect = sm_args_iter$arg.by$connect)
         Rn <- make_graph_precision(neig.map, q.rand)
 
         Pv2_term <- function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = ncol(sm_args_iter$x), x = NULL)), "generalMatrix")%x%Rn
@@ -443,7 +450,9 @@ build_component_spatialdlnm<-function(state, sm_args_iter, term, all_terms, cons
                                                            dims = c(ncol_Wcb, ncol_Wcb*(1+q.rand)))
 
       }else if (sm_args_iter$arg.by$type == "Leroux"){
-        neig.map <- build_neighbor_map(sm_args_iter$arg.by$map, connect = sm_args_iter$arg.by$connect)
+        map_build <- prepare_spatial_data(map = sm_args_iter$arg.by$map,region = sm_args_iter$by,
+                                          id_col = deparse(normalize_sm_call(all_terms[[term]])$by))
+        neig.map <- build_neighbor_map(map_build, connect = sm_args_iter$arg.by$connect)
         Rn <- make_graph_precision(neig.map, q.rand)
 
         Sv_list <- function(v) {
@@ -517,7 +526,8 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
     colnames(crossbasis_em), sep = ""
   )
 
-  Wcb <- add_wcb_block(Wcb, crossbasis_em)
+  Wcb <- add_wcb_block(Wcb, crossbasis_em,
+                       deparse(normalize_sm_call(all_terms[[term]])$x))
 
   penorder <- sm_args_iter$arg$pen
   add_lag_penalty <- sm_args_iter$arg$add.lagpen
@@ -599,7 +609,8 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
   ))
 
   # Global design matrix
-  Wcb <- add_wcb_block(Wcb, interaction_matrix)
+  Wcb <- add_wcb_block(Wcb, interaction_matrix,
+                       deparse(normalize_sm_call(all_terms[[term]])$x))
   constraint_matrix[[term]] <- Matrix::Matrix(0,1,ncol(interaction_matrix)+ncol(crossbasis_em))
 
   rm(interaction_matrix, crossbasis_em)
@@ -613,14 +624,14 @@ build_component_modifieddlnm<-function(state, sm_args_iter, term, all_terms, con
 
     # Penalty for exposure
     Dx <- Matrix::Diagonal(vx+1, x = NULL)
-    for (k in 1:penorder) Dx <- Matrix::diff(Dx)
+    for (k in seq_len(penorder)) Dx <- Matrix::diff(Dx)
     Px <- Matrix::t(Dx) %*% Dx
     Px <- Px[-1,-1]
     Px <- Px + Matrix::Diagonal(vx, x = 1e-12)
 
     # Penalty for lag variable
     Dl <- Matrix::Diagonal(vl, x = NULL)
-    for (k in 1:penorder) Dl <- Matrix::diff(Dl)
+    for (k in seq_len(penorder)) Dl <- Matrix::diff(Dl)
     Pl <- Matrix::t(Dl) %*% Dl
     Pl <- Pl + Matrix::Diagonal(vl, x = 1e-12)
 
@@ -825,7 +836,7 @@ build_component_2Ddlnm<-function(state, sm_args_iter, term, all_terms, constants
   )
 
   constraint_matrix[[term]] <- Matrix::Matrix(0,1,ncol(Wcb_part))
-  Wcb <- add_wcb_block(Wcb, Wcb_part)
+  Wcb <- add_wcb_block(Wcb, Wcb_part, deparse(normalize_sm_call(all_terms[[term]])$x))
   penorder <- sm_args_iter$arg$pen
   add_lag_penalty <- sm_args_iter$arg$add.lagpen
   lag_penalty <- sm_args_iter$arg$lagpen
@@ -840,20 +851,20 @@ build_component_2Ddlnm<-function(state, sm_args_iter, term, all_terms, constants
 
     # Penalty for exposure 1
     Dx1 <- Matrix::Diagonal(vx1, x = NULL)
-    for (k in 1:penorder) Dx1 <- Matrix::diff(Dx1)
+    for (k in seq_len(penorder)) Dx1 <- Matrix::diff(Dx1)
     Px1 <- Matrix::t(Dx1) %*% Dx1
     Px1 <- Px1 + Matrix::Diagonal(vx1, x = 1e-12)
 
 
     # Penalty for exposure 2
     Dx2 <- Matrix::Diagonal(vx2, x = NULL)
-    for (k in 1:penorder) Dx2 <- Matrix::diff(Dx2)
+    for (k in seq_len(penorder)) Dx2 <- Matrix::diff(Dx2)
     Px2 <- Matrix::t(Dx2) %*% Dx2
     Px2 <- Px2 + Matrix::Diagonal(vx2, x = 1e-12)
 
     # Penalty for lag variable
     Dl <- Matrix::Diagonal(vl, x = NULL)
-    for (k in 1:penorder) Dl <- Matrix::diff(Dl)
+    for (k in seq_len(penorder)) Dl <- Matrix::diff(Dl)
     Pl <- Matrix::t(Dl) %*% Dl
     Pl <- Pl + Matrix::Diagonal(vl, x = 1e-12)
 
@@ -972,7 +983,7 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
     colnames(Wcb_part), sep = ""
   )
 
-  Wcb <- add_wcb_block(Wcb, Wcb_part)
+  Wcb <- add_wcb_block(Wcb, Wcb_part, deparse(normalize_sm_call(all_terms[[term]])$x))
   penorder <- sm_args_iter$arg$pen
   add_lag_penalty <- sm_args_iter$arg$add.lagpen
   lag_penalty <- sm_args_iter$arg$lagpen
@@ -1004,7 +1015,8 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
 
 
   # Global design matrix
-  Wcb <- add_wcb_block(Wcb, interaction_matrix)
+  Wcb <- add_wcb_block(Wcb, interaction_matrix,
+                       deparse(normalize_sm_call(all_terms[[term]])$x))
   rm(interaction_matrix, Z.rand_spat, crossbasis_spat, Mat_crossbasis_spat)
 
   pen_start <- cumsum(pen_dlnm)[term]
@@ -1017,20 +1029,20 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
 
     # Penalty for exposure 1
     Dx1 <- Matrix::Diagonal(vx1, x = NULL)
-    for (k in 1:penorder) Dx1 <- Matrix::diff(Dx1)
+    for (k in seq_len(penorder)) Dx1 <- Matrix::diff(Dx1)
     Px1 <- Matrix::t(Dx1) %*% Dx1
     Px1 <- Px1 + Matrix::Diagonal(vx1, x = 1e-12)
 
 
     # Penalty for exposure 2
     Dx2 <- Matrix::Diagonal(vx2, x = NULL)
-    for (k in 1:penorder) Dx2 <- Matrix::diff(Dx2)
+    for (k in seq_len(penorder)) Dx2 <- Matrix::diff(Dx2)
     Px2 <- Matrix::t(Dx2) %*% Dx2
     Px2 <- Px2 + Matrix::Diagonal(vx2, x = 1e-12)
 
     # Penalty for lag variable
     Dl <- Matrix::Diagonal(vl, x = NULL)
-    for (k in 1:penorder) Dl <- Matrix::diff(Dl)
+    for (k in seq_len(penorder)) Dl <- Matrix::diff(Dl)
     Pl <- Matrix::t(Dl) %*% Dl
     Pl <- Pl + Matrix::Diagonal(vl, x = 1e-12)
 
@@ -1163,7 +1175,9 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
 
 
     } else if (sm_args_iter$arg.by$type == "ICAR"){
-      neig.map <- build_neighbor_map(sm_args_iter$arg.by$map, connect = sm_args_iter$arg.by$connect)
+      map_build <- prepare_spatial_data(map = sm_args_iter$arg.by$map,region = sm_args_iter$by,
+                                        id_col = deparse(normalize_sm_call(all_terms[[term]])$by))
+      neig.map <- build_neighbor_map(map_build, connect = sm_args_iter$arg.by$connect)
       Rn <- make_graph_precision(neig.map, q.rand)
 
       if(add_lag_penalty){
@@ -1233,7 +1247,9 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
 
 
     }  else if (sm_args_iter$arg.by$type == "Leroux"){
-      neig.map <- build_neighbor_map(sm_args_iter$arg.by$map, connect = sm_args_iter$arg.by$connect)
+      map_build <- prepare_spatial_data(map = sm_args_iter$arg.by$map,region = sm_args_iter$by,
+                                        id_col = deparse(normalize_sm_call(all_terms[[term]])$by))
+      neig.map <- build_neighbor_map(map_build, connect = sm_args_iter$arg.by$connect)
       Rn <- make_graph_precision(neig.map, q.rand)
 
       if(add_lag_penalty){
@@ -1349,7 +1365,9 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
         constraint_matrix[[term]] <- Matrix::Matrix(0,1,ncol(Wcb_part)*(1+q.rand))
 
       } else if (sm_args_iter$arg.by$type == "ICAR"){
-        neig.map <- build_neighbor_map(sm_args_iter$arg.by$map, connect = sm_args_iter$arg.by$connect)
+        map_build <- prepare_spatial_data(map = sm_args_iter$arg.by$map,region = sm_args_iter$by,
+                                          id_col = deparse(normalize_sm_call(all_terms[[term]])$by))
+        neig.map <- build_neighbor_map(map_build, connect = sm_args_iter$arg.by$connect)
         Rn <- make_graph_precision(neig.map, q.rand)
 
         Pv2_term <- function(v) methods::as(exp(v[pen_start+1])*(Matrix::Diagonal(n = ncol(sm_args_iter$x), x = NULL)), "generalMatrix")%x%Rn
@@ -1376,7 +1394,9 @@ build_component_spatial2Ddlnm<-function(state, sm_args_iter, term, all_terms, co
                                                            dims = c(ncol_Wcb, ncol_Wcb*(1+q.rand)))
 
       }else if (sm_args_iter$arg.by$type == "Leroux"){
-        neig.map <- build_neighbor_map(sm_args_iter$arg$map, connect = sm_args_iter$arg$connect)
+        map_build <- prepare_spatial_data(map = sm_args_iter$arg.by$map,region = sm_args_iter$by,
+                                          id_col = deparse(normalize_sm_call(all_terms[[term]])$by))
+        neig.map <- build_neighbor_map(map_build, connect = sm_args_iter$arg.by$connect)
         Rn <- make_graph_precision(neig.map, q.rand)
 
 
@@ -1452,7 +1472,8 @@ build_component_modified2Ddlnm<-function(state, sm_args_iter, term, all_terms, c
     colnames(crossbasis_em), sep = ""
   )
 
-  Wcb <- add_wcb_block(Wcb, crossbasis_em)
+  Wcb <- add_wcb_block(Wcb, crossbasis_em,
+                       deparse(normalize_sm_call(all_terms[[term]])$x))
   penorder <- sm_args_iter$arg$pen
   add_lag_penalty <- sm_args_iter$arg$add.lagpen
   lag_penalty <- sm_args_iter$arg$lagpen
@@ -1538,7 +1559,8 @@ build_component_modified2Ddlnm<-function(state, sm_args_iter, term, all_terms, c
   # Global design matrix
   constraint_matrix[[term]] <- Matrix::Matrix(0,1,ncol(crossbasis_em)+ncol(interaction_matrix))
 
-  Wcb <- add_wcb_block(Wcb, interaction_matrix)
+  Wcb <- add_wcb_block(Wcb, interaction_matrix,
+                       deparse(normalize_sm_call(all_terms[[term]])$x))
   rm(interaction_matrix, crossbasis_em)
 
 
@@ -1551,20 +1573,20 @@ build_component_modified2Ddlnm<-function(state, sm_args_iter, term, all_terms, c
 
     # Penalty for exposure 1
     Dx1 <- Matrix::Diagonal(vx1, x = NULL)
-    for (k in 1:penorder) Dx1 <- Matrix::diff(Dx1)
+    for (k in seq_len(penorder)) Dx1 <- Matrix::diff(Dx1)
     Px1 <- Matrix::t(Dx1) %*% Dx1
     Px1 <- Px1 + Matrix::Diagonal(vx1, x = 1e-12)
 
 
     # Penalty for exposure 2
     Dx2 <- Matrix::Diagonal(vx2, x = NULL)
-    for (k in 1:penorder) Dx2 <- Matrix::diff(Dx2)
+    for (k in seq_len(penorder)) Dx2 <- Matrix::diff(Dx2)
     Px2 <- Matrix::t(Dx2) %*% Dx2
     Px2 <- Px2 + Matrix::Diagonal(vx2, x = 1e-12)
 
     # Penalty for lag variable
     Dl <- Matrix::Diagonal(vl, x = NULL)
-    for (k in 1:penorder) Dl <- Matrix::diff(Dl)
+    for (k in seq_len(penorder)) Dl <- Matrix::diff(Dl)
     Pl <- Matrix::t(Dl) %*% Dl
     Pl <- Pl + Matrix::Diagonal(vl, x = 1e-12)
 

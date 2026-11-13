@@ -45,7 +45,10 @@ build_component_re<-function(state, sm_args_iter, term, all_terms, constants){
     constraint_matrix[[term]] <- Matrix::Matrix(0,1,q.rand)
 
   } else if (sm_args_iter$arg$type == "ICAR"){
-    neig.map <- build_neighbor_map(sm_args_iter$arg$map, connect = sm_args_iter$arg$connect)
+    map_build <- prepare_spatial_data(map = sm_args_iter$arg$map,region = sm_args_iter$x,
+      id_col = deparse(normalize_sm_call(all_terms[[term]])$x))
+
+    neig.map <- build_neighbor_map(map_build, connect = sm_args_iter$arg$connect)
     Rn <- make_graph_precision(neig.map, q.rand)
 
     Pv.list[[term]] <- function(v) exp(v[pen_start+1])*Rn
@@ -61,7 +64,9 @@ build_component_re<-function(state, sm_args_iter, term, all_terms, constants){
     constraint_matrix[[term]] <-  Matrix::Matrix(1, 1, q.rand)
 
   } else if (sm_args_iter$arg$type == "Convolution") {
-    neig.map <- build_neighbor_map(sm_args_iter$arg$map, connect = sm_args_iter$arg$connect)
+    map_build <- prepare_spatial_data(map = sm_args_iter$arg$map,region = sm_args_iter$x,
+                                      id_col = deparse(normalize_sm_call(all_terms[[term]])$x))
+    neig.map <- build_neighbor_map(map_build, connect = sm_args_iter$arg$connect)
     Rn <- make_graph_precision(neig.map, q.rand)
 
     Pv.list[[term]] <- function(v) Matrix::bdiag(exp(v[pen_start+1])*Rn,
@@ -83,7 +88,9 @@ build_component_re<-function(state, sm_args_iter, term, all_terms, constants){
 
 
   } else if (sm_args_iter$arg$type == "Leroux"){
-    neig.map <- build_neighbor_map(sm_args_iter$arg$map, connect = sm_args_iter$arg$connect)
+    map_build <- prepare_spatial_data(map = sm_args_iter$arg$map,region = sm_args_iter$x,
+                                      id_col = deparse(normalize_sm_call(all_terms[[term]])$x))
+    neig.map <- build_neighbor_map(map_build, connect = sm_args_iter$arg$connect)
     Rn <- make_graph_precision(neig.map, q.rand)
 
 
@@ -111,7 +118,7 @@ build_component_re<-function(state, sm_args_iter, term, all_terms, constants){
   }
 
   # Global design matrix
-  Wcb <- add_wcb_block(state$Wcb, Z.rand)
+  Wcb <- add_wcb_block(state$Wcb, Z.rand, deparse(normalize_sm_call(all_terms[[term]])$x))
 
   rm(Z.rand)
 
@@ -205,7 +212,7 @@ build_component_rw<-function(state, sm_args_iter, term, all_terms, constants, pe
 
 
   # Global design matrix
-  Wcb <- add_wcb_block(state$Wcb, Z.rand)
+  Wcb <- add_wcb_block(state$Wcb, Z.rand, deparse(normalize_sm_call(all_terms[[term]])$x))
 
   rm(Z.rand)
 
@@ -308,7 +315,7 @@ build_component_spline<-function(state, sm_args_iter, term, all_terms, constants
   )
 
   constraint_matrix[[term]] <- Matrix::Matrix(0,1,ncol(sm_list[[term]]))
-  Wcb <- add_wcb_block(Wcb, sm_list[[term]])
+  Wcb <- add_wcb_block(Wcb, sm_list[[term]], deparse(normalize_sm_call(all_terms[[term]])$x))
 
 
   state$sm_list<-sm_list
@@ -376,7 +383,8 @@ build_component_spatialrw<-function(state, sm_args_iter, term, all_terms, consta
 
 
   # Global design matrix
-  Wcb <- add_wcb_block(Wcb, interaction_matrix)
+  Wcb <- add_wcb_block(Wcb, interaction_matrix,
+                       deparse(normalize_sm_call(all_terms[[term]])$x))
 
   rm(Z.rand_spat, interaction_matrix, Z.rand)
 
@@ -453,7 +461,9 @@ build_component_spatialrw<-function(state, sm_args_iter, term, all_terms, consta
     }
 
   }else if (sm_args_iter$arg.by$type == "ICAR"){
-    neig.map <- build_neighbor_map(sm_args_iter$arg.by$map, connect = sm_args_iter$arg.by$connect)
+    map_build <- prepare_spatial_data(map = sm_args_iter$arg.by$map,region = sm_args_iter$by,
+                                      id_col = deparse(normalize_sm_call(all_terms[[term]])$by))
+    neig.map <- build_neighbor_map(map_build, connect = sm_args_iter$arg.by$connect)
     Rn_spat <- make_graph_precision(neig.map, q.rand_spat)
 
     Pv.list[[term]] <- function(v) exp(v[pen_start + 1])*(Rn_spat%x%Rn)
@@ -490,7 +500,9 @@ build_component_spatialrw<-function(state, sm_args_iter, term, all_terms, consta
     }
 
   }else if (sm_args_iter$arg.by$type == "Leroux"){
-    neig.map <- build_neighbor_map(sm_args_iter$arg.by$map, connect = sm_args_iter$arg.by$connect)
+    map_build <- prepare_spatial_data(map = sm_args_iter$arg.by$map,region = sm_args_iter$by,
+                                      id_col = deparse(normalize_sm_call(all_terms[[term]])$by))
+    neig.map <- build_neighbor_map(map_build, connect = sm_args_iter$arg.by$connect)
     Rn_spat <- make_graph_precision(neig.map, q.rand_spat)
 
     Sv_list <- function(v) {
@@ -601,7 +613,8 @@ build_component_rwspatial<-function(state, sm_args_iter, term, all_terms, consta
 
 
   # Global design matrix
-  Wcb <- add_wcb_block(Wcb, interaction_matrix)
+  Wcb <- add_wcb_block(Wcb, interaction_matrix,
+                       deparse(normalize_sm_call(all_terms[[term]])$x))
 
   rm(Z.rand_spat, interaction_matrix, Z.rand)
 
@@ -681,7 +694,10 @@ build_component_rwspatial<-function(state, sm_args_iter, term, all_terms, consta
 
 
   } else if (sm_args_iter$arg$type == "ICAR"){
-    neig.map <- build_neighbor_map(sm_args_iter$arg$map, connect = sm_args_iter$arg$connect)
+    map_build <- prepare_spatial_data(map = sm_args_iter$arg$map,region = sm_args_iter$x,
+                                      id_col = deparse(normalize_sm_call(all_terms[[term]])$x))
+    neig.map <- build_neighbor_map(map_build, connect = sm_args_iter$arg$connect)
+
     Rn_spat <- make_graph_precision(neig.map, q.rand_spat)
 
     Pv.list[[term]] <- function(v) exp(v[pen_start+1])*(Rn%x%Rn_spat)
@@ -727,7 +743,9 @@ build_component_rwspatial<-function(state, sm_args_iter, term, all_terms, consta
 
 
   }else if (sm_args_iter$arg$type == "Leroux"){
-    neig.map <- build_neighbor_map(sm_args_iter$arg$map, connect = sm_args_iter$arg$connect)
+    map_build <- prepare_spatial_data(map = sm_args_iter$arg$map,region = sm_args_iter$x,
+                                      id_col = deparse(normalize_sm_call(all_terms[[term]])$x))
+    neig.map <- build_neighbor_map(map_build, connect = sm_args_iter$arg$connect)
     Rn_spat <- make_graph_precision(neig.map, q.rand_spat)
 
     Sv_list <- function(v) {
@@ -853,7 +871,7 @@ build_component_fixed<-function(model, state,  all_fixed_terms, count_term, cons
       colnames(Z.linear) <- colnames(Z.linear_part)
     }
 
-    Wcb <- add_wcb_block(Wcb, Z.linear)
+    Wcb <- add_wcb_block(Wcb, Z.linear, "")
 
     Pv.list[[count_term]] <- function(v){
       methods::as(Matrix::Diagonal(
@@ -901,7 +919,7 @@ build_component_fixed<-function(model, state,  all_fixed_terms, count_term, cons
       colnames(Z.linear) <- colnames(Z.linear_part)
     }
 
-    Wcb <- add_wcb_block(Wcb, Z.linear)
+    Wcb <- add_wcb_block(Wcb, Z.linear, "")
 
     Pv.list[[count_term]] <- function(v){
       methods::as(Matrix::Diagonal(n = p_term,

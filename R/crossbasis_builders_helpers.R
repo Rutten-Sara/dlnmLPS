@@ -21,11 +21,12 @@ normalize_sm_call <- function(call) {
 
 #' Construction of block of design matrix
 #' @noRd
-add_wcb_block <- function(Wcb, block) {
+add_wcb_block <- function(Wcb, block, name_block) {
   if (is.null(block)) {
     return(Wcb)
   }
   Wcb[[length(Wcb) + 1]] <- Matrix::Matrix(block, sparse = TRUE)
+  names(Wcb)[length(Wcb)] <- name_block
   Wcb
 }
 
@@ -88,3 +89,28 @@ make_leroux_precision <- function(log_tau, logit_rho, n, Rn_term) {
 }
 
 
+#' Align order of regions in data and map
+#' @noRd
+prepare_spatial_data <- function(map, region, id_col) {
+
+  region_levels <- levels(factor(region))
+  map_ids <- as.character(map[[id_col]])
+
+  if (anyDuplicated(map_ids)) {
+    stop("Map contains duplicated region IDs.")
+  }
+
+  if (!setequal(map_ids, region_levels)) {
+    stop(
+      "Map region IDs do not match the levels of the regional variable."
+    )
+  }
+
+  map <- map[match(region_levels, map_ids), ]
+
+  if (!identical(as.character(map[[id_col]]), region_levels)) {
+    stop("Failed to align map with regional variable.")
+  }
+
+  map
+}
