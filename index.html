@@ -38,6 +38,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/rutten-sara/dlnmLPS/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
@@ -62,7 +63,7 @@
 <p>More specifically, <code>dlnmLPS</code> can be used to model:</p>
 <ul>
 <li><p><strong>distributed lag non-linear associations</strong>, allowing non-linear exposure-response relationships over multiple time lags. DLNMs can be unpenalized (natural splines or B-splines) or penalized (P-splines);</p></li>
-<li><p><strong>random effects</strong>, including independent random effects and spatially structured random effects (ICAR, BYM or Leroux). These random effects can possibly vary over time (according to an independent or random walk structure);</p></li>
+<li><p><strong>random effects</strong>, including independent random effects and spatially structured random effects (ICAR, Convolution or Leroux). These random effects can possibly vary over time (according to an independent or random walk structure);</p></li>
 <li><p><strong>temporal random effects</strong>, including first- and second-order random-walk structures. These temporal effects can possibly depend on location (according to an independent, ICAR or Leroux structure);</p></li>
 <li><p><strong>smooth exposure effects</strong>, using natural splines (<code>ns</code>), B-splines (<code>bs</code>), or P-splines (<code>ps</code>); and</p></li>
 <li><p><strong>more complex DLNM extensions</strong>, including effect modification, spatially varying DLNMs, and models with bivariate exposures.</p></li>
@@ -87,10 +88,20 @@
 <p>To install <code>dlnmLPS</code> together with its vignettes, containing short tutorials, use:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"Rutten-Sara/dlnmLPS"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>Afterwards, the vignettes can be requested using:</p>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"Rutten-Sara/dlnmLPS"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>Building the vignettes may take a few minutes, depending on your system. Afterwards, the vignettes can be requested using:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/browseVignettes.html" class="external-link">browseVignettes</a></span><span class="op">(</span><span class="st">"dlnmLPS"</span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="system-requirements">System requirements<a class="anchor" aria-label="anchor" href="#system-requirements"></a>
+</h3>
+<p>Installing <code>dlnmLPS</code> from source requires a working C++ compiler:</p>
+<ul>
+<li><p>Windows: Rtools (compatible with your installed R version).</p></li>
+<li><p>macOS: Xcode Command Line Tools.</p></li>
+<li><p>Linux: A C++ compiler and the system libraries required by the “sf” package (GDAL, GEOS and PROJ).</p></li>
+</ul>
+</div>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
@@ -116,7 +127,15 @@
 <p><code>dlnmLPS</code> is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. See the <code>LICENSE</code> file for details.</p>
 </div>
 </div>
-  </main><aside class="col-md-3"><div class="license">
+  </main><aside class="col-md-3"><div class="links">
+<h2 data-toc-skip>Links</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/rutten-sara/dlnmLPS/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/rutten-sara/dlnmLPS/issues" class="external-link">Report a bug</a></li>
+</ul>
+</div>
+
+<div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>

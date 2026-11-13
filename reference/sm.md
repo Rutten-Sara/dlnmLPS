@@ -39,19 +39,23 @@ sm(x, arg = NULL, by = NULL, arg.by = NULL)
 
   `crossbasis`
 
-  :   A penalized or unpenalized DLNM cross-basis. Objects of class
-      `crossbasis` are recognized automatically and therefore do not
-      need to be specified explicitly in `arg$type`. The additional
-      argument `pen` can be specified, where `NULL` specifies an
-      unpenalized basis and an integer specifies the penalty structure
-      (default is 2 for `ps`). The additional argument `add.lagpen`
-      (default TRUE) is a logical indicator, indicating whether an
-      additional penalty should be specified in the lag dimension (for
-      penalized settings) to encourage shrinkage of the effect at longer
-      lags. The additional lag penalty matrix can be specified using
-      `lagpen`: by default, this is a diagonal matrix with entries
-      corresponding to `0^2,1^2,...,(vl-1)^2`, with `vl` the degrees of
-      freedom for the lag basis. `diag((0:(vl - 1))^2)`.
+  :   A penalized or unpenalized DLNM cross-basis (constructed using
+      `ps`, `ns` or `bs`, with the same spline basis type for the
+      exposure and lag dimensions). The spline specifications, such as
+      degrees of freedom or knot locations, may differ between the two
+      dimensions. Objects of class `crossbasis` are recognized
+      automatically and therefore do not need to be specified explicitly
+      in `arg$type`. The additional argument `pen` can be specified,
+      where `NULL` specifies an unpenalized basis and an integer
+      specifies the penalty structure (default is 2 for `ps`). The
+      additional argument `add.lagpen` (default TRUE) is a logical
+      indicator, indicating whether an additional penalty should be
+      specified in the lag dimension (for penalized settings) to
+      encourage shrinkage of the effect at longer lags. The additional
+      lag penalty matrix can be specified using `lagpen`: by default,
+      this is a diagonal matrix with entries corresponding to
+      `0^2,1^2,...,(vl-1)^2`, with `vl` the degrees of freedom for the
+      lag basis. `diag((0:(vl - 1))^2)`.
 
   `ps`, `ns`, `bs`
 
@@ -65,8 +69,8 @@ sm(x, arg = NULL, by = NULL, arg.by = NULL)
 
   :   Random effects, including spatial random effects. Additional
       arguments include spatial connectivity information through `map`
-      and `connect` (logical value indicating whether the spatial
-      adjacency graph should be connected, defaults to `TRUE`).
+      (sf-object) and `connect` (logical value indicating whether the
+      spatial adjacency graph should be connected, defaults to `TRUE`).
 
   `rw1`, `rw2`
 
@@ -107,12 +111,17 @@ sm(x, arg = NULL, by = NULL, arg.by = NULL)
       `intercept`, `Boundary.knots`, `degree`, and penalty
       specifications.
 
+  `linear`, `factor`
+
+  :   Linear relationship or according to a categorical (factor)
+      variable.
+
   `ind`, `ICAR`, `Leroux`
 
   :   Random effects, including spatial random effects. Additional
       arguments include spatial connectivity information through `map`
-      and `connect` (logical value indicating whether the spatial
-      adjacency graph should be connected, defaults to `TRUE`).
+      (sf-object) and `connect` (logical value indicating whether the
+      spatial adjacency graph should be connected, defaults to `TRUE`).
 
   `rw1`, `rw2`
 

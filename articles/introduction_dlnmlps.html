@@ -36,6 +36,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/rutten-sara/dlnmLPS/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
@@ -60,7 +61,7 @@
       <h1>Introduction to dlnmLPS</h1>
             
       
-
+      <small class="dont-index">Source: <a href="https://github.com/rutten-sara/dlnmLPS/blob/main/vignettes/introduction_dlnmlps.Rmd" class="external-link"><code>vignettes/introduction_dlnmlps.Rmd</code></a></small>
       <div class="d-none name"><code>introduction_dlnmlps.Rmd</code></div>
     </div>
 
@@ -353,7 +354,7 @@ the order of the penalty needs to be supplied in the argument
 <code>arg</code> of <code><a href="../reference/sm.html">sm()</a></code>. Note that, by default, an
 additional lag penalty is specified, on top of the P-splines penalties,
 to encourage shrinkage towards a null effect at longer lags. To disable
-this penalty, specify <code>add.lagpen</code>= “FALSE” within the
+this penalty, specify <code>add.lagpen</code>= FALSE within the
 <code>arg</code> argument.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fit a penalized DLNM</span></span>
@@ -400,7 +401,7 @@ which are the estimated hyperparameters (penalties):</p>
 <span><span class="co">#&gt; basis.max_penv2.l6    0.010 0.015     -0.019    0.010      0.039  0.010</span></span>
 <span><span class="co">#&gt; basis.max_penv2.l7    0.016 0.014     -0.012    0.016      0.044  0.016</span></span>
 <span><span class="co">#&gt; basis.max_penv2.l8    0.003 0.015     -0.026    0.003      0.033  0.003</span></span>
-<span><span class="co">#&gt; basis.max_penv3.l1   -0.120 0.082     -0.281   -0.120      0.041 -0.120</span></span>
+<span><span class="co">#&gt; basis.max_penv3.l1   -0.120 0.082     -0.281   -0.120      0.040 -0.120</span></span>
 <span><span class="co">#&gt; basis.max_penv3.l2   -0.057 0.034     -0.123   -0.057      0.010 -0.057</span></span>
 <span><span class="co">#&gt; basis.max_penv3.l3   -0.017 0.020     -0.057   -0.017      0.023 -0.017</span></span>
 <span><span class="co">#&gt; basis.max_penv3.l4   -0.008 0.017     -0.040   -0.008      0.025 -0.008</span></span>
@@ -424,7 +425,7 @@ which are the estimated hyperparameters (penalties):</p>
 <span><span class="co">#&gt; basis.max_penv5.l6   -0.007 0.013     -0.032   -0.007      0.019 -0.007</span></span>
 <span><span class="co">#&gt; basis.max_penv5.l7   -0.015 0.013     -0.040   -0.015      0.010 -0.015</span></span>
 <span><span class="co">#&gt; basis.max_penv5.l8   -0.002 0.015     -0.031   -0.002      0.028 -0.002</span></span>
-<span><span class="co">#&gt; basis.max_penv6.l1    0.141 0.081     -0.018    0.141      0.299  0.141</span></span>
+<span><span class="co">#&gt; basis.max_penv6.l1    0.140 0.081     -0.018    0.140      0.299  0.140</span></span>
 <span><span class="co">#&gt; basis.max_penv6.l2    0.089 0.036      0.018    0.089      0.160  0.089</span></span>
 <span><span class="co">#&gt; basis.max_penv6.l3    0.010 0.023     -0.035    0.010      0.055  0.010</span></span>
 <span><span class="co">#&gt; basis.max_penv6.l4   -0.022 0.019     -0.059   -0.022      0.014 -0.022</span></span>
@@ -460,12 +461,12 @@ which are the estimated hyperparameters (penalties):</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Hyperparameters:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Penalty DLNM basis.max_pen  129.18 92.50 74.44</span></span>
+<span><span class="co">#&gt; Penalty DLNM basis.max_pen  129.02 92.57 74.46</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model comparison:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; DIC: 32605.98 ; Effective Parameters: 25.59731 </span></span>
-<span><span class="co">#&gt; WAIC: 32618.12 ; Effective Parameters: 37.42713 </span></span>
+<span><span class="co">#&gt; DIC: 32605.98 ; Effective Parameters: 25.59802 </span></span>
+<span><span class="co">#&gt; WAIC: 32618.12 ; Effective Parameters: 37.42818 </span></span>
 <span><span class="co">#&gt; sum(log(CPO)): -16308.99</span></span></code></pre></div>
 <p>Predictions can similarly be visualized:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
@@ -490,7 +491,7 @@ which are the estimated hyperparameters (penalties):</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/contour.html" class="external-link">contour</a></span><span class="op">(</span><span class="va">pred_penalized</span>, ptype <span class="op">=</span> <span class="st">"cross"</span>, xlab <span class="op">=</span> <span class="st">"lag"</span>, ylab <span class="op">=</span> <span class="st">"temperature"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_dlnmlps_files/figure-html/unnamed-chunk-19-4.png" class="r-plt" alt="" width="576"></p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pred_unpenalized</span>, ptype <span class="op">=</span> <span class="st">"cross"</span>, ticktype<span class="op">=</span><span class="st">"detailed"</span>,theta<span class="op">=</span><span class="fl">230</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pred_penalized</span>, ptype <span class="op">=</span> <span class="st">"cross"</span>, ticktype<span class="op">=</span><span class="st">"detailed"</span>,theta<span class="op">=</span><span class="fl">230</span>,</span>
 <span>        xlab <span class="op">=</span> <span class="st">"lag"</span>, ylab <span class="op">=</span> <span class="st">"temperature"</span>, zlab <span class="op">=</span> <span class="st">"RR"</span>,</span>
 <span>        ltheta<span class="op">=</span><span class="fl">200</span>,phi<span class="op">=</span><span class="fl">30</span>,lphi<span class="op">=</span><span class="fl">30</span>,</span>
 <span>        nticks <span class="op">=</span> <span class="fl">4</span>, shade <span class="op">=</span> <span class="fl">0.75</span>,r<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>,d<span class="op">=</span><span class="fl">5</span>,cex.axis<span class="op">=</span><span class="fl">0.5</span>, cex.lab<span class="op">=</span><span class="fl">0.5</span>,border<span class="op">=</span><span class="cn">NA</span><span class="op">)</span></span></code></pre></div>
@@ -529,10 +530,10 @@ of cases (over all Districts), we can use:</p>
 <span></span>
 <span><span class="co"># Fit and Credible intervals</span></span>
 <span><span class="va">af2007</span><span class="op">$</span><span class="va">fit</span><span class="op">$</span><span class="va">af</span></span>
-<span><span class="co">#&gt; [1] 0.06620537</span></span>
+<span><span class="co">#&gt; [1] 0.06620539</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">af2007</span><span class="op">$</span><span class="va">samples</span><span class="op">$</span><span class="va">af</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>,<span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       2.5%      97.5% </span></span>
-<span><span class="co">#&gt; 0.04108535 0.08975188</span></span>
+<span><span class="co">#&gt; 0.04108282 0.08975552</span></span>
 <span></span>
 <span><span class="co"># Exceedance probability</span></span>
 <span><span class="va">af2007</span><span class="op">$</span><span class="va">samples</span><span class="op">$</span><span class="va">exc.prob</span></span>
@@ -557,10 +558,10 @@ could also request the forward perspective, using:</p>
 <span></span>
 <span><span class="co"># Fit and Credible intervals</span></span>
 <span><span class="va">af2007_fw</span><span class="op">$</span><span class="va">fit</span><span class="op">$</span><span class="va">af</span></span>
-<span><span class="co">#&gt; [1] 0.06273868</span></span>
+<span><span class="co">#&gt; [1] 0.06273875</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">af2007_fw</span><span class="op">$</span><span class="va">samples</span><span class="op">$</span><span class="va">af</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>,<span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       2.5%      97.5% </span></span>
-<span><span class="co">#&gt; 0.03800329 0.08650474</span></span>
+<span><span class="co">#&gt; 0.03800044 0.08650864</span></span>
 <span></span>
 <span><span class="co"># Exceedance probability</span></span>
 <span><span class="va">af2007_fw</span><span class="op">$</span><span class="va">samples</span><span class="op">$</span><span class="va">exc.prob</span></span>
@@ -636,8 +637,8 @@ comparison criteria:</p>
 spatial and temporal random effects. An area-specific random effect can
 be included independently (<code>type</code> = “ind”) or spatially
 structured (<code>type</code> = “Leroux”, <code>type</code> = “ICAR” or
-<code>type</code> = “BYM”). In case of spatially structured random
-effects, a map with the spatial structure can be supplied through
+<code>type</code> = “Convolution”). In case of spatially structured
+random effects, a map with the spatial structure can be supplied through
 <code>map</code> within the <code>arg</code> argument. A first or second
 order random walk on time can also be supplied through <code>type</code>
 = “rw1” or <code>type</code> = “rw2”.</p>

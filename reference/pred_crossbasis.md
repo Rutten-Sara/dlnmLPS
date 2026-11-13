@@ -162,13 +162,33 @@ An object of class `"dlnmLPS_pred"` containing the following components
 
   Matrix of exponentiated bounds from `Qupper_allfit`.
 
-- exc_prob_matfit:
+- exc.prob_matfit:
 
   Matrix of exceedance probabilities for matfit, if requested.
 
-- exc_prob_allfit:
+- exc.prob_allfit:
 
   Vector of exceedance probabilities for allfit, if requested.
+
+- x:
+
+  Exposure values at_x.
+
+- y:
+
+  Exposure values at_y.
+
+- lag:
+
+  Lag range.
+
+- by:
+
+  Level or value of the `by` variable (if applicable).
+
+- family:
+
+  The distribution family of the model.
 
 ## Examples
 

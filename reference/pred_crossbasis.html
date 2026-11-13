@@ -23,6 +23,7 @@ are computed relative to a user-defined reference (centering) value."><meta name
 <li class="nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/rutten-sara/dlnmLPS/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch"><li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
@@ -38,7 +39,7 @@ are computed relative to a user-defined reference (centering) value."><meta name
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Generate Predictions from a dlnmLPS Model</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/rutten-sara/dlnmLPS/blob/main/R/predRR.R" class="external-link"><code>R/predRR.R</code></a></small>
       <div class="d-none name"><code>pred_crossbasis.Rd</code></div>
     </div>
 
@@ -192,11 +193,26 @@ cumulative predictions in <code>allfit</code>.</p></dd>
 <dt>Qupper_allRRfit</dt>
 <dd><p>Matrix of exponentiated bounds from <code>Qupper_allfit</code>.</p></dd>
 
-<dt>exc_prob_matfit</dt>
+<dt>exc.prob_matfit</dt>
 <dd><p>Matrix of exceedance probabilities for matfit, if requested.</p></dd>
 
-<dt>exc_prob_allfit</dt>
+<dt>exc.prob_allfit</dt>
 <dd><p>Vector of exceedance probabilities for allfit, if requested.</p></dd>
+
+<dt>x</dt>
+<dd><p>Exposure values at_x.</p></dd>
+
+<dt>y</dt>
+<dd><p>Exposure values at_y.</p></dd>
+
+<dt>lag</dt>
+<dd><p>Lag range.</p></dd>
+
+<dt>by</dt>
+<dd><p>Level or value of the <code>by</code> variable (if applicable).</p></dd>
+
+<dt>family</dt>
+<dd><p>The distribution family of the model.</p></dd>
 
 
 </dl></div>

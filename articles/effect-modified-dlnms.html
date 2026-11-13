@@ -36,6 +36,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/rutten-sara/dlnmLPS/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
@@ -60,7 +61,7 @@
       <h1>Effect-modified DLNMs</h1>
             
       
-
+      <small class="dont-index">Source: <a href="https://github.com/rutten-sara/dlnmLPS/blob/main/vignettes/effect-modified-dlnms.Rmd" class="external-link"><code>vignettes/effect-modified-dlnms.Rmd</code></a></small>
       <div class="d-none name"><code>effect-modified-dlnms.Rmd</code></div>
     </div>
 
@@ -233,21 +234,21 @@ comparison criteria DIC, WAIC and CPO:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Compare the estimated associations</span></span>
 <span><span class="va">model1</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model1</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model1</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 30410.81</span></span>
-<span><span class="co">#&gt; [1] 30414.22</span></span>
-<span><span class="co">#&gt; [1] 15207.02</span></span>
+<span><span class="co">#&gt; [1] 30411.85</span></span>
+<span><span class="co">#&gt; [1] 30415.3</span></span>
+<span><span class="co">#&gt; [1] 15207.56</span></span>
 <span><span class="va">model2</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model2</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model2</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 30390.85</span></span>
-<span><span class="co">#&gt; [1] 30394.04</span></span>
-<span><span class="co">#&gt; [1] 15196.9</span></span>
+<span><span class="co">#&gt; [1] 30389.48</span></span>
+<span><span class="co">#&gt; [1] 30392.5</span></span>
+<span><span class="co">#&gt; [1] 15196.13</span></span>
 <span><span class="va">model3</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model3</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model3</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 30388.94</span></span>
-<span><span class="co">#&gt; [1] 30391.41</span></span>
-<span><span class="co">#&gt; [1] 15195.6</span></span>
+<span><span class="co">#&gt; [1] 30389.52</span></span>
+<span><span class="co">#&gt; [1] 30392.24</span></span>
+<span><span class="co">#&gt; [1] 15196.01</span></span>
 <span><span class="va">model4</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model4</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model4</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 30379</span></span>
-<span><span class="co">#&gt; [1] 30381.98</span></span>
-<span><span class="co">#&gt; [1] 15190.91</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 30378.99</span></span>
+<span><span class="co">#&gt; [1] 30382.03</span></span>
+<span><span class="co">#&gt; [1] 15190.93</span></span></code></pre></div>
 <p>The fourth model is preferred based on all model selection criteria.
 Using this model, we predict the exposure-lag-response curve for three
 different levels of the deprivation index (2.5th, 50th and 97.5th
@@ -274,14 +275,14 @@ deprivation quantiles 2.5% and 97.5%, we can use:</p>
 <span>                    slice_by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">$</span><span class="va">depriv</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>,<span class="fl">0.975</span><span class="op">)</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span>, </span>
 <span>                    ptype <span class="op">=</span> <span class="st">"matRRfit"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    x lag       fit     lower    upper   exc.prob    by</span></span>
-<span><span class="co">#&gt; 1 22   0 0.9415039 0.8677953 1.021473 0.07364462 -2.09</span></span>
-<span><span class="co">#&gt; 2 30   0 1.1402326 1.0721071 1.212687 0.99998511 -2.09</span></span>
-<span><span class="co">#&gt; 3 22   2 0.9528834 0.9024280 1.006160 0.04104123 -2.09</span></span>
-<span><span class="co">#&gt; 4 30   2 1.0198359 0.9848947 1.056017 0.86526035 -2.09</span></span>
-<span><span class="co">#&gt; 5 22   0 0.9537818 0.8796288 1.034186 0.12591050  1.45</span></span>
-<span><span class="co">#&gt; 6 30   0 1.1537344 1.0828119 1.229302 0.99999502  1.45</span></span>
-<span><span class="co">#&gt; 7 22   2 1.0071232 0.9591593 1.057486 0.61221631  1.45</span></span>
-<span><span class="co">#&gt; 8 30   2 1.0870012 1.0501871 1.125106 0.99999896  1.45</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 22   0 0.9442494 0.8760118 1.017802 0.06695034 -2.09</span></span>
+<span><span class="co">#&gt; 2 30   0 1.1271132 1.0665366 1.191130 0.99998909 -2.09</span></span>
+<span><span class="co">#&gt; 3 22   2 0.9529744 0.9034242 1.005242 0.03852666 -2.09</span></span>
+<span><span class="co">#&gt; 4 30   2 1.0263029 0.9943068 1.059329 0.94593421 -2.09</span></span>
+<span><span class="co">#&gt; 5 22   0 0.9615895 0.8950778 1.033043 0.14208096  1.45</span></span>
+<span><span class="co">#&gt; 6 30   0 1.1422374 1.0804183 1.207594 0.99999860  1.45</span></span>
+<span><span class="co">#&gt; 7 22   2 1.0057789 0.9596735 1.054099 0.59509832  1.45</span></span>
+<span><span class="co">#&gt; 8 30   2 1.0925640 1.0596552 1.126495 0.99999999  1.45</span></span></code></pre></div>
 <p>To plot the exposure-response relationship at lag 0, 3 and 8 for the
 2.5th, 50th and 97.5th percentile deprivation indices, we can use:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">

@@ -36,6 +36,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/rutten-sara/dlnmLPS/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
@@ -60,7 +61,7 @@
       <h1>Spatially varying DLNMs</h1>
             
       
-
+      <small class="dont-index">Source: <a href="https://github.com/rutten-sara/dlnmLPS/blob/main/vignettes/spatially-varying-dlnms.Rmd" class="external-link"><code>vignettes/spatially-varying-dlnms.Rmd</code></a></small>
       <div class="d-none name"><code>spatially-varying-dlnms.Rmd</code></div>
     </div>
 
@@ -149,8 +150,8 @@ as a random effect.</p>
 <p>Fitting all of these models is very similar. First of all, we can fit
 models of Type I and Type III, by using an unpenalized crossbasis and
 let it vary by District. Spatially-independent DLNMs can be requested
-using <code>fun</code> = “ind”, while Leroux-varying DLNMs can be
-specified using <code>fun</code> = “Leroux”. For the latter, a map
+using <code>type</code> = “ind”, while Leroux-varying DLNMs can be
+specified using <code>type</code> = “Leroux”. For the latter, a map
 containing the neighbourhood structure needs to be provided as well.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fit a spatially varying unpenalized DLNM</span></span>
@@ -232,17 +233,17 @@ comparison criteria DIC, WAIC and CPO:</p>
 <span><span class="co">#&gt; [1] 30387.4</span></span>
 <span><span class="co">#&gt; [1] 15193.58</span></span>
 <span><span class="va">model_typeII</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model_typeII</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model_typeII</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 30382.18</span></span>
-<span><span class="co">#&gt; [1] 30385.72</span></span>
-<span><span class="co">#&gt; [1] 15192.82</span></span>
+<span><span class="co">#&gt; [1] 30378.1</span></span>
+<span><span class="co">#&gt; [1] 30381.35</span></span>
+<span><span class="co">#&gt; [1] 15190.62</span></span>
 <span><span class="va">model_typeIII</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model_typeIII</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model_typeIII</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 30375.74</span></span>
 <span><span class="co">#&gt; [1] 30377.85</span></span>
 <span><span class="co">#&gt; [1] 15188.8</span></span>
 <span><span class="va">model_typeIV</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model_typeIV</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model_typeIV</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 30366.38</span></span>
-<span><span class="co">#&gt; [1] 30371.28</span></span>
-<span><span class="co">#&gt; [1] 15185.51</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 30365.69</span></span>
+<span><span class="co">#&gt; [1] 30370.59</span></span>
+<span><span class="co">#&gt; [1] 15185.17</span></span></code></pre></div>
 <p>Model Type IV is preferred based on all model selection criteria. To
 make predictions for temperatures between 22 degrees Celsius and 30
 degrees Celsius, compared to a reference level of 25 degrees, and for
@@ -267,10 +268,10 @@ districts, we can use:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_predictions.html">extract_predictions</a></span><span class="op">(</span><span class="va">pred_penalized</span>, slice_x <span class="op">=</span> <span class="fl">30</span>, slice_by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">$</span><span class="va">District</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>,</span>
 <span>                    ptype <span class="op">=</span> <span class="st">"allRRfit"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    x      fit    lower    upper by</span></span>
-<span><span class="co">#&gt; 1 30 1.692175 1.504847 1.902821 01</span></span>
-<span><span class="co">#&gt; 2 30 1.360412 1.162266 1.592337 02</span></span>
-<span><span class="co">#&gt; 3 30 1.472584 1.281134 1.692644 03</span></span>
-<span><span class="co">#&gt; 4 30 1.461605 1.209825 1.765784 04</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 30 1.695990 1.505554 1.910515 01</span></span>
+<span><span class="co">#&gt; 2 30 1.367359 1.165803 1.603762 02</span></span>
+<span><span class="co">#&gt; 3 30 1.482204 1.286167 1.708121 03</span></span>
+<span><span class="co">#&gt; 4 30 1.464581 1.208408 1.775060 04</span></span></code></pre></div>
 <p>We can visualize the temperature-mortality relationship for the first
 four districts and for lag 0, 3 and 8 as:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -324,7 +325,7 @@ be made. We adapt the default margins, using the argument
 <span>        slice_by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">$</span><span class="va">District</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p><img src="spatially-varying-dlnms_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="576"></p>
 <p>Similarly, a contour plot could also be made. In general, plots show
-that differences between the different municipalities in the
+that differences between the different districts in the
 temperature-mortality relationship are relatively small.</p>
 <p>It’s also possible to calculate the region-specific attributable
 fractions for a specific year, for example 2007. For a spatially-varying

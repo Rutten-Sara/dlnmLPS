@@ -360,8 +360,8 @@ order of the penalty needs to be supplied in the argument `arg` of
 [`sm()`](https://rutten-sara.github.io/dlnmLPS/reference/sm.md). Note
 that, by default, an additional lag penalty is specified, on top of the
 P-splines penalties, to encourage shrinkage towards a null effect at
-longer lags. To disable this penalty, specify `add.lagpen`= “FALSE”
-within the `arg` argument.
+longer lags. To disable this penalty, specify `add.lagpen`= FALSE within
+the `arg` argument.
 
 ``` r
 
@@ -413,7 +413,7 @@ summary(model_penalized)
 #> basis.max_penv2.l6    0.010 0.015     -0.019    0.010      0.039  0.010
 #> basis.max_penv2.l7    0.016 0.014     -0.012    0.016      0.044  0.016
 #> basis.max_penv2.l8    0.003 0.015     -0.026    0.003      0.033  0.003
-#> basis.max_penv3.l1   -0.120 0.082     -0.281   -0.120      0.041 -0.120
+#> basis.max_penv3.l1   -0.120 0.082     -0.281   -0.120      0.040 -0.120
 #> basis.max_penv3.l2   -0.057 0.034     -0.123   -0.057      0.010 -0.057
 #> basis.max_penv3.l3   -0.017 0.020     -0.057   -0.017      0.023 -0.017
 #> basis.max_penv3.l4   -0.008 0.017     -0.040   -0.008      0.025 -0.008
@@ -437,7 +437,7 @@ summary(model_penalized)
 #> basis.max_penv5.l6   -0.007 0.013     -0.032   -0.007      0.019 -0.007
 #> basis.max_penv5.l7   -0.015 0.013     -0.040   -0.015      0.010 -0.015
 #> basis.max_penv5.l8   -0.002 0.015     -0.031   -0.002      0.028 -0.002
-#> basis.max_penv6.l1    0.141 0.081     -0.018    0.141      0.299  0.141
+#> basis.max_penv6.l1    0.140 0.081     -0.018    0.140      0.299  0.140
 #> basis.max_penv6.l2    0.089 0.036      0.018    0.089      0.160  0.089
 #> basis.max_penv6.l3    0.010 0.023     -0.035    0.010      0.055  0.010
 #> basis.max_penv6.l4   -0.022 0.019     -0.059   -0.022      0.014 -0.022
@@ -473,12 +473,12 @@ summary(model_penalized)
 #> 
 #> Hyperparameters:
 #> 
-#> Penalty DLNM basis.max_pen  129.18 92.50 74.44
+#> Penalty DLNM basis.max_pen  129.02 92.57 74.46
 #> 
 #> Model comparison:
 #> 
-#> DIC: 32605.98 ; Effective Parameters: 25.59731 
-#> WAIC: 32618.12 ; Effective Parameters: 37.42713 
+#> DIC: 32605.98 ; Effective Parameters: 25.59802 
+#> WAIC: 32618.12 ; Effective Parameters: 37.42818 
 #> sum(log(CPO)): -16308.99
 ```
 
@@ -523,7 +523,7 @@ contour(pred_penalized, ptype = "cross", xlab = "lag", ylab = "temperature")
 
 ``` r
 
-plot(pred_unpenalized, ptype = "cross", ticktype="detailed",theta=230,
+plot(pred_penalized, ptype = "cross", ticktype="detailed",theta=230,
         xlab = "lag", ylab = "temperature", zlab = "RR",
         ltheta=200,phi=30,lphi=30,
         nticks = 4, shade = 0.75,r=sqrt(3),d=5,cex.axis=0.5, cex.lab=0.5,border=NA)
@@ -567,10 +567,10 @@ af2007 <- attributable_risk(
 
 # Fit and Credible intervals
 af2007$fit$af
-#> [1] 0.06620537
+#> [1] 0.06620539
 quantile(af2007$samples$af, probs = c(0.025,0.975))
 #>       2.5%      97.5% 
-#> 0.04108535 0.08975188
+#> 0.04108282 0.08975552
 
 # Exceedance probability
 af2007$samples$exc.prob
@@ -598,10 +598,10 @@ af2007_fw <- attributable_risk(
 
 # Fit and Credible intervals
 af2007_fw$fit$af
-#> [1] 0.06273868
+#> [1] 0.06273875
 quantile(af2007_fw$samples$af, probs = c(0.025,0.975))
 #>       2.5%      97.5% 
-#> 0.03800329 0.08650474
+#> 0.03800044 0.08650864
 
 # Exceedance probability
 af2007_fw$samples$exc.prob
@@ -690,9 +690,9 @@ Through a smooth function
 also include spatial and temporal random effects. An area-specific
 random effect can be included independently (`type` = “ind”) or
 spatially structured (`type` = “Leroux”, `type` = “ICAR” or `type` =
-“BYM”). In case of spatially structured random effects, a map with the
-spatial structure can be supplied through `map` within the `arg`
-argument. A first or second order random walk on time can also be
+“Convolution”). In case of spatially structured random effects, a map
+with the spatial structure can be supplied through `map` within the
+`arg` argument. A first or second order random walk on time can also be
 supplied through `type` = “rw1” or `type` = “rw2”.
 
 A time-varying spatial random effect or spatially-varying time random

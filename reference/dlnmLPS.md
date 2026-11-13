@@ -18,7 +18,9 @@ dlnmLPS(
   model.comparison = list(DIC = FALSE, WAIC = FALSE, CPO = FALSE),
   family = "Gaussian",
   Ntrials = NULL,
-  refit = 0
+  refit = 0,
+  maxit = 500,
+  maxit.hyper = 1000
 )
 ```
 
@@ -62,6 +64,16 @@ dlnmLPS(
   Optional number of additional model refinement iterations. Each
   iteration updates the coefficient and hyperparameter estimates based
   on the previous iteration. Default is `0`.
+
+- maxit:
+
+  The maximum number of iterations in the optimization of the model
+  parameters.
+
+- maxit.hyper:
+
+  The maximum number of iterations in the optimization of the model
+  hyperparameters.
 
 ## Value
 

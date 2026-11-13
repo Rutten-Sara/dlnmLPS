@@ -12,6 +12,9 @@
 
 ## Citation
 
+Source:
+[`DESCRIPTION`](https://github.com/rutten-sara/dlnmLPS/blob/main/DESCRIPTION)
+
 Rutten S, Faes C (2026). *dlnmLPS: Flexible Bayesian Distributed Lag
 Non-Linear Models*. R package version 0.1.0,
 <https://rutten-sara.github.io/dlnmLPS/>.

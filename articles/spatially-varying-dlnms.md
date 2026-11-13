@@ -96,8 +96,8 @@ random effect.
 Fitting all of these models is very similar. First of all, we can fit
 models of Type I and Type III, by using an unpenalized crossbasis and
 let it vary by District. Spatially-independent DLNMs can be requested
-using `fun` = “ind”, while Leroux-varying DLNMs can be specified using
-`fun` = “Leroux”. For the latter, a map containing the neighbourhood
+using `type` = “ind”, while Leroux-varying DLNMs can be specified using
+`type` = “Leroux”. For the latter, a map containing the neighbourhood
 structure needs to be provided as well.
 
 ``` r
@@ -188,17 +188,17 @@ model_typeI$DIC; model_typeI$WAIC; -sum(log(model_typeI$CPO))
 #> [1] 30387.4
 #> [1] 15193.58
 model_typeII$DIC; model_typeII$WAIC; -sum(log(model_typeII$CPO))
-#> [1] 30382.18
-#> [1] 30385.72
-#> [1] 15192.82
+#> [1] 30378.1
+#> [1] 30381.35
+#> [1] 15190.62
 model_typeIII$DIC; model_typeIII$WAIC; -sum(log(model_typeIII$CPO))
 #> [1] 30375.74
 #> [1] 30377.85
 #> [1] 15188.8
 model_typeIV$DIC; model_typeIV$WAIC; -sum(log(model_typeIV$CPO))
-#> [1] 30366.38
-#> [1] 30371.28
-#> [1] 15185.51
+#> [1] 30365.69
+#> [1] 30370.59
+#> [1] 15185.17
 ```
 
 Model Type IV is preferred based on all model selection criteria. To
@@ -232,10 +232,10 @@ the first four districts, we can use:
 extract_predictions(pred_penalized, slice_x = 30, slice_by = unique(dataset$District)[1:4],
                     ptype = "allRRfit")
 #>    x      fit    lower    upper by
-#> 1 30 1.692175 1.504847 1.902821 01
-#> 2 30 1.360412 1.162266 1.592337 02
-#> 3 30 1.472584 1.281134 1.692644 03
-#> 4 30 1.461605 1.209825 1.765784 04
+#> 1 30 1.695990 1.505554 1.910515 01
+#> 2 30 1.367359 1.165803 1.603762 02
+#> 3 30 1.482204 1.286167 1.708121 03
+#> 4 30 1.464581 1.208408 1.775060 04
 ```
 
 We can visualize the temperature-mortality relationship for the first
@@ -320,7 +320,7 @@ plot(pred_penalized, ptype = "cross", ticktype="detailed",theta=230,
 ![](spatially-varying-dlnms_files/figure-html/unnamed-chunk-15-1.png)
 
 Similarly, a contour plot could also be made. In general, plots show
-that differences between the different municipalities in the
+that differences between the different districts in the
 temperature-mortality relationship are relatively small.
 
 It’s also possible to calculate the region-specific attributable
