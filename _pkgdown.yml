@@ -33,6 +33,7 @@ reference:
   - attributable_risk
   - summary.dlnmLPS
   - print.summary.dlnmLPS
+  - print.dlnmLPS
   - dlnmLPS_Object
   - sm
 

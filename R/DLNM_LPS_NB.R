@@ -45,6 +45,12 @@ dlnmLPS_NB <- function(model,
   # Construct crossbasis
   y <- setup$y
 
+  # Check for negative values
+  if(any(y < 0, na.rm = TRUE)) stop("Outcome contains non-valid values")
+
+  # Check for non-integer values
+  if(any(y != floor(y), na.rm = TRUE)) stop("Outcome contains non-valid values")
+
   Wcb_init <- setup$Wcb
   if (is.null(Wcb_init) || length(Wcb_init) == 0) {
     Wcb_blocks <- list()

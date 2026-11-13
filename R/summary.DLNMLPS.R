@@ -131,6 +131,56 @@ print.summary.dlnmLPS <- function(x, ...) {
 }
 
 
+
+#' Print a dlnmLPS model
+#'
+#' @param x An object of class \code{"dlnmLPS"}.
+#' @param ... Additional arguments to be passed.
+#' @export
+print.dlnmLPS <- function(x, ...) {
+
+  cat("\nFamily:\n")
+  cat(deparse1(x$family))
+
+  cat("\n\nCall:\n")
+  cat(deparse1(x$model))
+
+
+  if (!is.null(x$DIC) ||
+      !is.null(x$WAIC) ||
+      !is.null(x$CPO)) {
+
+    cat("\n\nModel comparison:\n")
+
+    if (!is.null(x$DIC)) {
+      cat(
+        "DIC:", x$DIC,
+        "; Effective Parameters:", x$`pd DIC`, "\n"
+      )
+    }
+
+    if (!is.null(x$WAIC)) {
+      cat(
+        "WAIC:", x$WAIC,
+        "; Effective Parameters:", x$`pd WAIC`, "\n"
+      )
+    }
+
+    if (!is.null(x$CPO)) {
+      cat(
+        "sum(log(CPO)):",
+        sum(log(x$CPO), na.rm = TRUE),
+        "\n"
+      )
+    }
+  }
+
+  invisible(x)
+}
+
+
+
+
 #' Construction of hyperparameter summary
 #' @noRd
 make_summary_hyper <- function(v_mode) {

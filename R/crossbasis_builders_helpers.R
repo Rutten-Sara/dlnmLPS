@@ -62,9 +62,16 @@ build_neighbor_map <- function(map, connect = TRUE) {
 #' Construction of precision matrix from neighbourhood matrix
 #' @noRd
 make_graph_precision <- function(neig.map, n) {
-  deg <- lengths(neig.map)
+  deg <- lengths(neig.map) -
+    vapply(neig.map, function(x) sum(x == 0), integer(1))
   idx <- rep.int(seq_len(n), deg)
   nbrs <- unlist(neig.map, use.names = FALSE)
+
+  ind_island <- nbrs == 0
+
+  # Remove island indices from off-diagonal entries
+  idx <- idx[!ind_island]
+  nbrs <- nbrs[!ind_island]
 
   Matrix::sparseMatrix(
     i = c(seq_len(n), idx),
