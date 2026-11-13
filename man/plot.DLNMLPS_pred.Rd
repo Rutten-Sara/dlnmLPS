@@ -53,7 +53,7 @@ different windows (default = TRUE)?}
 
 \item{show.legend}{Logical. Should the legend appear on the plot (default = TRUE)?}
 
-\item{CI}{Logical. Should confidence intervals be displayed (default = FALSE)? Confidence
+\item{CI}{Logical. Should credible intervals be displayed (default = FALSE)? credible
 intervals are only available for two-dimensional plots.}
 
 \item{xlim, ylim, zlim}{Numeric vectors of length two giving axis limits.}
@@ -115,7 +115,7 @@ Three-dimensional plots can display only a single slice at a time. In
 contrast, two-dimensional plots may contain multiple slices, resulting in
 multiple curves in the same figure.
 
-Confidence intervals are only available for two-dimensional plots.
+Credible intervals are only available for two-dimensional plots.
 }
 \examples{
 \dontrun{

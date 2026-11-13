@@ -86,7 +86,7 @@ variables define a three-dimensional surface.
 
 Contour plots are not available for two-dimensional plots (e.g.,
 cumulative exposure-response curves or exposure/lag slices shown as
-multiple lines). Confidence intervals are therefore not supported.
+multiple lines). Credible intervals are therefore not supported.
 }
 \examples{
 \dontrun{

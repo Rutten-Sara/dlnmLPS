@@ -27,7 +27,7 @@
 #' @param multiple.plots Logical. Should the results of different by-levels be plotted in
 #' different windows (default = TRUE)?
 #' @param show.legend Logical. Should the legend appear on the plot (default = TRUE)?
-#' @param CI Logical. Should confidence intervals be displayed (default = FALSE)? Confidence
+#' @param CI Logical. Should credible intervals be displayed (default = FALSE)? credible
 #' intervals are only available for two-dimensional plots.
 #' @param xlim,ylim,zlim Numeric vectors of length two giving axis limits.
 #' @param cols Colours used for lines, surfaces or contours.
@@ -71,7 +71,7 @@
 #' contrast, two-dimensional plots may contain multiple slices, resulting in
 #' multiple curves in the same figure.
 #'
-#' Confidence intervals are only available for two-dimensional plots.
+#' Credible intervals are only available for two-dimensional plots.
 #'
 #' @returns
 #' Produces a plot. The function is called for its side effects and returns
@@ -385,7 +385,7 @@ dlnmLPS_plot_ind <- function(x, slice_lag = NULL, slice_x = NULL, slice_y = NULL
 #'
 #' Contour plots are not available for two-dimensional plots (e.g.,
 #' cumulative exposure-response curves or exposure/lag slices shown as
-#' multiple lines). Confidence intervals are therefore not supported.
+#' multiple lines). Credible intervals are therefore not supported.
 #'
 #' @returns
 #' Produces a contour plot and returns `NULL` invisibly.
