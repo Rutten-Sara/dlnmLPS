@@ -69,7 +69,8 @@ tutorials, use:
 ``` r
 
 # install.packages("remotes")
-remotes::install_github("Rutten-Sara/dlnmLPS", build_vignettes = TRUE, dependencies = TRUE)
+remotes::install_github("Rutten-Sara/dlnmLPS", build_vignettes = TRUE, 
+                        dependencies = TRUE)
 ```
 
 Building the vignettes may take a few minutes, depending on your system.
@@ -166,6 +167,8 @@ ANY WARRANTY. See the `LICENSE` file for details.
   : Summarize a dlnmLPS model
 - [`print(`*`<summary.dlnmLPS>`*`)`](https://rutten-sara.github.io/dlnmLPS/reference/print.summary.DLNMLPS.md)
   : Print a summary of a dlnmLPS model
+- [`print(`*`<dlnmLPS>`*`)`](https://rutten-sara.github.io/dlnmLPS/reference/print.dlnmLPS.md)
+  : Print a dlnmLPS model
 - [`dlnmLPS_Object`](https://rutten-sara.github.io/dlnmLPS/reference/DLNMLPS_Object.md)
   : dlnmLPS objects
 - [`sm()`](https://rutten-sara.github.io/dlnmLPS/reference/sm.md) :

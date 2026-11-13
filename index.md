@@ -69,7 +69,8 @@ tutorials, use:
 ``` r
 
 # install.packages("remotes")
-remotes::install_github("Rutten-Sara/dlnmLPS", build_vignettes = TRUE, dependencies = TRUE)
+remotes::install_github("Rutten-Sara/dlnmLPS", build_vignettes = TRUE, 
+                        dependencies = TRUE)
 ```
 
 Building the vignettes may take a few minutes, depending on your system.

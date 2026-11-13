@@ -27,6 +27,8 @@
   : Summarize a dlnmLPS model
 - [`print(`*`<summary.dlnmLPS>`*`)`](https://rutten-sara.github.io/dlnmLPS/reference/print.summary.DLNMLPS.md)
   : Print a summary of a dlnmLPS model
+- [`print(`*`<dlnmLPS>`*`)`](https://rutten-sara.github.io/dlnmLPS/reference/print.dlnmLPS.md)
+  : Print a dlnmLPS model
 - [`dlnmLPS_Object`](https://rutten-sara.github.io/dlnmLPS/reference/DLNMLPS_Object.md)
   : dlnmLPS objects
 - [`sm()`](https://rutten-sara.github.io/dlnmLPS/reference/sm.md) :
