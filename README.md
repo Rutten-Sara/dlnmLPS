@@ -110,7 +110,7 @@ Associated literature:
    
 ## Package version
 
-This is version 0.1.0 (2026-09-01). 
+This is version 0.1.0 (2026-11-16). 
 
 `dlnmLPS` is currently under active development. This is an early
 development version, and the package interface may change
