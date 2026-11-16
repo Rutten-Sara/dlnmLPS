@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(dlnmLPS)
+set.seed(123)
 ```
 
 # Introduction
@@ -49,7 +50,7 @@ We can extract some additional information from the date such as the day of the 
 # Extract date information
 dataset <- barcelona_temp |>
   dplyr::mutate(
-    dow = weekdays(date),
+    dow = lubridate::wday(date),
     year = lubridate::year(date),
     month = lubridate::month(date)
   )

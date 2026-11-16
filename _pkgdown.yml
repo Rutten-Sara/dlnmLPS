@@ -1,4 +1,8 @@
 url: https://rutten-sara.github.io/dlnmLPS/
+authors:
+  footer:
+    roles: [aut, cre, ctb]
+    text: "Developed by"
 template:
   bootstrap: 5
   light-switch: yes
