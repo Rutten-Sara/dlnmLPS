@@ -807,12 +807,12 @@ and DLNMs with bivariate exposures (see
 
 ## References
 
-Gasparrini, A., B. Armstrong, and M. G. Kenward. 2010. “Distributed Lag
-Non-Linear Models.” *Statistics in Medicine* 29 (21): 2224–34.
-<https://doi.org/10.1002/sim.3940>.
+Gasparrini, Antonio, Ben Armstrong, and Michael G. Kenward. 2010.
+“Distributed Lag Non-Linear Models.” *Statistics in Medicine* 29 (21):
+2224–34. <https://doi.org/10.1002/sim.3940>.
 
-Gasparrini, A., and M. Leone. 2014. “Attributable Risk from Distributed
-Lag Models.” *BMC Medical Research Methodology* 14: 55.
+Gasparrini, Antonio, and Michela Leone. 2014. “Attributable Risk from
+Distributed Lag Models.” *BMC Medical Research Methodology* 14: 55.
 <https://doi.org/10.1186/1471-2288-14-55>.
 
 Gasparrini, Antonio, Fabian Scheipl, Ben Armstrong, and Michael G.
@@ -822,5 +822,5 @@ Models.” *Biometrics* 73 (3): 938–48.
 
 Rutten, Sara, Bryan Sumalinab, Oswaldo Gressani, et al. 2026. “Penalized
 Distributed Lag Non-Linear Models for Small Area Data Using
-Laplacian-p-Splines.” *Statistics and Computing* 36 (February): 38.
+Laplacian-P-Splines.” *Statistics and Computing* 36 (1): 38.
 <https://doi.org/10.1007/s11222-025-10790-9>.

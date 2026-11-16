@@ -193,7 +193,7 @@ model_typeII$DIC; model_typeII$WAIC; -sum(log(model_typeII$CPO))
 #> [1] 15190.62
 model_typeIII$DIC; model_typeIII$WAIC; -sum(log(model_typeIII$CPO))
 #> [1] 30375.74
-#> [1] 30377.85
+#> [1] 30377.84
 #> [1] 15188.8
 model_typeIV$DIC; model_typeIV$WAIC; -sum(log(model_typeIV$CPO))
 #> [1] 30365.69
@@ -384,7 +384,7 @@ for more information.
 
 ## References
 
-Rutten, S., T. Neyens, E. Duarte, A. Gasparrini, and C. Faes. 2026.
-“Spatially Varying Distributed Lag Non-Linear Models Using Laplacian
-P-Splines.” *arXiv Preprint arXiv:2604.09012*, ahead of print.
+Rutten, Sara, Thomas Neyens, Elisa Duarte, Antonio Gasparrini, and
+Christel Faes. 2026. “Spatially Varying Distributed Lag Non-Linear
+Models Using Laplacian P-Splines.” In *arXiv Preprint arXiv:2604.09012*.
 <https://doi.org/10.48550/arXiv.2604.09012>.

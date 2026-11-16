@@ -416,6 +416,6 @@ for more information.
 
 Rutten, Sara, Thomas Neyens, Elisa Duarte, Antonio Gasparrini, and
 Christel Faes. 2026. “Distributed Lag Non-Linear Models with Spatial
-Effect Modification Using Laplacian p-Splines.” *Environmental and
-Ecological Statistics*, ahead of print, June.
+Effect Modification Using Laplacian P-Splines.” *Environmental and
+Ecological Statistics* 33: 1425–50.
 <https://doi.org/10.1007/s10651-026-00739-0>.

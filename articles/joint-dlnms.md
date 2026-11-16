@@ -400,8 +400,8 @@ and
 
 ## References
 
-Rutten, S., E. Duarte, T. Neyens, D. Lauwaet, and C. Faes. 2024. “A
-Penalized Distributed-Lag Non-Linear Model for Modeling the Joint
-Delayed Effect of Two Predictors: Impact of Minimum and Maximum
-Temperature on Mortality.” *medRxiv*, ahead of print.
+Rutten, Sara, Elisa Duarte, Thomas Neyens, Dirk Lauwaet, and Christel
+Faes. 2024. “A Penalized Distributed-Lag Non-Linear Model for Modeling
+the Joint Delayed Effect of Two Predictors: Impact of Minimum and
+Maximum Temperature on Mortality.” In *medRxiv*.
 <https://doi.org/10.1101/2024.11.29.24318041>.

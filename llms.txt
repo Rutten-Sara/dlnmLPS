@@ -96,7 +96,7 @@ Installing `dlnmLPS` from source requires a working C++ compiler:
 Associated literature:
 
 1.  Rutten, S., Duarte, E., Neyens, T., Lauwaet, D., & Faes, C. (2024).
-    A penalized distributed lag non-linear model for modeling the joint
+    A penalized distributed-lag non-linear model for modeling the joint
     delayed effect of two predictors: impact of minimum and maximum
     temperature on mortality. *medRxiv*.
     <https://doi.org/10.1101/2024.11.29.24318041>
@@ -110,7 +110,8 @@ Associated literature:
 3.  Rutten, S., Neyens, T., Duarte, E., Gasparrini, A., & Faes, C.
     (2026). Distributed lag non-linear models with spatial effect
     modification using Laplacian P-splines. *Environmental and
-    Ecological Statistics*. <https://doi.org/10.1007/s10651-026-00739-0>
+    Ecological Statistics*, 33, 1425–1450.
+    <https://doi.org/10.1007/s10651-026-00739-0>
 
 4.  Rutten, S., Neyens, T., Duarte, E., Gasparrini, A., & Faes, C.
     (2026). Spatially varying distributed lag non-linear models using
