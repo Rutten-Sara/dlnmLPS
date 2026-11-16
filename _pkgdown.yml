@@ -24,32 +24,34 @@ articles:
   - spatially-varying-dlnms
   - joint-dlnms
 reference:
-- title: Data
-  contents:
-  - barcelona_temp
-  - shapefile_bcn
-- title: Functions
-  contents:
-  - section: Model fitting
+  - title: Data
     contents:
-    - joint.crossbasis
-    - dlnmLPS
-    - sm
-    - dlnmLPS_Object
-  - section: Predicting
+      - barcelona_temp
+      - shapefile_bcn
+
+  - title: Model fitting
     contents:
-    - pred_crossbasis
-    - extract_predictions
-    - attributable_risk
-  - section: Visualizing results
+      - joint.crossbasis
+      - dlnmLPS
+      - sm
+      - dlnmLPS_Object
+
+  - title: Predicting
     contents:
-    - plot.dlnmLPS_pred
-    - contour.dlnmLPS_pred
-  - section: Summarizing results
+      - pred_crossbasis
+      - extract_predictions
+      - attributable_risk
+
+  - title: Visualizing results
     contents:
-    - summary.dlnmLPS
-    - print.summary.dlnmLPS
-    - print.dlnmLPS
+      - plot.dlnmLPS_pred
+      - contour.dlnmLPS_pred
+
+  - title: Summarizing results
+    contents:
+      - summary.dlnmLPS
+      - print.summary.dlnmLPS
+      - print.dlnmLPS
 
 
 
