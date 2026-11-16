@@ -16,7 +16,7 @@ Email: <sara.rutten@uhasselt.be>
 [ORCID](https://orcid.org/0009-0000-3194-5769)
 [GitHub](https://github.com/Rutten-Sara)
 
-- **Sara Rutten**. Author, maintainer.
+- **Sara Rutten**. Author, maintainer, copyright holder.
   [](https://orcid.org/0009-0000-3194-5769)  
   Interuniversity Institute for Biostatistics and statistical
   Bioinformatics (I-BioStat), Data Science Institute (DSI), Hasselt

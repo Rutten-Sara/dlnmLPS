@@ -201,8 +201,8 @@ model_typeII$DIC; model_typeII$WAIC; -sum(log(model_typeII$CPO))
 #> [1] 30382.19
 #> [1] 15191.02
 model_typeIII$DIC; model_typeIII$WAIC; -sum(log(model_typeIII$CPO))
-#> [1] 30375.42
-#> [1] 30379.16
+#> [1] 30375.43
+#> [1] 30379.17
 #> [1] 15189.47
 model_typeIV$DIC; model_typeIV$WAIC; -sum(log(model_typeIV$CPO))
 #> [1] 30365.26
