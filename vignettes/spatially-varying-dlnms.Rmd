@@ -98,18 +98,22 @@ model_typeI <- dlnmLPS(dtot ~ factor(dow) +
                              sm(District, arg = list(type = "ind")),
                         data = dataset,
                         offset = log(pop),
-                        model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                        model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                CPO = TRUE),
                         family = "Poisson")
 
 model_typeIII <- dlnmLPS(dtot ~ factor(dow) + 
-                               sm(basis.max,
-                                  by = District, arg.by = list(type = "Leroux", map = shapefile_bcn)) +
+                               sm(basis.max, by = District, 
+                                  arg.by = list(type = "Leroux", 
+                                                map = shapefile_bcn)) +
                                sm(month, arg = list(type = "ns", df = 3)) +
                                sm(year, arg = list(type = "rw1")) +
-                               sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+                               sm(District, arg = list(type = "Leroux", 
+                                                       map = shapefile_bcn)),
                           data = dataset,
                           offset = log(pop),
-                          model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                          model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                  CPO = TRUE),
                           family = "Poisson")
 ```
 
@@ -133,18 +137,22 @@ model_typeII <- dlnmLPS(dtot ~ factor(dow) +
                               sm(District, arg = list(type = "ind")),
                          data = dataset,
                          offset = log(pop),
-                         model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                         model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                 CPO = TRUE),
                          family = "Poisson")
 
 model_typeIV <- dlnmLPS(dtot ~ factor(dow) + 
-                              sm(basis.max_pen, arg = list(pen = 2),
-                                  by = District, arg.by = list(type = "Leroux", map = shapefile_bcn)) +
+                              sm(basis.max_pen, arg = list(pen = 2), by = District, 
+                                 arg.by = list(type = "Leroux", 
+                                               map = shapefile_bcn)) +
                               sm(month, arg = list(type = "ns", df = 3)) +
                               sm(year, arg = list(type = "rw1")) +
-                              sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+                              sm(District, arg = list(type = "Leroux", 
+                                                      map = shapefile_bcn)),
                          data = dataset,
                          offset = log(pop),
-                         model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                         model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                 CPO = TRUE),
                          family = "Poisson")
 ```
 
@@ -176,36 +184,39 @@ pred_penalized <- pred_crossbasis(
 Note that we also requested the region-specific exceedance probabilities. To extract specific predictions of interest, we can use the wrapper function `extract_predictions()`. For example, if we want to extract the overall RRs at 30 degrees and for the first four districts, we can use:
 
 ```{r}
-extract_predictions(pred_penalized, slice_x = 30, slice_by = unique(dataset$District)[1:4],
+extract_predictions(pred_penalized, slice_x = 30, 
+                    slice_by = unique(dataset$District)[1:4],
                     ptype = "allRRfit")
 ```
 
 We can visualize the temperature-mortality relationship for the first four districts and for lag 0, 3 and 8 as:
 
 ```{r, fig.width = 6, fig.height = 8}
-plot(pred_penalized, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, xlab = "temperature",
-     ylab = "RR", slice_by = unique(dataset$District)[1:4])
+plot(pred_penalized, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, 
+     xlab = "temperature", ylab = "RR", 
+     slice_by = unique(dataset$District)[1:4])
 ```
 
-The option `multiple.plots` = FALSE allows visualizing the results for different districts on one plot. However, this option is only available for an integer (and not a vector) slice exposure or lag value or overall RR-curve. The lag-response relationships at 30 degrees can be visualized for the four districts using:
+The option `multiple.plots = FALSE` allows visualizing the results for different districts on one plot. However, this option is only available for an integer (and not a vector) slice exposure or lag value or overall RR-curve. The lag-response relationships at 30 degrees can be visualized for the four districts using:
 
 ```{r, fig.width = 6, fig.height = 4}
-plot(pred_penalized, slice_x = 30, ptype = "slices", CI = TRUE, xlab = "lag", ylab = "RR",
-     multiple.plots = FALSE, slice_by = unique(dataset$District)[1:4])
+plot(pred_penalized, slice_x = 30, ptype = "slices", CI = TRUE, 
+     xlab = "lag", ylab = "RR", multiple.plots = FALSE, 
+     slice_by = unique(dataset$District)[1:4])
 ```
 
 To visualize these lag-response relationships for all districts, without legend and credible intervals, we can specify:
 
 ```{r, fig.width = 6, fig.height = 4}
-plot(pred_penalized, slice_x = 30, ptype = "slices", CI = FALSE, xlab = "lag", ylab = "RR",
-     multiple.plots = FALSE, show.legend = FALSE)
+plot(pred_penalized, slice_x = 30, ptype = "slices", CI = FALSE, 
+     xlab = "lag", ylab = "RR", multiple.plots = FALSE, show.legend = FALSE)
 ```
 
 The overall cumulative relationship can be visualized for all districts using:
 
 ```{r, fig.width = 6, fig.height = 4}
-plot(pred_penalized, ptype = "overall", CI = FALSE, xlab = "temperature", ylab = "RR", 
-     multiple.plots = FALSE, show.legend = FALSE, col = "black")
+plot(pred_penalized, ptype = "overall", CI = FALSE, xlab = "temperature", 
+     ylab = "RR", multiple.plots = FALSE, show.legend = FALSE, col = "black")
 ```
 
 Moreover, the overall RR for all districts at a temperature value of 30 degrees Celsius could also be presented on a map:
@@ -272,7 +283,8 @@ af_ci <- dplyr::bind_rows(lapply(seq_along(af2007_district$samples), function(i)
 
 # Visualize results
 ggplot2::ggplot(af_ci, ggplot2::aes(x = estimate, y = ID)) +
-  ggplot2::geom_errorbar(ggplot2::aes(xmin = lower, xmax = upper), orientation = "y") +
+  ggplot2::geom_errorbar(ggplot2::aes(xmin = lower, xmax = upper), 
+                         orientation = "y") +
   ggplot2::geom_point() +
   ggplot2::labs(x = "Attributable fraction", y = "District") +
   ggplot2::theme_minimal()

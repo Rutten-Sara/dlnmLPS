@@ -100,7 +100,8 @@ basis.max <- dlnm::crossbasis(
 model_unpenalized <- dlnmLPS(dtot ~ sm(basis.max),
                               data = dataset,
                               offset = log(pop),
-                              model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                              model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                      CPO = TRUE),
                               family = "Poisson")
 ```
 
@@ -114,7 +115,8 @@ model_unpenalized2 <- dlnmLPS(dtot ~ factor(dow) + sm(basis.max) +
                                     sm(month, arg = list(type = "ns", df = 3)),
                               data = dataset,
                               offset = log(pop),
-                              model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                              model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                      CPO = TRUE),
                               family = "Poisson")
 ```
 
@@ -152,7 +154,8 @@ extract_predictions(pred_unpenalized, slice_x = c(22,30), ptype = "allRRfit")
 Note that credible intervals and exceedance probabilities are also printed if present in the predictions. To extract the lag-specific RRs at lag 0 and lag 8 for these temperatures, we can similarly use `ptype = "matRRfit"`:
 
 ```{r}
-extract_predictions(pred_unpenalized, slice_x = c(22,30), slice_lag = c(0,8), ptype = "matRRfit")
+extract_predictions(pred_unpenalized, slice_x = c(22,30), slice_lag = c(0,8), 
+                    ptype = "matRRfit")
 ```
 
 The estimated exposure-response association can also be visualized at different lags (e.g. 0, 3 and 8) using `ptype = "slices"` and `slice_lag`:
@@ -165,13 +168,15 @@ plot(pred_unpenalized, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE,
 This plot shows that, while there is an increased immediate risk for high temperature days, this risk is not visible anymore after three days. Instead of showing the exposure-response curve at different lags, we can also show the lag-response curve at pre-specified temperature level(s) using `slice_x`:
 
 ```{r, fig.width = 6, fig.height = 4}
-plot(pred_unpenalized, slice_x = 30, ptype = "slices", CI = TRUE, xlab = "lag", ylab = "RR")
+plot(pred_unpenalized, slice_x = 30, ptype = "slices", CI = TRUE, 
+     xlab = "lag", ylab = "RR")
 ```
 
 For a temperature of 30 degrees, we can indeed see an increased risk that diminishes after three days. We can also visualize the cumulative temperature-mortality relationship (cumulative over the entire lag period) by specifying `ptype = "overall"`.
 
 ```{r, fig.width = 6, fig.height = 4}
-plot(pred_unpenalized, ptype = "overall", CI = TRUE, xlab = "temperature", ylab = "RR")
+plot(pred_unpenalized, ptype = "overall", CI = TRUE, 
+     xlab = "temperature", ylab = "RR")
 ```
 
 Again, an increased overall risk can be found for high temperatures. Finally, we can visualize the entire temperature-lag-mortality relationship using `ptype = "cross"`. A contour plot can be requested using: 
@@ -212,11 +217,13 @@ basis.max_pen <- dlnm::crossbasis(
   group = group
 )
 
-model_penalized <- dlnmLPS(dtot ~ factor(dow) + sm(basis.max_pen, arg = list(pen = 2)) +
+model_penalized <- dlnmLPS(dtot ~ factor(dow) + 
+                                 sm(basis.max_pen, arg = list(pen = 2)) +
                                  sm(month, arg = list(type = "ns", df = 3)),
                             data = dataset,
                             offset = log(pop),
-                            model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                            model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                    CPO = TRUE),
                             family = "Poisson")
 ```
 
@@ -238,8 +245,10 @@ pred_penalized <- pred_crossbasis(
   CI = TRUE
 )
 
-plot(pred_penalized, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, xlab = "temperature", ylab = "RR")
-plot(pred_penalized, slice_x = 30, ptype = "slices", CI = TRUE, xlab = "lag", ylab = "RR")
+plot(pred_penalized, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, 
+     xlab = "temperature", ylab = "RR")
+plot(pred_penalized, slice_x = 30, ptype = "slices", CI = TRUE, 
+     xlab = "lag", ylab = "RR")
 plot(pred_penalized, ptype = "overall", CI = TRUE, xlab = "temperature", ylab = "RR")
 contour(pred_penalized, ptype = "cross", xlab = "lag", ylab = "temperature")
 plot(pred_penalized, ptype = "cross", ticktype="detailed",theta=230,
@@ -340,7 +349,8 @@ af_ci <- dplyr::bind_rows(lapply(seq_along(af2007_district$samples), function(i)
 
 # Visualize results
 ggplot2::ggplot(af_ci, ggplot2::aes(x = estimate, y = ID)) +
-  ggplot2::geom_errorbar(ggplot2::aes(xmin = lower, xmax = upper), orientation = "y") +
+  ggplot2::geom_errorbar(ggplot2::aes(xmin = lower, xmax = upper), 
+                         orientation = "y") +
   ggplot2::geom_point() +
   ggplot2::labs(x = "Attributable fraction", y = "District") +
   ggplot2::theme_minimal()
@@ -373,13 +383,16 @@ A model with a year-specific random walk of order one and a district-specific Le
 ```{r}
 # Fit a penalized DLNM with spatial and temporal RW
 data(shapefile_bcn)
-model_penalized2 <- dlnmLPS(dtot ~ factor(dow) + sm(basis.max_pen, arg = list(pen = 2)) +
+model_penalized2 <- dlnmLPS(dtot ~ factor(dow) + 
+                                  sm(basis.max_pen, arg = list(pen = 2)) +
                                   sm(month, arg = list(type = "ns", df = 3)) +
                                   sm(year, arg = list(type = "rw1")) +
-                                  sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+                                  sm(District, arg = list(type = "Leroux", 
+                                                          map = shapefile_bcn)),
                              data = dataset,
                              offset = log(pop),
-                             model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                             model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                     CPO = TRUE),
                              family = "Poisson")
 ```
 
@@ -401,13 +414,16 @@ A model with a Leroux random effect on district that varies independently by yea
 
 ```{r}
 # Fit a penalized DLNM with temporally varying spatial effect
-model_penalized3 <- dlnmLPS(dtot ~ factor(dow) + sm(basis.max_pen, arg = list(pen = 2)) +
+model_penalized3 <- dlnmLPS(dtot ~ factor(dow) + 
+                                  sm(basis.max_pen, arg = list(pen = 2)) +
                                   sm(month, arg = list(type = "ns", df = 3)) +
-                                  sm(District, arg = list(type = "Leroux", map = shapefile_bcn),
+                                  sm(District, arg = list(type = "Leroux", 
+                                                          map = shapefile_bcn),
                                          by = year, arg.by = list(type = "ind")),
                              data = dataset,
                              offset = log(pop),
-                             model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                             model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                     CPO = TRUE),
                              family = "Poisson")
 ```
 

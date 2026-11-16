@@ -15,8 +15,10 @@ template:
       <meta name="google-site-verification" content="38StEJoKfLqaZDQGhsaVV_dbWNUa_AHcIU9dH7yNKi0" />
 articles:
 - title: Getting started
+  desc: An introduction to the dlnmLPS package, its main functionality, and basic workflow.
   contents: introduction_dlnmlps
 - title: Advanced topics
+  desc: More advanced applications and extensions of distributed lag non-linear models.
   contents:
   - effect-modified-dlnms
   - spatially-varying-dlnms
@@ -28,16 +30,26 @@ reference:
   - shapefile_bcn
 - title: Functions
   contents:
-  - joint.crossbasis
-  - dlnmLPS
-  - pred_crossbasis
-  - extract_predictions
-  - plot.dlnmLPS_pred
-  - contour.dlnmLPS_pred
-  - attributable_risk
-  - summary.dlnmLPS
-  - print.summary.dlnmLPS
-  - print.dlnmLPS
-  - dlnmLPS_Object
-  - sm
+  - title: Model fitting
+    contents:
+    - joint.crossbasis
+    - dlnmLPS
+    - sm
+    - dlnmLPS_Object
+  - title: Predicting
+    contents:
+    - pred_crossbasis
+    - extract_predictions
+    - attributable_risk
+  - title: Visualizing results
+    contents:
+    - plot.dlnmLPS_pred
+    - contour.dlnmLPS_pred
+  - title: Summarizing results
+    contents:
+    - summary.dlnmLPS
+    - print.summary.dlnmLPS
+    - print.dlnmLPS
+
+
 
