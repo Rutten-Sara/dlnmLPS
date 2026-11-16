@@ -149,32 +149,16 @@ ANY WARRANTY. See the `LICENSE` file for details.
 
 ## Model fitting
 
-- [`joint.crossbasis()`](https://rutten-sara.github.io/dlnmLPS/reference/joint.crossbasis.md)
-  : Construct a joint crossbasis matrix for two interacting exposures
 - [`dlnmLPS()`](https://rutten-sara.github.io/dlnmLPS/reference/dlnmLPS.md)
   : Fit DLNM using Laplacian P-splines
 - [`sm()`](https://rutten-sara.github.io/dlnmLPS/reference/sm.md) :
   Specify a smooth or structured model component
 - [`dlnmLPS_Object`](https://rutten-sara.github.io/dlnmLPS/reference/dlnmLPS_Object.md)
   : dlnmLPS objects
+- [`joint.crossbasis()`](https://rutten-sara.github.io/dlnmLPS/reference/joint.crossbasis.md)
+  : Construct a joint crossbasis matrix for two interacting exposures
 
-## Predicting
-
-- [`pred_crossbasis()`](https://rutten-sara.github.io/dlnmLPS/reference/pred_crossbasis.md)
-  : Generate predictions from a dlnmLPS model
-- [`extract_predictions()`](https://rutten-sara.github.io/dlnmLPS/reference/extract_predictions.md)
-  : Extract predictions
-- [`attributable_risk()`](https://rutten-sara.github.io/dlnmLPS/reference/attributable_risk.md)
-  : Attributable risk from dlnmLPS model
-
-## Visualizing results
-
-- [`plot(`*`<dlnmLPS_pred>`*`)`](https://rutten-sara.github.io/dlnmLPS/reference/plot.dlnmLPS_pred.md)
-  : Plot predicted outcomes
-- [`contour(`*`<dlnmLPS_pred>`*`)`](https://rutten-sara.github.io/dlnmLPS/reference/contour.dlnmLPS_pred.md)
-  : Contour plots of predicted outcomes
-
-## Summarizing results
+## Summarizing model
 
 - [`summary(`*`<dlnmLPS>`*`)`](https://rutten-sara.github.io/dlnmLPS/reference/summary.dlnmLPS.md)
   : Summarize a dlnmLPS model
@@ -183,20 +167,45 @@ ANY WARRANTY. See the `LICENSE` file for details.
 - [`print(`*`<dlnmLPS>`*`)`](https://rutten-sara.github.io/dlnmLPS/reference/print.dlnmLPS.md)
   : Print a dlnmLPS model
 
+## Predicting exposure-response relationship
+
+- [`pred_crossbasis()`](https://rutten-sara.github.io/dlnmLPS/reference/pred_crossbasis.md)
+  : Generate predictions from a dlnmLPS model
+- [`extract_predictions()`](https://rutten-sara.github.io/dlnmLPS/reference/extract_predictions.md)
+  : Extract predictions
+- [`attributable_risk()`](https://rutten-sara.github.io/dlnmLPS/reference/attributable_risk.md)
+  : Attributable risk from dlnmLPS model
+
+## Visualizing exposure-response relationship
+
+- [`plot(`*`<dlnmLPS_pred>`*`)`](https://rutten-sara.github.io/dlnmLPS/reference/plot.dlnmLPS_pred.md)
+  : Plot predicted outcomes
+- [`contour(`*`<dlnmLPS_pred>`*`)`](https://rutten-sara.github.io/dlnmLPS/reference/contour.dlnmLPS_pred.md)
+  : Contour plots of predicted outcomes
+
 # Articles
 
 ### Getting started
 
-An introduction to the dlnmLPS package, its main functionality, and
-basic workflow.
+An introduction to the dlnmLPS package for fitting distributed lag
+non-linear models (DLNMs) within a Bayesian framework using Laplace
+approximations. This article provides a step-by-step introduction to
+installing and loading the package, fitting a basic DLNM using
+unpenalized splines, and extending the model to penalized spline
+representations. It also illustrates how to account for smooth covariate
+effects and incorporate spatial and temporal random effects into the
+model.
 
 - [Introduction to
   dlnmLPS](https://rutten-sara.github.io/dlnmLPS/articles/introduction_dlnmlps.md):
 
 ### Advanced topics
 
-More advanced applications and extensions of distributed lag non-linear
-models.
+An overview of more advanced modelling approaches available in dlnmLPS.
+These articles demonstrate how the package can be used to accommodate
+spatially varying DLNMs, effect-modified DLNMs, and bivariate (joint)
+DLNMs, illustrating its flexibility in modelling complex
+exposure-lag-response relationships.
 
 - [Effect-modified
   DLNMs](https://rutten-sara.github.io/dlnmLPS/articles/effect-modified-dlnms.md):
