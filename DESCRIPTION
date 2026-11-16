@@ -2,10 +2,15 @@ Package: dlnmLPS
 Title: Flexible Bayesian Distributed Lag Non-Linear Models
 Version: 0.1.0
 Authors@R: c(
-    person("Sara", "Rutten", email = "sara.rutten@uhasselt.be", role = c("aut", "cre")),
-    person("Christel", "Faes", role = "aut"),
-    person("Thomas", "Neyens", role = "ctb"),
-    person("Elisa", "Duarte",  role = "ctb")
+    person("Sara", "Rutten", email = "sara.rutten@uhasselt.be", role = c("aut", "cre"),
+    comment = c(ORCID = "0009-0000-3194-5769",
+                affiliation = "Interuniversity Institute for Biostatistics and statistical Bioinformatics (I-BioStat), Data Science Institute (DSI), Hasselt University, Hasselt, Belgium")),
+    person("Christel", "Faes", role = "aut",
+        comment = c(affiliation = "Interuniversity Institute for Biostatistics and statistical Bioinformatics (I-BioStat), Data Science Institute (DSI), Hasselt University, Hasselt, Belgium")),
+    person("Thomas", "Neyens", role = "ctb",
+        comment = c(affiliation = "Interuniversity Institute for Biostatistics and statistical Bioinformatics (I-BioStat), Data Science Institute (DSI), Hasselt University, Hasselt, Belgium; L-BioStat, Department of Public Health and Primary Care, KU Leuven, Leuven, Belgium")),
+    person("Elisa", "Duarte",  role = "ctb",
+        comment = c(affiliation = "Interuniversity Institute for Biostatistics and statistical Bioinformatics (I-BioStat), Data Science Institute (DSI), Hasselt University, Hasselt, Belgium"))
     )
 Description: Tools for fitting distributed lag non-linear models within a Bayesian framework using Laplacian P-splines. The package enables flexible modelling of complex exposure-lag-response relationships based on the methodology of Rutten et al. (2026) <https://doi.org/10.1007/s11222-025-10790-9>.
 Encoding: UTF-8

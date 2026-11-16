@@ -1,5 +1,18 @@
 url: https://rutten-sara.github.io/dlnmLPS/
 authors:
+  before: |
+    ## Contact
+
+    **Package maintainer**
+
+    Interuniversity Institute for Biostatistics and statistical Bioinformatics (I-BioStat),<br>
+    Data Science Institute (DSI),<br>
+    Hasselt University, Belgium
+
+    Email: [sara.rutten@uhasselt.be](mailto:sara.rutten@uhasselt.be)
+
+    [ORCID](https://orcid.org/0009-0000-3194-5769)
+    [GitHub](https://github.com/Rutten-Sara)
   footer:
     roles: [aut, cre, ctb]
     text: "Developed by"
@@ -15,10 +28,19 @@ template:
       <meta name="google-site-verification" content="38StEJoKfLqaZDQGhsaVV_dbWNUa_AHcIU9dH7yNKi0" />
 articles:
 - title: Getting started
-  desc: An introduction to the dlnmLPS package, its main functionality, and basic workflow.
+  desc: >
+  An introduction to the dlnmLPS package for fitting distributed lag non-linear models (DLNMs)
+  within a Bayesian framework using Laplace approximations. This article provides a step-by-step
+  introduction to installing and loading the package, fitting a basic DLNM using unpenalized
+  splines, and extending the model to penalized spline representations. It also illustrates
+  how to account for smooth covariate effects and incorporate spatial and temporal random
+  effects into the model.
   contents: introduction_dlnmlps
 - title: Advanced topics
-  desc: More advanced applications and extensions of distributed lag non-linear models.
+  desc: An overview of more advanced modelling approaches available in dlnmLPS.
+  These articles demonstrate how the package can be used to accomodate spatially varying
+  DLNMs, effect-modified DLNMs, and bivariate (joint) DLNMs, illustrating its flexibility
+  in modelling complex exposure-lag-response relationships.
   contents:
   - effect-modified-dlnms
   - spatially-varying-dlnms
@@ -31,27 +53,28 @@ reference:
 
   - title: Model fitting
     contents:
-      - joint.crossbasis
       - dlnmLPS
       - sm
       - dlnmLPS_Object
+      - joint.crossbasis
 
-  - title: Predicting
+  - title: Summarizing model
+    contents:
+      - summary.dlnmLPS
+      - print.summary.dlnmLPS
+      - print.dlnmLPS
+
+  - title: Predicting exposure-response relationship
     contents:
       - pred_crossbasis
       - extract_predictions
       - attributable_risk
 
-  - title: Visualizing results
+  - title: Visualizing exposure-response relationship
     contents:
       - plot.dlnmLPS_pred
       - contour.dlnmLPS_pred
 
-  - title: Summarizing results
-    contents:
-      - summary.dlnmLPS
-      - print.summary.dlnmLPS
-      - print.dlnmLPS
 
 
 
