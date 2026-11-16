@@ -68,7 +68,8 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rutten-sara.github.io/dlnmLPS/">dlnmLPS</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rutten-sara.github.io/dlnmLPS/">dlnmLPS</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -124,7 +125,7 @@ day of the week, year and month.</p>
 <code class="sourceCode R"><span><span class="co"># Extract date information</span></span>
 <span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="va">barcelona_temp</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    dow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/weekday.POSIXt.html" class="external-link">weekdays</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span>,</span>
+<span>    dow <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/day.html" class="external-link">wday</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span>,</span>
 <span>    year <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/year.html" class="external-link">year</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span>,</span>
 <span>    month <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/month.html" class="external-link">month</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
@@ -235,21 +236,21 @@ comparison criteria DIC, WAIC and CPO:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Compare the estimated associations</span></span>
 <span><span class="va">model1</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model1</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model1</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 30411.85</span></span>
-<span><span class="co">#&gt; [1] 30415.3</span></span>
-<span><span class="co">#&gt; [1] 15207.56</span></span>
+<span><span class="co">#&gt; [1] 30412.37</span></span>
+<span><span class="co">#&gt; [1] 30414.05</span></span>
+<span><span class="co">#&gt; [1] 15206.92</span></span>
 <span><span class="va">model2</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model2</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model2</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 30389.48</span></span>
-<span><span class="co">#&gt; [1] 30392.5</span></span>
-<span><span class="co">#&gt; [1] 15196.13</span></span>
-<span><span class="va">model3</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model3</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model3</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 30389.52</span></span>
-<span><span class="co">#&gt; [1] 30392.24</span></span>
-<span><span class="co">#&gt; [1] 15196.01</span></span>
+<span><span class="co">#&gt; [1] 30392.74</span></span>
+<span><span class="co">#&gt; [1] 15196.3</span></span>
+<span><span class="va">model3</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model3</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model3</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 30389.78</span></span>
+<span><span class="co">#&gt; [1] 30392.71</span></span>
+<span><span class="co">#&gt; [1] 15196.26</span></span>
 <span><span class="va">model4</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model4</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model4</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 30378.99</span></span>
-<span><span class="co">#&gt; [1] 30382.03</span></span>
-<span><span class="co">#&gt; [1] 15190.93</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 30378.28</span></span>
+<span><span class="co">#&gt; [1] 30383.35</span></span>
+<span><span class="co">#&gt; [1] 15191.59</span></span></code></pre></div>
 <p>The fourth model is preferred based on all model selection criteria.
 Using this model, we predict the exposure-lag-response curve for three
 different levels of the deprivation index (2.5th, 50th and 97.5th
@@ -276,14 +277,14 @@ in the lag-specific RR for lag 0 and lag 2 at 22 and 30 degrees and the
 <span>                    slice_by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">$</span><span class="va">depriv</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>,<span class="fl">0.975</span><span class="op">)</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span>, </span>
 <span>                    ptype <span class="op">=</span> <span class="st">"matRRfit"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    x lag       fit     lower    upper   exc.prob    by</span></span>
-<span><span class="co">#&gt; 1 22   0 0.9442494 0.8760118 1.017802 0.06695034 -2.09</span></span>
-<span><span class="co">#&gt; 2 30   0 1.1271132 1.0665366 1.191130 0.99998909 -2.09</span></span>
-<span><span class="co">#&gt; 3 22   2 0.9529744 0.9034242 1.005242 0.03852666 -2.09</span></span>
-<span><span class="co">#&gt; 4 30   2 1.0263029 0.9943068 1.059329 0.94593421 -2.09</span></span>
-<span><span class="co">#&gt; 5 22   0 0.9615895 0.8950778 1.033043 0.14208096  1.45</span></span>
-<span><span class="co">#&gt; 6 30   0 1.1422374 1.0804183 1.207594 0.99999860  1.45</span></span>
-<span><span class="co">#&gt; 7 22   2 1.0057789 0.9596735 1.054099 0.59509832  1.45</span></span>
-<span><span class="co">#&gt; 8 30   2 1.0925640 1.0596552 1.126495 0.99999999  1.45</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 22   0 0.9442464 0.8760011 1.017808 0.06696302 -2.09</span></span>
+<span><span class="co">#&gt; 2 30   0 1.1271127 1.0665336 1.191133 0.99998908 -2.09</span></span>
+<span><span class="co">#&gt; 3 22   2 0.9529780 0.9034248 1.005249 0.03854716 -2.09</span></span>
+<span><span class="co">#&gt; 4 30   2 1.0263029 0.9943065 1.059329 0.94593282 -2.09</span></span>
+<span><span class="co">#&gt; 5 22   0 0.9615813 0.8950641 1.033042 0.14205176  1.45</span></span>
+<span><span class="co">#&gt; 6 30   0 1.1422335 1.0804124 1.207592 0.99999860  1.45</span></span>
+<span><span class="co">#&gt; 7 22   2 1.0057793 0.9596724 1.054101 0.59510276  1.45</span></span>
+<span><span class="co">#&gt; 8 30   2 1.0925656 1.0596566 1.126497 0.99999999  1.45</span></span></code></pre></div>
 <p>To plot the exposure-response relationship at lag 0, 3 and 8 for the
 2.5th, 50th and 97.5th percentiles of the deprivation index, we can
 use:</p>
@@ -427,7 +428,7 @@ Statistics</em> 33: 1425–50. <a href="https://doi.org/10.1007/s10651-026-00739
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Sara Rutten, Christel Faes.</p>
+  <p>Developed by Sara Rutten, Christel Faes, Thomas Neyens, Elisa Duarte.</p>
 </div>
 
 <div class="pkgdown-footer-right">

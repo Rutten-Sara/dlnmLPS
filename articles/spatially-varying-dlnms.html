@@ -68,7 +68,8 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rutten-sara.github.io/dlnmLPS/">dlnmLPS</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rutten-sara.github.io/dlnmLPS/">dlnmLPS</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -124,7 +125,7 @@ day of the week, year and month.</p>
 <code class="sourceCode R"><span><span class="co"># Extract date information</span></span>
 <span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="va">barcelona_temp</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    dow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/weekday.POSIXt.html" class="external-link">weekdays</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span>,</span>
+<span>    dow <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/day.html" class="external-link">wday</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span>,</span>
 <span>    year <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/year.html" class="external-link">year</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span>,</span>
 <span>    month <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/month.html" class="external-link">month</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
@@ -231,21 +232,21 @@ comparison criteria DIC, WAIC and CPO:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Compare the estimated associations</span></span>
 <span><span class="va">model_typeI</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model_typeI</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model_typeI</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 30385.36</span></span>
-<span><span class="co">#&gt; [1] 30387.4</span></span>
-<span><span class="co">#&gt; [1] 15193.58</span></span>
+<span><span class="co">#&gt; [1] 30384.82</span></span>
+<span><span class="co">#&gt; [1] 30388.73</span></span>
+<span><span class="co">#&gt; [1] 15194.24</span></span>
 <span><span class="va">model_typeII</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model_typeII</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model_typeII</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 30378.1</span></span>
-<span><span class="co">#&gt; [1] 30381.35</span></span>
-<span><span class="co">#&gt; [1] 15190.62</span></span>
+<span><span class="co">#&gt; [1] 30377.19</span></span>
+<span><span class="co">#&gt; [1] 30382.19</span></span>
+<span><span class="co">#&gt; [1] 15191.02</span></span>
 <span><span class="va">model_typeIII</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model_typeIII</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model_typeIII</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 30375.74</span></span>
-<span><span class="co">#&gt; [1] 30377.85</span></span>
-<span><span class="co">#&gt; [1] 15188.8</span></span>
+<span><span class="co">#&gt; [1] 30375.43</span></span>
+<span><span class="co">#&gt; [1] 30379.17</span></span>
+<span><span class="co">#&gt; [1] 15189.47</span></span>
 <span><span class="va">model_typeIV</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model_typeIV</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model_typeIV</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 30365.69</span></span>
-<span><span class="co">#&gt; [1] 30370.59</span></span>
-<span><span class="co">#&gt; [1] 15185.17</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 30365.26</span></span>
+<span><span class="co">#&gt; [1] 30371.54</span></span>
+<span><span class="co">#&gt; [1] 15185.67</span></span></code></pre></div>
 <p>Model Type IV is preferred based on all model selection criteria. To
 make predictions for temperatures between 22 degrees Celsius and 30
 degrees Celsius, compared to a reference level of 25 degrees, and for
@@ -270,10 +271,10 @@ districts, we can use:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_predictions.html">extract_predictions</a></span><span class="op">(</span><span class="va">pred_penalized</span>, slice_x <span class="op">=</span> <span class="fl">30</span>, slice_by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">$</span><span class="va">District</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>,</span>
 <span>                    ptype <span class="op">=</span> <span class="st">"allRRfit"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    x      fit    lower    upper by</span></span>
-<span><span class="co">#&gt; 1 30 1.695990 1.505554 1.910515 01</span></span>
-<span><span class="co">#&gt; 2 30 1.367359 1.165803 1.603762 02</span></span>
-<span><span class="co">#&gt; 3 30 1.482204 1.286167 1.708121 03</span></span>
-<span><span class="co">#&gt; 4 30 1.464581 1.208408 1.775060 04</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 30 1.695993 1.505548 1.910528 01</span></span>
+<span><span class="co">#&gt; 2 30 1.367327 1.165756 1.603751 02</span></span>
+<span><span class="co">#&gt; 3 30 1.482202 1.286156 1.708131 03</span></span>
+<span><span class="co">#&gt; 4 30 1.464596 1.208412 1.775093 04</span></span></code></pre></div>
 <p>We can visualize the temperature-mortality relationship for the first
 four districts and for lag 0, 3 and 8 as:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -401,7 +402,7 @@ Preprint arXiv:2604.09012</em>. <a href="https://doi.org/10.48550/arXiv.2604.090
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Sara Rutten, Christel Faes.</p>
+  <p>Developed by Sara Rutten, Christel Faes, Thomas Neyens, Elisa Duarte.</p>
 </div>
 
 <div class="pkgdown-footer-right">

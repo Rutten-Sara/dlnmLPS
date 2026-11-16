@@ -68,7 +68,8 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rutten-sara.github.io/dlnmLPS/">dlnmLPS</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rutten-sara.github.io/dlnmLPS/">dlnmLPS</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -150,7 +151,7 @@ day of the week, year and month.</p>
 <code class="sourceCode R"><span><span class="co"># Extract date information</span></span>
 <span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="va">barcelona_temp</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    dow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/weekday.POSIXt.html" class="external-link">weekdays</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span>,</span>
+<span>    dow <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/day.html" class="external-link">wday</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span>,</span>
 <span>    year <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/year.html" class="external-link">year</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span>,</span>
 <span>    month <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/month.html" class="external-link">month</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
@@ -216,39 +217,39 @@ can be inspected using:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Fixed effects:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;                        mean    sd 0.025quant 0.5quant 0.975quant   mode</span></span>
-<span><span class="co">#&gt; (Intercept)          -9.870 0.130    -10.125   -9.870     -9.615 -9.870</span></span>
-<span><span class="co">#&gt; basis.maxv1.l1        0.001 0.040     -0.078    0.001      0.080  0.001</span></span>
-<span><span class="co">#&gt; basis.maxv1.l2       -0.052 0.039     -0.128   -0.052      0.024 -0.052</span></span>
-<span><span class="co">#&gt; basis.maxv1.l3        0.047 0.040     -0.031    0.047      0.125  0.047</span></span>
-<span><span class="co">#&gt; basis.maxv1.l4       -0.098 0.038     -0.172   -0.098     -0.023 -0.098</span></span>
-<span><span class="co">#&gt; basis.maxv2.l1        0.005 0.033     -0.059    0.005      0.070  0.005</span></span>
-<span><span class="co">#&gt; basis.maxv2.l2       -0.077 0.032     -0.140   -0.077     -0.015 -0.077</span></span>
-<span><span class="co">#&gt; basis.maxv2.l3        0.092 0.033      0.027    0.092      0.158  0.092</span></span>
-<span><span class="co">#&gt; basis.maxv2.l4       -0.100 0.031     -0.161   -0.100     -0.039 -0.100</span></span>
-<span><span class="co">#&gt; basis.maxv3.l1        0.029 0.086     -0.139    0.029      0.196  0.029</span></span>
-<span><span class="co">#&gt; basis.maxv3.l2       -0.229 0.085     -0.396   -0.229     -0.063 -0.229</span></span>
-<span><span class="co">#&gt; basis.maxv3.l3        0.257 0.086      0.088    0.257      0.426  0.257</span></span>
-<span><span class="co">#&gt; basis.maxv3.l4       -0.240 0.083     -0.402   -0.240     -0.078 -0.240</span></span>
-<span><span class="co">#&gt; basis.maxv4.l1        0.003 0.039     -0.072    0.003      0.079  0.003</span></span>
-<span><span class="co">#&gt; basis.maxv4.l2       -0.131 0.033     -0.195   -0.131     -0.067 -0.131</span></span>
-<span><span class="co">#&gt; basis.maxv4.l3        0.364 0.040      0.286    0.364      0.442  0.364</span></span>
-<span><span class="co">#&gt; basis.maxv4.l4       -0.231 0.033     -0.296   -0.231     -0.166 -0.231</span></span>
-<span><span class="co">#&gt; month1               -0.180 0.013     -0.205   -0.180     -0.154 -0.180</span></span>
-<span><span class="co">#&gt; month2               -0.186 0.019     -0.223   -0.186     -0.149 -0.186</span></span>
-<span><span class="co">#&gt; month3               -0.023 0.010     -0.042   -0.023     -0.003 -0.023</span></span>
-<span><span class="co">#&gt; factor(dow)Monday     0.016 0.012     -0.008    0.016      0.039  0.016</span></span>
-<span><span class="co">#&gt; factor(dow)Saturday   0.018 0.012     -0.005    0.018      0.042  0.018</span></span>
-<span><span class="co">#&gt; factor(dow)Sunday     0.020 0.012     -0.004    0.020      0.043  0.020</span></span>
-<span><span class="co">#&gt; factor(dow)Thursday   0.002 0.012     -0.021    0.002      0.026  0.002</span></span>
-<span><span class="co">#&gt; factor(dow)Tuesday    0.010 0.012     -0.014    0.010      0.033  0.010</span></span>
-<span><span class="co">#&gt; factor(dow)Wednesday  0.013 0.012     -0.011    0.013      0.036  0.013</span></span>
+<span><span class="co">#&gt;                  mean    sd 0.025quant 0.5quant 0.975quant   mode</span></span>
+<span><span class="co">#&gt; (Intercept)    -9.850 0.130    -10.105   -9.850     -9.595 -9.850</span></span>
+<span><span class="co">#&gt; basis.maxv1.l1  0.001 0.040     -0.078    0.001      0.080  0.001</span></span>
+<span><span class="co">#&gt; basis.maxv1.l2 -0.052 0.039     -0.128   -0.052      0.024 -0.052</span></span>
+<span><span class="co">#&gt; basis.maxv1.l3  0.047 0.040     -0.031    0.047      0.125  0.047</span></span>
+<span><span class="co">#&gt; basis.maxv1.l4 -0.098 0.038     -0.172   -0.098     -0.023 -0.098</span></span>
+<span><span class="co">#&gt; basis.maxv2.l1  0.005 0.033     -0.059    0.005      0.070  0.005</span></span>
+<span><span class="co">#&gt; basis.maxv2.l2 -0.077 0.032     -0.140   -0.077     -0.015 -0.077</span></span>
+<span><span class="co">#&gt; basis.maxv2.l3  0.092 0.033      0.027    0.092      0.158  0.092</span></span>
+<span><span class="co">#&gt; basis.maxv2.l4 -0.100 0.031     -0.161   -0.100     -0.039 -0.100</span></span>
+<span><span class="co">#&gt; basis.maxv3.l1  0.029 0.086     -0.139    0.029      0.196  0.029</span></span>
+<span><span class="co">#&gt; basis.maxv3.l2 -0.229 0.085     -0.396   -0.229     -0.063 -0.229</span></span>
+<span><span class="co">#&gt; basis.maxv3.l3  0.257 0.086      0.088    0.257      0.426  0.257</span></span>
+<span><span class="co">#&gt; basis.maxv3.l4 -0.240 0.083     -0.402   -0.240     -0.078 -0.240</span></span>
+<span><span class="co">#&gt; basis.maxv4.l1  0.003 0.039     -0.072    0.003      0.079  0.003</span></span>
+<span><span class="co">#&gt; basis.maxv4.l2 -0.131 0.033     -0.195   -0.131     -0.067 -0.131</span></span>
+<span><span class="co">#&gt; basis.maxv4.l3  0.364 0.040      0.286    0.364      0.442  0.364</span></span>
+<span><span class="co">#&gt; basis.maxv4.l4 -0.231 0.033     -0.296   -0.231     -0.166 -0.231</span></span>
+<span><span class="co">#&gt; month1         -0.180 0.013     -0.205   -0.180     -0.154 -0.180</span></span>
+<span><span class="co">#&gt; month2         -0.186 0.019     -0.223   -0.186     -0.149 -0.186</span></span>
+<span><span class="co">#&gt; month3         -0.023 0.010     -0.042   -0.023     -0.003 -0.023</span></span>
+<span><span class="co">#&gt; factor(dow)2   -0.004 0.012     -0.028   -0.004      0.019 -0.004</span></span>
+<span><span class="co">#&gt; factor(dow)3   -0.010 0.012     -0.034   -0.010      0.014 -0.010</span></span>
+<span><span class="co">#&gt; factor(dow)4   -0.007 0.012     -0.030   -0.007      0.017 -0.007</span></span>
+<span><span class="co">#&gt; factor(dow)5   -0.017 0.012     -0.041   -0.017      0.006 -0.017</span></span>
+<span><span class="co">#&gt; factor(dow)6   -0.020 0.012     -0.043   -0.020      0.004 -0.020</span></span>
+<span><span class="co">#&gt; factor(dow)7   -0.002 0.012     -0.025   -0.002      0.022 -0.002</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model comparison:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; DIC: 32612.12 ; Effective Parameters: 26 </span></span>
-<span><span class="co">#&gt; WAIC: 32626.32 ; Effective Parameters: 38.93717 </span></span>
-<span><span class="co">#&gt; sum(log(CPO)): -16313.1</span></span></code></pre></div>
+<span><span class="co">#&gt; WAIC: 32623.63 ; Effective Parameters: 37.36614 </span></span>
+<span><span class="co">#&gt; sum(log(CPO)): -16311.74</span></span></code></pre></div>
 <p>The summary shows the function call, estimated coefficients (mean,
 standard deviation, 2.5% quantile, median, 97.5% quantile and mode) and
 model comparison criteria.</p>
@@ -294,9 +295,9 @@ at lag 0 and lag 8 for these temperatures, we can similarly use
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_predictions.html">extract_predictions</a></span><span class="op">(</span><span class="va">pred_unpenalized</span>, slice_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">22</span>,<span class="fl">30</span><span class="op">)</span>, slice_lag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">8</span><span class="op">)</span>, ptype <span class="op">=</span> <span class="st">"matRRfit"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    x lag       fit     lower    upper   exc.prob</span></span>
-<span><span class="co">#&gt; 1 22   0 0.9569183 0.9089288 1.007442 0.04671869</span></span>
+<span><span class="co">#&gt; 1 22   0 0.9569183 0.9089288 1.007442 0.04671868</span></span>
 <span><span class="co">#&gt; 2 30   0 1.1845835 1.1495812 1.220652 1.00000000</span></span>
-<span><span class="co">#&gt; 3 22   8 1.0188142 0.9973264 1.040765 0.95671804</span></span>
+<span><span class="co">#&gt; 3 22   8 1.0188142 0.9973264 1.040765 0.95671803</span></span>
 <span><span class="co">#&gt; 4 30   8 1.0093272 1.0005293 1.018202 0.98116491</span></span></code></pre></div>
 <p>The estimated exposure-response association can also be visualized at
 different lags (e.g. 0, 3 and 8) using <code>ptype = "slices"</code> and
@@ -384,81 +385,81 @@ which are the estimated hyperparameters (penalties):</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Fixed effects:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;                        mean    sd 0.025quant 0.5quant 0.975quant   mode</span></span>
-<span><span class="co">#&gt; (Intercept)          -9.869 0.113    -10.091   -9.869     -9.647 -9.869</span></span>
-<span><span class="co">#&gt; basis.max_penv1.l1   -0.094 0.060     -0.212   -0.094      0.024 -0.094</span></span>
-<span><span class="co">#&gt; basis.max_penv1.l2   -0.067 0.034     -0.134   -0.067      0.000 -0.067</span></span>
-<span><span class="co">#&gt; basis.max_penv1.l3   -0.026 0.026     -0.076   -0.026      0.024 -0.026</span></span>
-<span><span class="co">#&gt; basis.max_penv1.l4   -0.001 0.022     -0.044   -0.001      0.043 -0.001</span></span>
-<span><span class="co">#&gt; basis.max_penv1.l5    0.006 0.020     -0.033    0.006      0.046  0.006</span></span>
-<span><span class="co">#&gt; basis.max_penv1.l6    0.009 0.018     -0.025    0.009      0.044  0.009</span></span>
-<span><span class="co">#&gt; basis.max_penv1.l7    0.004 0.016     -0.027    0.004      0.036  0.004</span></span>
-<span><span class="co">#&gt; basis.max_penv1.l8    0.000 0.015     -0.029    0.000      0.030  0.000</span></span>
-<span><span class="co">#&gt; basis.max_penv2.l1   -0.142 0.078     -0.295   -0.142      0.011 -0.142</span></span>
-<span><span class="co">#&gt; basis.max_penv2.l2   -0.099 0.037     -0.172   -0.099     -0.027 -0.099</span></span>
-<span><span class="co">#&gt; basis.max_penv2.l3   -0.025 0.023     -0.071   -0.025      0.021 -0.025</span></span>
-<span><span class="co">#&gt; basis.max_penv2.l4    0.005 0.019     -0.033    0.005      0.042  0.005</span></span>
-<span><span class="co">#&gt; basis.max_penv2.l5   -0.005 0.017     -0.038   -0.005      0.028 -0.005</span></span>
-<span><span class="co">#&gt; basis.max_penv2.l6    0.010 0.015     -0.019    0.010      0.039  0.010</span></span>
-<span><span class="co">#&gt; basis.max_penv2.l7    0.016 0.014     -0.012    0.016      0.044  0.016</span></span>
-<span><span class="co">#&gt; basis.max_penv2.l8    0.003 0.015     -0.026    0.003      0.033  0.003</span></span>
-<span><span class="co">#&gt; basis.max_penv3.l1   -0.120 0.082     -0.281   -0.120      0.040 -0.120</span></span>
-<span><span class="co">#&gt; basis.max_penv3.l2   -0.057 0.034     -0.123   -0.057      0.010 -0.057</span></span>
-<span><span class="co">#&gt; basis.max_penv3.l3   -0.017 0.020     -0.057   -0.017      0.023 -0.017</span></span>
-<span><span class="co">#&gt; basis.max_penv3.l4   -0.008 0.017     -0.040   -0.008      0.025 -0.008</span></span>
-<span><span class="co">#&gt; basis.max_penv3.l5   -0.017 0.015     -0.046   -0.017      0.012 -0.017</span></span>
-<span><span class="co">#&gt; basis.max_penv3.l6   -0.011 0.013     -0.037   -0.011      0.014 -0.011</span></span>
-<span><span class="co">#&gt; basis.max_penv3.l7    0.009 0.013     -0.016    0.009      0.035  0.009</span></span>
-<span><span class="co">#&gt; basis.max_penv3.l8    0.003 0.015     -0.027    0.003      0.032  0.003</span></span>
-<span><span class="co">#&gt; basis.max_penv4.l1   -0.073 0.083     -0.236   -0.073      0.089 -0.073</span></span>
-<span><span class="co">#&gt; basis.max_penv4.l2   -0.041 0.034     -0.106   -0.041      0.025 -0.041</span></span>
-<span><span class="co">#&gt; basis.max_penv4.l3   -0.016 0.020     -0.056   -0.016      0.024 -0.016</span></span>
-<span><span class="co">#&gt; basis.max_penv4.l4    0.005 0.016     -0.027    0.005      0.037  0.005</span></span>
-<span><span class="co">#&gt; basis.max_penv4.l5   -0.005 0.014     -0.032   -0.005      0.023 -0.005</span></span>
-<span><span class="co">#&gt; basis.max_penv4.l6   -0.008 0.013     -0.033   -0.008      0.016 -0.008</span></span>
-<span><span class="co">#&gt; basis.max_penv4.l7   -0.009 0.012     -0.033   -0.009      0.015 -0.009</span></span>
-<span><span class="co">#&gt; basis.max_penv4.l8   -0.004 0.015     -0.033   -0.004      0.026 -0.004</span></span>
-<span><span class="co">#&gt; basis.max_penv5.l1    0.008 0.082     -0.153    0.008      0.170  0.008</span></span>
-<span><span class="co">#&gt; basis.max_penv5.l2   -0.007 0.034     -0.073   -0.007      0.060 -0.007</span></span>
-<span><span class="co">#&gt; basis.max_penv5.l3   -0.008 0.020     -0.048   -0.008      0.032 -0.008</span></span>
-<span><span class="co">#&gt; basis.max_penv5.l4   -0.011 0.017     -0.044   -0.011      0.021 -0.011</span></span>
-<span><span class="co">#&gt; basis.max_penv5.l5    0.004 0.015     -0.024    0.004      0.032  0.004</span></span>
-<span><span class="co">#&gt; basis.max_penv5.l6   -0.007 0.013     -0.032   -0.007      0.019 -0.007</span></span>
-<span><span class="co">#&gt; basis.max_penv5.l7   -0.015 0.013     -0.040   -0.015      0.010 -0.015</span></span>
-<span><span class="co">#&gt; basis.max_penv5.l8   -0.002 0.015     -0.031   -0.002      0.028 -0.002</span></span>
-<span><span class="co">#&gt; basis.max_penv6.l1    0.140 0.081     -0.018    0.140      0.299  0.140</span></span>
-<span><span class="co">#&gt; basis.max_penv6.l2    0.089 0.036      0.018    0.089      0.160  0.089</span></span>
-<span><span class="co">#&gt; basis.max_penv6.l3    0.010 0.023     -0.035    0.010      0.055  0.010</span></span>
-<span><span class="co">#&gt; basis.max_penv6.l4   -0.022 0.019     -0.059   -0.022      0.014 -0.022</span></span>
-<span><span class="co">#&gt; basis.max_penv6.l5    0.000 0.016     -0.032    0.000      0.032  0.000</span></span>
-<span><span class="co">#&gt; basis.max_penv6.l6    0.003 0.014     -0.026    0.003      0.031  0.003</span></span>
-<span><span class="co">#&gt; basis.max_penv6.l7   -0.006 0.014     -0.033   -0.006      0.021 -0.006</span></span>
-<span><span class="co">#&gt; basis.max_penv6.l8   -0.001 0.015     -0.030   -0.001      0.028 -0.001</span></span>
-<span><span class="co">#&gt; basis.max_penv7.l1    0.235 0.087      0.065    0.235      0.405  0.235</span></span>
-<span><span class="co">#&gt; basis.max_penv7.l2    0.139 0.039      0.063    0.139      0.215  0.139</span></span>
-<span><span class="co">#&gt; basis.max_penv7.l3    0.053 0.026      0.003    0.053      0.104  0.053</span></span>
-<span><span class="co">#&gt; basis.max_penv7.l4    0.019 0.022     -0.024    0.019      0.063  0.019</span></span>
-<span><span class="co">#&gt; basis.max_penv7.l5    0.011 0.019     -0.027    0.011      0.049  0.011</span></span>
-<span><span class="co">#&gt; basis.max_penv7.l6    0.004 0.017     -0.030    0.004      0.037  0.004</span></span>
-<span><span class="co">#&gt; basis.max_penv7.l7    0.000 0.016     -0.031    0.000      0.031  0.000</span></span>
-<span><span class="co">#&gt; basis.max_penv7.l8    0.000 0.015     -0.030    0.000      0.030  0.000</span></span>
-<span><span class="co">#&gt; basis.max_penv8.l1    0.297 0.128      0.046    0.297      0.547  0.297</span></span>
-<span><span class="co">#&gt; basis.max_penv8.l2    0.146 0.062      0.025    0.146      0.268  0.146</span></span>
-<span><span class="co">#&gt; basis.max_penv8.l3    0.047 0.039     -0.030    0.047      0.123  0.047</span></span>
-<span><span class="co">#&gt; basis.max_penv8.l4    0.011 0.030     -0.048    0.011      0.070  0.011</span></span>
-<span><span class="co">#&gt; basis.max_penv8.l5    0.002 0.024     -0.045    0.002      0.050  0.002</span></span>
-<span><span class="co">#&gt; basis.max_penv8.l6    0.000 0.020     -0.040    0.000      0.040  0.000</span></span>
-<span><span class="co">#&gt; basis.max_penv8.l7    0.000 0.018     -0.035    0.000      0.035  0.000</span></span>
-<span><span class="co">#&gt; basis.max_penv8.l8    0.000 0.016     -0.032    0.000      0.032  0.000</span></span>
-<span><span class="co">#&gt; month1               -0.180 0.013     -0.206   -0.180     -0.154 -0.180</span></span>
-<span><span class="co">#&gt; month2               -0.187 0.019     -0.225   -0.187     -0.150 -0.187</span></span>
-<span><span class="co">#&gt; month3               -0.024 0.010     -0.043   -0.024     -0.004 -0.024</span></span>
-<span><span class="co">#&gt; factor(dow)Monday     0.012 0.012     -0.011    0.012      0.036  0.012</span></span>
-<span><span class="co">#&gt; factor(dow)Saturday   0.015 0.012     -0.008    0.015      0.039  0.015</span></span>
-<span><span class="co">#&gt; factor(dow)Sunday     0.016 0.012     -0.008    0.016      0.040  0.016</span></span>
-<span><span class="co">#&gt; factor(dow)Thursday   0.004 0.012     -0.020    0.004      0.027  0.004</span></span>
-<span><span class="co">#&gt; factor(dow)Tuesday    0.007 0.012     -0.016    0.007      0.031  0.007</span></span>
-<span><span class="co">#&gt; factor(dow)Wednesday  0.013 0.012     -0.010    0.013      0.037  0.013</span></span>
+<span><span class="co">#&gt;                      mean    sd 0.025quant 0.5quant 0.975quant   mode</span></span>
+<span><span class="co">#&gt; (Intercept)        -9.853 0.113    -10.075   -9.853     -9.631 -9.853</span></span>
+<span><span class="co">#&gt; basis.max_penv1.l1 -0.094 0.060     -0.212   -0.094      0.024 -0.094</span></span>
+<span><span class="co">#&gt; basis.max_penv1.l2 -0.067 0.034     -0.134   -0.067      0.000 -0.067</span></span>
+<span><span class="co">#&gt; basis.max_penv1.l3 -0.026 0.026     -0.076   -0.026      0.024 -0.026</span></span>
+<span><span class="co">#&gt; basis.max_penv1.l4 -0.001 0.022     -0.044   -0.001      0.043 -0.001</span></span>
+<span><span class="co">#&gt; basis.max_penv1.l5  0.006 0.020     -0.033    0.006      0.046  0.006</span></span>
+<span><span class="co">#&gt; basis.max_penv1.l6  0.009 0.018     -0.025    0.009      0.044  0.009</span></span>
+<span><span class="co">#&gt; basis.max_penv1.l7  0.004 0.016     -0.027    0.004      0.036  0.004</span></span>
+<span><span class="co">#&gt; basis.max_penv1.l8  0.000 0.015     -0.029    0.000      0.030  0.000</span></span>
+<span><span class="co">#&gt; basis.max_penv2.l1 -0.142 0.078     -0.295   -0.142      0.011 -0.142</span></span>
+<span><span class="co">#&gt; basis.max_penv2.l2 -0.099 0.037     -0.172   -0.099     -0.027 -0.099</span></span>
+<span><span class="co">#&gt; basis.max_penv2.l3 -0.025 0.023     -0.071   -0.025      0.021 -0.025</span></span>
+<span><span class="co">#&gt; basis.max_penv2.l4  0.005 0.019     -0.033    0.005      0.042  0.005</span></span>
+<span><span class="co">#&gt; basis.max_penv2.l5 -0.005 0.017     -0.038   -0.005      0.028 -0.005</span></span>
+<span><span class="co">#&gt; basis.max_penv2.l6  0.010 0.015     -0.019    0.010      0.039  0.010</span></span>
+<span><span class="co">#&gt; basis.max_penv2.l7  0.016 0.014     -0.012    0.016      0.044  0.016</span></span>
+<span><span class="co">#&gt; basis.max_penv2.l8  0.003 0.015     -0.026    0.003      0.033  0.003</span></span>
+<span><span class="co">#&gt; basis.max_penv3.l1 -0.120 0.082     -0.281   -0.120      0.040 -0.120</span></span>
+<span><span class="co">#&gt; basis.max_penv3.l2 -0.057 0.034     -0.123   -0.057      0.010 -0.057</span></span>
+<span><span class="co">#&gt; basis.max_penv3.l3 -0.017 0.020     -0.057   -0.017      0.023 -0.017</span></span>
+<span><span class="co">#&gt; basis.max_penv3.l4 -0.008 0.017     -0.040   -0.008      0.025 -0.008</span></span>
+<span><span class="co">#&gt; basis.max_penv3.l5 -0.017 0.015     -0.046   -0.017      0.012 -0.017</span></span>
+<span><span class="co">#&gt; basis.max_penv3.l6 -0.011 0.013     -0.037   -0.011      0.014 -0.011</span></span>
+<span><span class="co">#&gt; basis.max_penv3.l7  0.009 0.013     -0.016    0.009      0.035  0.009</span></span>
+<span><span class="co">#&gt; basis.max_penv3.l8  0.003 0.015     -0.027    0.003      0.032  0.003</span></span>
+<span><span class="co">#&gt; basis.max_penv4.l1 -0.073 0.083     -0.236   -0.073      0.089 -0.073</span></span>
+<span><span class="co">#&gt; basis.max_penv4.l2 -0.041 0.034     -0.106   -0.041      0.025 -0.041</span></span>
+<span><span class="co">#&gt; basis.max_penv4.l3 -0.016 0.020     -0.056   -0.016      0.024 -0.016</span></span>
+<span><span class="co">#&gt; basis.max_penv4.l4  0.005 0.016     -0.027    0.005      0.037  0.005</span></span>
+<span><span class="co">#&gt; basis.max_penv4.l5 -0.005 0.014     -0.032   -0.005      0.023 -0.005</span></span>
+<span><span class="co">#&gt; basis.max_penv4.l6 -0.008 0.013     -0.033   -0.008      0.016 -0.008</span></span>
+<span><span class="co">#&gt; basis.max_penv4.l7 -0.009 0.012     -0.033   -0.009      0.015 -0.009</span></span>
+<span><span class="co">#&gt; basis.max_penv4.l8 -0.004 0.015     -0.033   -0.004      0.026 -0.004</span></span>
+<span><span class="co">#&gt; basis.max_penv5.l1  0.008 0.082     -0.153    0.008      0.170  0.008</span></span>
+<span><span class="co">#&gt; basis.max_penv5.l2 -0.007 0.034     -0.073   -0.007      0.060 -0.007</span></span>
+<span><span class="co">#&gt; basis.max_penv5.l3 -0.008 0.020     -0.048   -0.008      0.032 -0.008</span></span>
+<span><span class="co">#&gt; basis.max_penv5.l4 -0.011 0.017     -0.044   -0.011      0.021 -0.011</span></span>
+<span><span class="co">#&gt; basis.max_penv5.l5  0.004 0.015     -0.024    0.004      0.032  0.004</span></span>
+<span><span class="co">#&gt; basis.max_penv5.l6 -0.007 0.013     -0.032   -0.007      0.019 -0.007</span></span>
+<span><span class="co">#&gt; basis.max_penv5.l7 -0.015 0.013     -0.040   -0.015      0.010 -0.015</span></span>
+<span><span class="co">#&gt; basis.max_penv5.l8 -0.002 0.015     -0.031   -0.002      0.028 -0.002</span></span>
+<span><span class="co">#&gt; basis.max_penv6.l1  0.140 0.081     -0.018    0.140      0.299  0.140</span></span>
+<span><span class="co">#&gt; basis.max_penv6.l2  0.089 0.036      0.018    0.089      0.160  0.089</span></span>
+<span><span class="co">#&gt; basis.max_penv6.l3  0.010 0.023     -0.035    0.010      0.055  0.010</span></span>
+<span><span class="co">#&gt; basis.max_penv6.l4 -0.022 0.019     -0.059   -0.022      0.014 -0.022</span></span>
+<span><span class="co">#&gt; basis.max_penv6.l5  0.000 0.016     -0.032    0.000      0.032  0.000</span></span>
+<span><span class="co">#&gt; basis.max_penv6.l6  0.003 0.014     -0.026    0.003      0.031  0.003</span></span>
+<span><span class="co">#&gt; basis.max_penv6.l7 -0.006 0.014     -0.033   -0.006      0.021 -0.006</span></span>
+<span><span class="co">#&gt; basis.max_penv6.l8 -0.001 0.015     -0.030   -0.001      0.028 -0.001</span></span>
+<span><span class="co">#&gt; basis.max_penv7.l1  0.235 0.087      0.065    0.235      0.405  0.235</span></span>
+<span><span class="co">#&gt; basis.max_penv7.l2  0.139 0.039      0.063    0.139      0.215  0.139</span></span>
+<span><span class="co">#&gt; basis.max_penv7.l3  0.053 0.026      0.003    0.053      0.104  0.053</span></span>
+<span><span class="co">#&gt; basis.max_penv7.l4  0.019 0.022     -0.024    0.019      0.063  0.019</span></span>
+<span><span class="co">#&gt; basis.max_penv7.l5  0.011 0.019     -0.027    0.011      0.049  0.011</span></span>
+<span><span class="co">#&gt; basis.max_penv7.l6  0.004 0.017     -0.030    0.004      0.037  0.004</span></span>
+<span><span class="co">#&gt; basis.max_penv7.l7  0.000 0.016     -0.031    0.000      0.031  0.000</span></span>
+<span><span class="co">#&gt; basis.max_penv7.l8  0.000 0.015     -0.030    0.000      0.030  0.000</span></span>
+<span><span class="co">#&gt; basis.max_penv8.l1  0.297 0.128      0.046    0.297      0.547  0.297</span></span>
+<span><span class="co">#&gt; basis.max_penv8.l2  0.146 0.062      0.025    0.146      0.268  0.146</span></span>
+<span><span class="co">#&gt; basis.max_penv8.l3  0.047 0.039     -0.030    0.047      0.123  0.047</span></span>
+<span><span class="co">#&gt; basis.max_penv8.l4  0.011 0.030     -0.048    0.011      0.070  0.011</span></span>
+<span><span class="co">#&gt; basis.max_penv8.l5  0.002 0.024     -0.045    0.002      0.050  0.002</span></span>
+<span><span class="co">#&gt; basis.max_penv8.l6  0.000 0.020     -0.040    0.000      0.040  0.000</span></span>
+<span><span class="co">#&gt; basis.max_penv8.l7  0.000 0.018     -0.035    0.000      0.035  0.000</span></span>
+<span><span class="co">#&gt; basis.max_penv8.l8  0.000 0.016     -0.032    0.000      0.032  0.000</span></span>
+<span><span class="co">#&gt; month1             -0.180 0.013     -0.206   -0.180     -0.154 -0.180</span></span>
+<span><span class="co">#&gt; month2             -0.187 0.019     -0.225   -0.187     -0.150 -0.187</span></span>
+<span><span class="co">#&gt; month3             -0.024 0.010     -0.043   -0.024     -0.004 -0.024</span></span>
+<span><span class="co">#&gt; factor(dow)2       -0.004 0.012     -0.027   -0.004      0.020 -0.004</span></span>
+<span><span class="co">#&gt; factor(dow)3       -0.009 0.012     -0.032   -0.009      0.015 -0.009</span></span>
+<span><span class="co">#&gt; factor(dow)4       -0.003 0.012     -0.026   -0.003      0.021 -0.003</span></span>
+<span><span class="co">#&gt; factor(dow)5       -0.012 0.012     -0.036   -0.012      0.012 -0.012</span></span>
+<span><span class="co">#&gt; factor(dow)6       -0.016 0.012     -0.040   -0.016      0.008 -0.016</span></span>
+<span><span class="co">#&gt; factor(dow)7       -0.001 0.012     -0.024   -0.001      0.023 -0.001</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Hyperparameters:</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -466,9 +467,9 @@ which are the estimated hyperparameters (penalties):</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model comparison:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; DIC: 32605.98 ; Effective Parameters: 25.59802 </span></span>
-<span><span class="co">#&gt; WAIC: 32618.12 ; Effective Parameters: 37.42818 </span></span>
-<span><span class="co">#&gt; sum(log(CPO)): -16308.99</span></span></code></pre></div>
+<span><span class="co">#&gt; DIC: 32605.88 ; Effective Parameters: 25.54504 </span></span>
+<span><span class="co">#&gt; WAIC: 32618.94 ; Effective Parameters: 37.94877 </span></span>
+<span><span class="co">#&gt; sum(log(CPO)): -16309.39</span></span></code></pre></div>
 <p>Predictions can similarly be visualized:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pred_penalized</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pred_crossbasis.html">pred_crossbasis</a></span><span class="op">(</span></span>
@@ -533,7 +534,7 @@ all districts), we can use:</p>
 <span><span class="co">#&gt; [1] 0.06620539</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">af2007</span><span class="op">$</span><span class="va">samples</span><span class="op">$</span><span class="va">af</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>,<span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       2.5%      97.5% </span></span>
-<span><span class="co">#&gt; 0.04108282 0.08975552</span></span>
+<span><span class="co">#&gt; 0.04203586 0.08906595</span></span>
 <span></span>
 <span><span class="co"># Exceedance probability</span></span>
 <span><span class="va">af2007</span><span class="op">$</span><span class="va">samples</span><span class="op">$</span><span class="va">exc.prob</span></span>
@@ -561,7 +562,7 @@ equal to 1. We could also request the forward perspective, using:</p>
 <span><span class="co">#&gt; [1] 0.06273875</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">af2007_fw</span><span class="op">$</span><span class="va">samples</span><span class="op">$</span><span class="va">af</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>,<span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       2.5%      97.5% </span></span>
-<span><span class="co">#&gt; 0.03800044 0.08650864</span></span>
+<span><span class="co">#&gt; 0.03672784 0.08516162</span></span>
 <span></span>
 <span><span class="co"># Exceedance probability</span></span>
 <span><span class="va">af2007_fw</span><span class="op">$</span><span class="va">samples</span><span class="op">$</span><span class="va">exc.prob</span></span>
@@ -624,12 +625,12 @@ comparison criteria:</p>
 <code class="sourceCode R"><span><span class="co"># Compare the estimated associations</span></span>
 <span><span class="va">model_unpenalized2</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model_unpenalized2</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model_unpenalized2</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 32612.12</span></span>
-<span><span class="co">#&gt; [1] 32626.32</span></span>
-<span><span class="co">#&gt; [1] 16313.1</span></span>
+<span><span class="co">#&gt; [1] 32623.63</span></span>
+<span><span class="co">#&gt; [1] 16311.74</span></span>
 <span><span class="va">model_penalized</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model_penalized</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model_penalized</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 32605.98</span></span>
-<span><span class="co">#&gt; [1] 32618.12</span></span>
-<span><span class="co">#&gt; [1] 16308.99</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 32605.88</span></span>
+<span><span class="co">#&gt; [1] 32618.94</span></span>
+<span><span class="co">#&gt; [1] 16309.39</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="spatial-and-temporal-random-effects">Spatial and temporal random effects<a class="anchor" aria-label="anchor" href="#spatial-and-temporal-random-effects"></a>
@@ -767,7 +768,7 @@ Computing</em> 36 (1): 38. <a href="https://doi.org/10.1007/s11222-025-10790-9" 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Sara Rutten, Christel Faes.</p>
+  <p>Developed by Sara Rutten, Christel Faes, Thomas Neyens, Elisa Duarte.</p>
 </div>
 
 <div class="pkgdown-footer-right">

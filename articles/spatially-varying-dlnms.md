@@ -3,6 +3,7 @@
 ``` r
 
 library(dlnmLPS)
+set.seed(123)
 ```
 
 ## Introduction
@@ -69,7 +70,7 @@ of the week, year and month.
 # Extract date information
 dataset <- barcelona_temp |>
   dplyr::mutate(
-    dow = weekdays(date),
+    dow = lubridate::wday(date),
     year = lubridate::year(date),
     month = lubridate::month(date)
   )
@@ -184,21 +185,21 @@ criteria DIC, WAIC and CPO:
 
 # Compare the estimated associations
 model_typeI$DIC; model_typeI$WAIC; -sum(log(model_typeI$CPO))
-#> [1] 30385.36
-#> [1] 30387.4
-#> [1] 15193.58
+#> [1] 30384.82
+#> [1] 30388.73
+#> [1] 15194.24
 model_typeII$DIC; model_typeII$WAIC; -sum(log(model_typeII$CPO))
-#> [1] 30378.1
-#> [1] 30381.35
-#> [1] 15190.62
+#> [1] 30377.19
+#> [1] 30382.19
+#> [1] 15191.02
 model_typeIII$DIC; model_typeIII$WAIC; -sum(log(model_typeIII$CPO))
-#> [1] 30375.74
-#> [1] 30377.85
-#> [1] 15188.8
+#> [1] 30375.43
+#> [1] 30379.17
+#> [1] 15189.47
 model_typeIV$DIC; model_typeIV$WAIC; -sum(log(model_typeIV$CPO))
-#> [1] 30365.69
-#> [1] 30370.59
-#> [1] 15185.17
+#> [1] 30365.26
+#> [1] 30371.54
+#> [1] 15185.67
 ```
 
 Model Type IV is preferred based on all model selection criteria. To
@@ -232,10 +233,10 @@ the first four districts, we can use:
 extract_predictions(pred_penalized, slice_x = 30, slice_by = unique(dataset$District)[1:4],
                     ptype = "allRRfit")
 #>    x      fit    lower    upper by
-#> 1 30 1.695990 1.505554 1.910515 01
-#> 2 30 1.367359 1.165803 1.603762 02
-#> 3 30 1.482204 1.286167 1.708121 03
-#> 4 30 1.464581 1.208408 1.775060 04
+#> 1 30 1.695993 1.505548 1.910528 01
+#> 2 30 1.367327 1.165756 1.603751 02
+#> 3 30 1.482202 1.286156 1.708131 03
+#> 4 30 1.464596 1.208412 1.775093 04
 ```
 
 We can visualize the temperature-mortality relationship for the first

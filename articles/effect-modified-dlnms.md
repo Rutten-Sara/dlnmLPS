@@ -3,6 +3,7 @@
 ``` r
 
 library(dlnmLPS)
+set.seed(123)
 ```
 
 ## Introduction
@@ -69,7 +70,7 @@ of the week, year and month.
 # Extract date information
 dataset <- barcelona_temp |>
   dplyr::mutate(
-    dow = weekdays(date),
+    dow = lubridate::wday(date),
     year = lubridate::year(date),
     month = lubridate::month(date)
   )
@@ -198,21 +199,21 @@ criteria DIC, WAIC and CPO:
 
 # Compare the estimated associations
 model1$DIC; model1$WAIC; -sum(log(model1$CPO))
-#> [1] 30411.85
-#> [1] 30415.3
-#> [1] 15207.56
+#> [1] 30412.37
+#> [1] 30414.05
+#> [1] 15206.92
 model2$DIC; model2$WAIC; -sum(log(model2$CPO))
-#> [1] 30389.48
-#> [1] 30392.5
-#> [1] 15196.13
-model3$DIC; model3$WAIC; -sum(log(model3$CPO))
 #> [1] 30389.52
-#> [1] 30392.24
-#> [1] 15196.01
+#> [1] 30392.74
+#> [1] 15196.3
+model3$DIC; model3$WAIC; -sum(log(model3$CPO))
+#> [1] 30389.78
+#> [1] 30392.71
+#> [1] 15196.26
 model4$DIC; model4$WAIC; -sum(log(model4$CPO))
-#> [1] 30378.99
-#> [1] 30382.03
-#> [1] 15190.93
+#> [1] 30378.28
+#> [1] 30383.35
+#> [1] 15191.59
 ```
 
 The fourth model is preferred based on all model selection criteria.
@@ -249,14 +250,14 @@ extract_predictions(pred_penalized, slice_x = c(22,30), slice_lag = c(0,2),
                     slice_by = round(quantile(dataset$depriv, probs = c(0.025,0.975)),2), 
                     ptype = "matRRfit")
 #>    x lag       fit     lower    upper   exc.prob    by
-#> 1 22   0 0.9442494 0.8760118 1.017802 0.06695034 -2.09
-#> 2 30   0 1.1271132 1.0665366 1.191130 0.99998909 -2.09
-#> 3 22   2 0.9529744 0.9034242 1.005242 0.03852666 -2.09
-#> 4 30   2 1.0263029 0.9943068 1.059329 0.94593421 -2.09
-#> 5 22   0 0.9615895 0.8950778 1.033043 0.14208096  1.45
-#> 6 30   0 1.1422374 1.0804183 1.207594 0.99999860  1.45
-#> 7 22   2 1.0057789 0.9596735 1.054099 0.59509832  1.45
-#> 8 30   2 1.0925640 1.0596552 1.126495 0.99999999  1.45
+#> 1 22   0 0.9442464 0.8760011 1.017808 0.06696302 -2.09
+#> 2 30   0 1.1271127 1.0665336 1.191133 0.99998908 -2.09
+#> 3 22   2 0.9529780 0.9034248 1.005249 0.03854716 -2.09
+#> 4 30   2 1.0263029 0.9943065 1.059329 0.94593282 -2.09
+#> 5 22   0 0.9615813 0.8950641 1.033042 0.14205176  1.45
+#> 6 30   0 1.1422335 1.0804124 1.207592 0.99999860  1.45
+#> 7 22   2 1.0057793 0.9596724 1.054101 0.59510276  1.45
+#> 8 30   2 1.0925656 1.0596566 1.126497 0.99999999  1.45
 ```
 
 To plot the exposure-response relationship at lag 0, 3 and 8 for the
