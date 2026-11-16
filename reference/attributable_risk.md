@@ -53,15 +53,15 @@ attributable_risk(
 
 - x:
 
-  Vector of the first exposure or, only if `dir = "back"` a matrix of
+  Vector of the first exposure or, only if `dir = "back"`, a matrix of
   lagged exposures, for which the attributable fraction needs to be
   calculated.
 
 - y:
 
-  Vector of the second exposure or, only if `dir = "back"` a matrix of
+  Vector of the second exposure or, only if `dir = "back"`, a matrix of
   lagged exposures, for which the attributable fraction needs to be
-  calculated. Only for `basis` of class`"joint.crossbasis"`.
+  calculated. Only for `basis` of class `"joint.crossbasis"`.
 
 - by:
 
@@ -82,24 +82,24 @@ attributable_risk(
 
 - dir:
 
-  Either "back" (default) or "forw" for backward and forward perspective
-  on attributable risk respectively.
+  Either `"back"` (default) or `"forw"` for the backward and forward
+  perspective on attributable risk, respectively.
 
 - tot:
 
-  If `True`, the total attributable risk over the entire period is
+  If `TRUE`, the total attributable risk over the entire period is
   calculated.
 
 - range_x:
 
   The range of the first exposure for which the attributable risk is
-  calculated. If `NULL`(default), the whole range is used.
+  calculated. If `NULL` (default), the whole range is used.
 
 - range_y:
 
   The range of the second exposure for which the attributable risk is
-  calculated. If `NULL`(default), the whole range is used. Only for
-  `basis` of class`"joint.crossbasis"`.
+  calculated. If `NULL` (default), the whole range is used. Only for
+  `basis` of class `"joint.crossbasis"`.
 
 - samples:
 
@@ -108,8 +108,8 @@ attributable_risk(
 
 - nsamples:
 
-  Number of samples from the posterior distribution to be returned.
-  (only when `samples = TRUE`).
+  Number of samples from the posterior distribution to be returned (only
+  when `samples = TRUE`).
 
 - exc.threshold:
 

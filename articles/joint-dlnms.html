@@ -73,7 +73,7 @@
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>Traditionally, distributed lag non-linear models (DLNMs) are used to
-model the effect of one, possibly delayed and non-linear exposure on an
+model the possibly delayed and non-linear effect of one exposure on an
 outcome. However, interest might be in the joint effect of two
 (bivariate) exposures. For example, the effect of maximum and minimum
 temperature on mortality might be synergistic, requiring a joint
@@ -129,8 +129,8 @@ day of the week, year and month.</p>
 <p>While fitting a joint DLNM requires an extension of the basic
 functionality of DLNMs, fitting a model with an additive DLNM of maximum
 and minimum temperatures is straightforward.</p>
-<p>We include month as natural splines with 3 degrees of freedom, year
-as a random walk of order one, day of the week as a factor and District
+<p>We include month as a natural spline with 3 degrees of freedom, year
+as a random walk of order one, day of the week as a factor and district
 as an (independent) random effect. Fitting a penalized additive DLNM,
 using 8 degrees of freedom and a penalty of order 2, can be done as
 follows:</p>
@@ -175,8 +175,8 @@ the functionality to specify a joint crossbasis, the function
 should be used instead. This function is very similar to the
 <code><a href="https://rdrr.io/pkg/dlnm/man/crossbasis.html" class="external-link">dlnm::crossbasis()</a></code> function, requiring arguments for both
 exposure variables as well as the lag. The data can be supplied as a
-matrix for which the first and second column contain the timeseries of
-the first and second exposure respectively.</p>
+matrix for which the first and second columns contain the time series of
+the first and second exposure, respectively.</p>
 <p>Fitting an unpenalized version of the model can be done through:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fit an unpenalized joint DLNM</span></span>
@@ -203,7 +203,7 @@ the first and second exposure respectively.</p>
 <span>                              model.comparison <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>DIC <span class="op">=</span> <span class="cn">TRUE</span>, WAIC <span class="op">=</span> <span class="cn">TRUE</span>, CPO <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>                              family <span class="op">=</span> <span class="st">"Poisson"</span><span class="op">)</span></span></code></pre></div>
 <p>Similarly, a penalized version of the DLNM, using 8 degrees of
-freedom and a second order penalty, can be fitted using:</p>
+freedom and a second-order penalty, can be fitted using:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fit a penalized joint DLNM</span></span>
 <span><span class="va">joint.basis_pen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/joint.crossbasis.html">joint.crossbasis</a></span><span class="op">(</span></span>
@@ -318,33 +318,33 @@ made:</p>
 <p><img src="joint-dlnms_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="576"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pred_penalized</span>, ptype <span class="op">=</span> <span class="st">"overall"</span>, ticktype<span class="op">=</span><span class="st">"detailed"</span>,theta<span class="op">=</span><span class="fl">230</span>,</span>
-<span>        xlab <span class="op">=</span> <span class="st">"maximum"</span>, ylab <span class="op">=</span> <span class="st">"minimum"</span>, zlab <span class="op">=</span> <span class="st">"RR"</span>, </span>
+<span>        xlab <span class="op">=</span> <span class="st">"maximum temperature"</span>, ylab <span class="op">=</span> <span class="st">"minimum temperature"</span>, zlab <span class="op">=</span> <span class="st">"RR"</span>, </span>
 <span>        ltheta<span class="op">=</span><span class="fl">200</span>,phi<span class="op">=</span><span class="fl">30</span>,lphi<span class="op">=</span><span class="fl">30</span>,</span>
 <span>        nticks <span class="op">=</span> <span class="fl">4</span>, shade <span class="op">=</span> <span class="fl">0.75</span>,r<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>,d<span class="op">=</span><span class="fl">5</span>,cex.axis<span class="op">=</span><span class="fl">0.5</span>, cex.lab<span class="op">=</span><span class="fl">0.8</span>,border<span class="op">=</span><span class="cn">NA</span><span class="op">)</span></span></code></pre></div>
 <p><img src="joint-dlnms_files/figure-html/unnamed-chunk-10-2.png" class="r-plt" alt="" width="576"></p>
-<p>The plots seem to suggest that both maximum and minimum temperature
+<p>The plots seem to suggest that both maximum and minimum temperatures
 are important when estimating RRs. We can for example also visualize the
 lag relationship for specific exposure levels:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pred_penalized</span>, slice_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pred_penalized</span><span class="op">$</span><span class="va">x</span> <span class="op">==</span> <span class="fl">30</span><span class="op">)</span><span class="op">)</span>, </span>
 <span>     slice_y <span class="op">=</span> <span class="va">pred_penalized</span><span class="op">$</span><span class="va">y</span><span class="op">[</span><span class="va">pred_penalized</span><span class="op">$</span><span class="va">x</span> <span class="op">==</span> <span class="fl">30</span><span class="op">]</span>, ptype <span class="op">=</span> <span class="st">"slices"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="joint-dlnms_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="" width="576"></p>
-<p>or the exposures-outcome relationship for the immediate risk (lag =
+<p>or the exposure-response relationship for the immediate risk (lag =
 0):</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/contour.html" class="external-link">contour</a></span><span class="op">(</span><span class="va">pred_penalized</span>, slice_lag <span class="op">=</span> <span class="fl">0</span>, xlab <span class="op">=</span> <span class="st">"maximum temperature"</span>, ylab <span class="op">=</span> <span class="st">"minimum temperature"</span>, </span>
 <span>        ptype <span class="op">=</span> <span class="st">"slices"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="joint-dlnms_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="576"></p>
-<p>and risk after five days:</p>
+<p>and the risk at lag 5:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/contour.html" class="external-link">contour</a></span><span class="op">(</span><span class="va">pred_penalized</span>, slice_lag <span class="op">=</span> <span class="fl">5</span>, xlab <span class="op">=</span> <span class="st">"maximum temperature"</span>, ylab <span class="op">=</span> <span class="st">"minimum temperature"</span>,</span>
 <span>        ptype <span class="op">=</span> <span class="st">"slices"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="joint-dlnms_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="576"></p>
 <p>The attributable fraction in 2007 can also be calculated for example.
 We make use of the district-specific maximum and minimum temperature
-timeseries and of the backward perspective:</p>
+time series and of the backward perspective:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Calculate exposure and outcome timeseries</span></span>
+<code class="sourceCode R"><span><span class="co"># Calculate exposure and outcome time series</span></span>
 <span><span class="va">data2007_district</span> <span class="op">&lt;-</span> <span class="va">dataset</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fl">2007</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">District</span>, <span class="va">date</span><span class="op">)</span></span>
@@ -383,7 +383,7 @@ timeseries and of the backward perspective:</p>
 <p><img src="joint-dlnms_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="384"></p>
 </div>
 <div class="section level3">
-<h3 id="fitting-a-spatial-and-effect-modified-joint-dlnm">Fitting a spatial and effect modified joint DLNM<a class="anchor" aria-label="anchor" href="#fitting-a-spatial-and-effect-modified-joint-dlnm"></a>
+<h3 id="spatially-varying-and-effect-modified-joint-dlnms">Spatially varying and effect-modified joint DLNMs<a class="anchor" aria-label="anchor" href="#spatially-varying-and-effect-modified-joint-dlnms"></a>
 </h3>
 <p>Just as for traditional DLNMs, a joint DLNM can be spatially varying
 or subject to effect modification (see

@@ -8,7 +8,7 @@ library(dlnmLPS)
 ## Introduction
 
 Traditionally, distributed lag non-linear models (DLNMs) are used to
-model the effect of one, possibly delayed and non-linear exposure on an
+model the possibly delayed and non-linear effect of one exposure on an
 outcome. However, interest might be in the joint effect of two
 (bivariate) exposures. For example, the effect of maximum and minimum
 temperature on mortality might be synergistic, requiring a joint
@@ -75,10 +75,10 @@ While fitting a joint DLNM requires an extension of the basic
 functionality of DLNMs, fitting a model with an additive DLNM of maximum
 and minimum temperatures is straightforward.
 
-We include month as natural splines with 3 degrees of freedom, year as a
-random walk of order one, day of the week as a factor and District as an
-(independent) random effect. Fitting a penalized additive DLNM, using 8
-degrees of freedom and a penalty of order 2, can be done as follows:
+We include month as a natural spline with 3 degrees of freedom, year as
+a random walk of order one, day of the week as a factor and district as
+an (independent) random effect. Fitting a penalized additive DLNM, using
+8 degrees of freedom and a penalty of order 2, can be done as follows:
 
 ``` r
 
@@ -124,7 +124,7 @@ similar to the
 [`dlnm::crossbasis()`](https://rdrr.io/pkg/dlnm/man/crossbasis.html)
 function, requiring arguments for both exposure variables as well as the
 lag. The data can be supplied as a matrix for which the first and second
-column contain the timeseries of the first and second exposure
+columns contain the time series of the first and second exposure,
 respectively.
 
 Fitting an unpenalized version of the model can be done through:
@@ -157,7 +157,7 @@ model_unpenalized <- dlnmLPS(dtot ~ factor(dow) +
 ```
 
 Similarly, a penalized version of the DLNM, using 8 degrees of freedom
-and a second order penalty, can be fitted using:
+and a second-order penalty, can be fitted using:
 
 ``` r
 
@@ -289,14 +289,14 @@ contour(pred_penalized, ptype = "overall", xlab = "maximum temperature", ylab = 
 ``` r
 
 plot(pred_penalized, ptype = "overall", ticktype="detailed",theta=230,
-        xlab = "maximum", ylab = "minimum", zlab = "RR", 
+        xlab = "maximum temperature", ylab = "minimum temperature", zlab = "RR", 
         ltheta=200,phi=30,lphi=30,
         nticks = 4, shade = 0.75,r=sqrt(3),d=5,cex.axis=0.5, cex.lab=0.8,border=NA)
 ```
 
 ![](joint-dlnms_files/figure-html/unnamed-chunk-10-2.png)
 
-The plots seem to suggest that both maximum and minimum temperature are
+The plots seem to suggest that both maximum and minimum temperatures are
 important when estimating RRs. We can for example also visualize the lag
 relationship for specific exposure levels:
 
@@ -308,7 +308,7 @@ plot(pred_penalized, slice_x = rep(30, sum(pred_penalized$x == 30)),
 
 ![](joint-dlnms_files/figure-html/unnamed-chunk-11-1.png)
 
-or the exposures-outcome relationship for the immediate risk (lag = 0):
+or the exposure-response relationship for the immediate risk (lag = 0):
 
 ``` r
 
@@ -318,7 +318,7 @@ contour(pred_penalized, slice_lag = 0, xlab = "maximum temperature", ylab = "min
 
 ![](joint-dlnms_files/figure-html/unnamed-chunk-12-1.png)
 
-and risk after five days:
+and the risk at lag 5:
 
 ``` r
 
@@ -329,12 +329,12 @@ contour(pred_penalized, slice_lag = 5, xlab = "maximum temperature", ylab = "min
 ![](joint-dlnms_files/figure-html/unnamed-chunk-13-1.png)
 
 The attributable fraction in 2007 can also be calculated for example. We
-make use of the district-specific maximum and minimum temperature
-timeseries and of the backward perspective:
+make use of the district-specific maximum and minimum temperature time
+series and of the backward perspective:
 
 ``` r
 
-# Calculate exposure and outcome timeseries
+# Calculate exposure and outcome time series
 data2007_district <- dataset |>
   dplyr::filter(year == 2007) |>
   dplyr::arrange(District, date)
@@ -378,7 +378,7 @@ ggplot2::ggplot(af_ci, ggplot2::aes(x = estimate, y = ID)) +
 
 ![](joint-dlnms_files/figure-html/unnamed-chunk-15-1.png)
 
-### Fitting a spatial and effect modified joint DLNM
+### Spatially varying and effect-modified joint DLNMs
 
 Just as for traditional DLNMs, a joint DLNM can be spatially varying or
 subject to effect modification (see

@@ -7,8 +7,8 @@ library(dlnmLPS)
 
 ## Introduction
 
-The `dlnmLPS` package provides tools for fitting Distributed Lag
-Non-linear Models (DLNMs) (Gasparrini et al. 2010) within a Bayesian
+The `dlnmLPS` package provides tools for fitting distributed lag
+non-linear models (DLNMs) (Gasparrini et al. 2010) within a Bayesian
 framework.
 
 DLNMs can require the estimation of a large number of basis coefficients
@@ -54,8 +54,8 @@ remotes::install_github("Rutten-Sara/dlnmLPS")
 
 A distributed lag non-linear model (DLNM) describes an exposure-response
 relationship where the exposure can have a delayed effect. The
-association can be non-linear in the exposure and lag dimension. The two
-dimensions are represented using spline basis functions.
+association can be non-linear in the exposure and lag dimensions. The
+two dimensions are represented using spline basis functions.
 
 The following example demonstrates how to fit a basic DLNM using
 `dlnmLPS`.
@@ -75,7 +75,7 @@ temperature in all 10 districts of Barcelona during the summer period (1
 June–30 September) between 2007 and 2011. The population size,
 deprivation index and daily number of deaths are included for every
 district. For this example, we will investigate the effect of maximum
-temperature on mortality. The outcome and exposure variable can then be
+temperature on mortality. The outcome and exposure variables can then be
 inspected:
 
 ``` r
@@ -109,9 +109,9 @@ dataset <- barcelona_temp |>
 
 We first fit an unpenalized DLNM. The DLNM crossbasis can be constructed
 using the `dlnm` package. We use natural splines with three knots in the
-exposure dimension (on the 10%, 50% and 90% percentile) and two knots in
-the lag dimension, equally spaced on the log scale. We use a maximum lag
-of 14 days. Population size is included as an offset.
+exposure dimension (at the 10th, 50th and 90th percentiles) and two
+knots in the lag dimension, equally spaced on the log scale. We use a
+maximum lag of 14 days. Population size is included as an offset.
 
 A crossbasis needs to be supplied within the smooth
 [`sm()`](https://rutten-sara.github.io/dlnmLPS/reference/sm.md)
@@ -150,7 +150,7 @@ as well. The argument `arg` can include additional information such as
 the `type` of the component (e.g. “ns” for natural splines, “bs” for
 B-splines, “ps” for penalized splines) and any additional arguments that
 can be passed to the corresponding spline constructor. In this example,
-we include month as natural splines with 3 degrees of freedom.
+we include month as a natural spline with 3 degrees of freedom.
 
 ``` r
 
@@ -163,9 +163,9 @@ model_unpenalized2 <- dlnmLPS(dtot ~ factor(dow) + sm(basis.max) +
                               family = "Poisson")
 ```
 
-Note that `type` argument of a DLNM-crossbasis is recognized
-automatically and hence, does not need to be supplied. The model output
-can be inspected using:
+Note that the `type` of a DLNM crossbasis is recognized automatically
+and hence does not need to be supplied. The model output can be
+inspected using:
 
 ``` r
 
@@ -236,19 +236,20 @@ pred_unpenalized <- pred_crossbasis(
 In this example, we requested predictions of the relative risk (RR) of
 temperature values 22-30, compared to a reference value of 25, over the
 entire lag period (0-14). Furthermore, we requested credible intervals.
-Exceedance probabilities can be requested through: `exc.prob`= TRUE. The
-threshold used to calculate these exceedance probabilities needs to be
-supplied through `threshold`, at the scale of the linear predictor. By
-default, the threshold is specified to be 0, calculating the probability
-that the logarithm of the relative risks exceeds 0:
+Exceedance probabilities can be requested through: `exc.prob = TRUE`.
+The threshold used to calculate these exceedance probabilities needs to
+be supplied through `threshold`, on the scale of the linear predictor.
+By default, the threshold is specified to be 0, calculating the
+probability that the logarithm of the relative risks exceeds 0.
 
 Although all requested predictions are represented in
 `pred_unpenalized`, retrieving specific parts of these predictions might
-require some manual searching. To avoid this, the wrapper function can
-be used to easily extract (parts of) these predictions in one
+require some manual searching. To avoid this, the wrapper function
+[`extract_predictions()`](https://rutten-sara.github.io/dlnmLPS/reference/extract_predictions.md)
+can be used to easily extract (parts of) these predictions in one
 user-friendly dataset. For example, if we want to extract the overall RR
 predictions for a temperature of 22 and 30 degrees Celsius, we can use
-`ptype` = “allRRfit” and:
+`ptype = "allRRfit"` and:
 
 ``` r
 
@@ -260,8 +261,8 @@ extract_predictions(pred_unpenalized, slice_x = c(22,30), ptype = "allRRfit")
 
 Note that credible intervals and exceedance probabilities are also
 printed if present in the predictions. To extract the lag-specific RRs
-at lag 0 and lag 8 for these temperatures, we can similarly use `ptype`
-= “matRRfit”:
+at lag 0 and lag 8 for these temperatures, we can similarly use
+`ptype = "matRRfit"`:
 
 ``` r
 
@@ -274,7 +275,8 @@ extract_predictions(pred_unpenalized, slice_x = c(22,30), slice_lag = c(0,8), pt
 ```
 
 The estimated exposure-response association can also be visualized at
-different lags (e.g. 0,3 and 8) using `ptype` = slices and `slice_lag`:
+different lags (e.g. 0, 3 and 8) using `ptype = "slices"` and
+`slice_lag`:
 
 ``` r
 
@@ -300,7 +302,7 @@ plot(pred_unpenalized, slice_x = 30, ptype = "slices", CI = TRUE, xlab = "lag", 
 For a temperature of 30 degrees, we can indeed see an increased risk
 that diminishes after three days. We can also visualize the cumulative
 temperature-mortality relationship (cumulative over the entire lag
-period) by specifying `ptype`= “overall”.
+period) by specifying `ptype = "overall"`.
 
 ``` r
 
@@ -311,7 +313,7 @@ plot(pred_unpenalized, ptype = "overall", CI = TRUE, xlab = "temperature", ylab 
 
 Again, an increased overall risk can be found for high temperatures.
 Finally, we can visualize the entire temperature-lag-mortality
-relationship using `ptype`= “cross”. A contour plot can be requested
+relationship using `ptype = "cross"`. A contour plot can be requested
 using:
 
 ``` r
@@ -321,7 +323,7 @@ contour(pred_unpenalized, ptype = "cross", xlab = "lag", ylab = "temperature")
 
 ![](introduction_dlnmlps_files/figure-html/unnamed-chunk-14-1.png)
 
-While a simple 3D plot can be requested using:
+A simple 3D plot can be requested using:
 
 ``` r
 
@@ -330,8 +332,8 @@ plot(pred_unpenalized, ptype = "cross")
 
 ![](introduction_dlnmlps_files/figure-html/unnamed-chunk-15-1.png)
 
-additional arguments of
-[`graphics::persp`](https://rdrr.io/r/graphics/persp.html) can be used
+Additional arguments of
+[`graphics::persp()`](https://rdrr.io/r/graphics/persp.html) can be used
 to make the plot more visually appealing:
 
 ``` r
@@ -360,8 +362,8 @@ order of the penalty needs to be supplied in the argument `arg` of
 [`sm()`](https://rutten-sara.github.io/dlnmLPS/reference/sm.md). Note
 that, by default, an additional lag penalty is specified, on top of the
 P-splines penalties, to encourage shrinkage towards a null effect at
-longer lags. To disable this penalty, specify `add.lagpen`= FALSE within
-the `arg` argument.
+longer lags. To disable this penalty, specify `add.lagpen = FALSE`
+within the `arg` argument.
 
 ``` r
 
@@ -531,19 +533,18 @@ plot(pred_penalized, ptype = "cross", ticktype="detailed",theta=230,
 
 ![](introduction_dlnmlps_files/figure-html/unnamed-chunk-19-5.png)
 
-One of the advantages of Bayesian modelling is that uncertainty
-quantification can easily be obtained. We already illustrated how to
-request exceedance probabilities, but also attributable risks can be
-calculated within a DLNM framework (Gasparrini and Leone 2014).
-Therefore, the `dlnmLPS` package provides the function
+One of the advantages of Bayesian modelling is that uncertainty is
+readily quantified. Besides exceedance probabilities, attributable risks
+can also be calculated (Gasparrini and Leone 2014). For this purpose,
+`dlnmLPS` provides
 [`attributable_risk()`](https://rutten-sara.github.io/dlnmLPS/reference/attributable_risk.md).
 For example, if we want to calculate the attributable fraction of
 temperature during the summer of 2007, using the average maximum
-temperature and total number of cases (over all Districts), we can use:
+temperature and total number of cases (over all districts), we can use:
 
 ``` r
 
-# Calculate exposure and outcome timeseries
+# Calculate exposure and outcome time series
 data2007 <- dataset |>
   dplyr::filter(year == 2007) |>
   dplyr::group_by(date) |>
@@ -579,9 +580,10 @@ af2007$samples$exc.prob
 
 Using the backward perspective on attributable fraction
 (i.e. `dir = "back"`), we obtain a total (`tot = TRUE`) attributable
-fraction of 0.07(0.04,0.09). The probability that this attributable
-fraction is strictly positive is requested through `exc.threshold = 0`,
-and is equal to 1. We could also request the forward perspective, using:
+fraction of 0.07 (95% crI 0.04-0.09). The probability that this
+attributable fraction is strictly positive is requested through
+`exc.threshold = 0`, and is equal to 1. We could also request the
+forward perspective, using:
 
 ``` r
 
@@ -609,14 +611,14 @@ af2007_fw$samples$exc.prob
 ```
 
 Results are very similar. Instead of calculating the total attributable
-fraction, using an average temperature timeseries and total cases, we
+fraction, using an average temperature time series and total cases, we
 could also calculate the district-specific attributable fractions, using
-the district-specific timeseries and cases. This output grouping
-variable can be specified through the argument `group`:
+the district-specific time series and cases. This grouping variable for
+the output can be specified through the argument `group`:
 
 ``` r
 
-# Calculate exposure and outcome timeseries
+# Calculate exposure and outcome time series
 data2007_district <- dataset |>
   dplyr::filter(year == 2007) 
 
@@ -658,8 +660,9 @@ ggplot2::ggplot(af_ci, ggplot2::aes(x = estimate, y = ID)) +
 
 ![](introduction_dlnmlps_files/figure-html/unnamed-chunk-23-1.png)
 
-Some small regional differences can be seen, which could be explained by
-different district-specific temperature timeseries and cases.
+Some small differences between districts can be seen, which could be
+explained by different district-specific temperature time series and
+cases.
 
 ### Comparing penalized and unpenalized models
 
@@ -688,15 +691,16 @@ model_penalized$DIC; model_penalized$WAIC; -sum(log(model_penalized$CPO))
 Through a smooth function
 [`sm()`](https://rutten-sara.github.io/dlnmLPS/reference/sm.md), we can
 also include spatial and temporal random effects. An area-specific
-random effect can be included independently (`type` = “ind”) or
-spatially structured (`type` = “Leroux”, `type` = “ICAR” or `type` =
-“Convolution”). In case of spatially structured random effects, a map
-with the spatial structure can be supplied through `map` within the
-`arg` argument. A first or second order random walk on time can also be
-supplied through `type` = “rw1” or `type` = “rw2”.
+random effect can be included independently (`type = "ind"`) or
+spatially structured (`type = "Leroux"`, `type = "ICAR"` or
+`type = "Convolution"`). In case of spatially structured random effects,
+a map with the spatial structure can be supplied through `map` within
+the `arg` argument. A first- or second-order random walk on time can
+also be supplied through `type = "rw1"` or `type = "rw2"`.
 
-A time-varying spatial random effect or spatially-varying time random
-effect can also be requested using the arguments `by` and `arg.by`.
+A time-varying spatial random effect or spatially varying temporal
+random effect can also be requested using the arguments `by` and
+`arg.by`.
 
 A model with a year-specific random walk of order one and a
 district-specific Leroux-structured random effect can be fitted as:
@@ -715,7 +719,7 @@ model_penalized2 <- dlnmLPS(dtot ~ factor(dow) + sm(basis.max_pen, arg = list(pe
                              family = "Poisson")
 ```
 
-The District-specific random effect can for example be visualized using:
+The district-specific random effect can for example be visualized using:
 
 ``` r
 
@@ -734,8 +738,8 @@ tmap::tm_shape(shapefile_bcn) +
 
 ![](introduction_dlnmlps_files/figure-html/unnamed-chunk-26-1.png)
 
-A model with an independently year-varying Leroux random effect on
-District, can for example be fitted as:
+A model with a Leroux random effect on district that varies
+independently by year can for example be fitted as:
 
 ``` r
 

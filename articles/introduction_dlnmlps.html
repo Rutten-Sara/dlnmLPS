@@ -73,7 +73,7 @@
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>The <code>dlnmLPS</code> package provides tools for fitting
-Distributed Lag Non-linear Models (DLNMs) <span class="citation">(Gasparrini et al. 2010)</span> within a Bayesian
+distributed lag non-linear models (DLNMs) <span class="citation">(Gasparrini et al. 2010)</span> within a Bayesian
 framework.</p>
 <p>DLNMs can require the estimation of a large number of basis
 coefficients to represent complex exposure-lag-response relationships.
@@ -115,7 +115,7 @@ GitHub using:</p>
 <p>A distributed lag non-linear model (DLNM) describes an
 exposure-response relationship where the exposure can have a delayed
 effect. The association can be non-linear in the exposure and lag
-dimension. The two dimensions are represented using spline basis
+dimensions. The two dimensions are represented using spline basis
 functions.</p>
 <p>The following example demonstrates how to fit a basic DLNM using
 <code>dlnmLPS</code>.</p>
@@ -132,7 +132,7 @@ temperature in all 10 districts of Barcelona during the summer period (1
 June–30 September) between 2007 and 2011. The population size,
 deprivation index and daily number of deaths are included for every
 district. For this example, we will investigate the effect of maximum
-temperature on mortality. The outcome and exposure variable can then be
+temperature on mortality. The outcome and exposure variables can then be
 inspected:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Inspect the data</span></span>
@@ -160,8 +160,8 @@ day of the week, year and month.</p>
 </h3>
 <p>We first fit an unpenalized DLNM. The DLNM crossbasis can be
 constructed using the <code>dlnm</code> package. We use natural splines
-with three knots in the exposure dimension (on the 10%, 50% and 90%
-percentile) and two knots in the lag dimension, equally spaced on the
+with three knots in the exposure dimension (at the 10th, 50th and 90th
+percentiles) and two knots in the lag dimension, equally spaced on the
 log scale. We use a maximum lag of 14 days. Population size is included
 as an offset.</p>
 <p>A crossbasis needs to be supplied within the smooth <code><a href="../reference/sm.html">sm()</a></code>
@@ -194,7 +194,7 @@ argument <code>arg</code> can include additional information such as the
 <code>type</code> of the component (e.g. “ns” for natural splines, “bs”
 for B-splines, “ps” for penalized splines) and any additional arguments
 that can be passed to the corresponding spline constructor. In this
-example, we include month as natural splines with 3 degrees of
+example, we include month as a natural spline with 3 degrees of
 freedom.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fit an unpenalized DLNM</span></span>
@@ -204,9 +204,9 @@ freedom.</p>
 <span>                              offset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span>,</span>
 <span>                              model.comparison <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>DIC <span class="op">=</span> <span class="cn">TRUE</span>, WAIC <span class="op">=</span> <span class="cn">TRUE</span>, CPO <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>                              family <span class="op">=</span> <span class="st">"Poisson"</span><span class="op">)</span></span></code></pre></div>
-<p>Note that <code>type</code> argument of a DLNM-crossbasis is
-recognized automatically and hence, does not need to be supplied. The
-model output can be inspected using:</p>
+<p>Note that the <code>type</code> of a DLNM crossbasis is recognized
+automatically and hence does not need to be supplied. The model output
+can be inspected using:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">model_unpenalized2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -269,18 +269,19 @@ of the exposure variable:</p>
 of temperature values 22-30, compared to a reference value of 25, over
 the entire lag period (0-14). Furthermore, we requested credible
 intervals. Exceedance probabilities can be requested through:
-<code>exc.prob</code>= TRUE. The threshold used to calculate these
+<code>exc.prob = TRUE</code>. The threshold used to calculate these
 exceedance probabilities needs to be supplied through
-<code>threshold</code>, at the scale of the linear predictor. By
+<code>threshold</code>, on the scale of the linear predictor. By
 default, the threshold is specified to be 0, calculating the probability
-that the logarithm of the relative risks exceeds 0:</p>
+that the logarithm of the relative risks exceeds 0.</p>
 <p>Although all requested predictions are represented in
 <code>pred_unpenalized</code>, retrieving specific parts of these
 predictions might require some manual searching. To avoid this, the
-wrapper function can be used to easily extract (parts of) these
-predictions in one user-friendly dataset. For example, if we want to
-extract the overall RR predictions for a temperature of 22 and 30
-degrees Celsius, we can use <code>ptype</code> = “allRRfit” and:</p>
+wrapper function <code><a href="../reference/extract_predictions.html">extract_predictions()</a></code> can be used to
+easily extract (parts of) these predictions in one user-friendly
+dataset. For example, if we want to extract the overall RR predictions
+for a temperature of 22 and 30 degrees Celsius, we can use
+<code>ptype = "allRRfit"</code> and:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_predictions.html">extract_predictions</a></span><span class="op">(</span><span class="va">pred_unpenalized</span>, slice_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">22</span>,<span class="fl">30</span><span class="op">)</span>, ptype <span class="op">=</span> <span class="st">"allRRfit"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       x      fit     lower    upper  exc.prob</span></span>
@@ -289,7 +290,7 @@ degrees Celsius, we can use <code>ptype</code> = “allRRfit” and:</p>
 <p>Note that credible intervals and exceedance probabilities are also
 printed if present in the predictions. To extract the lag-specific RRs
 at lag 0 and lag 8 for these temperatures, we can similarly use
-<code>ptype</code> = “matRRfit”:</p>
+<code>ptype = "matRRfit"</code>:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_predictions.html">extract_predictions</a></span><span class="op">(</span><span class="va">pred_unpenalized</span>, slice_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">22</span>,<span class="fl">30</span><span class="op">)</span>, slice_lag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">8</span><span class="op">)</span>, ptype <span class="op">=</span> <span class="st">"matRRfit"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    x lag       fit     lower    upper   exc.prob</span></span>
@@ -298,7 +299,7 @@ at lag 0 and lag 8 for these temperatures, we can similarly use
 <span><span class="co">#&gt; 3 22   8 1.0188142 0.9973264 1.040765 0.95671804</span></span>
 <span><span class="co">#&gt; 4 30   8 1.0093272 1.0005293 1.018202 0.98116491</span></span></code></pre></div>
 <p>The estimated exposure-response association can also be visualized at
-different lags (e.g. 0,3 and 8) using <code>ptype</code> = slices and
+different lags (e.g. 0, 3 and 8) using <code>ptype = "slices"</code> and
 <code>slice_lag</code>:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pred_unpenalized</span>, slice_lag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">3</span>,<span class="fl">8</span><span class="op">)</span>, ptype <span class="op">=</span> <span class="st">"slices"</span>, CI <span class="op">=</span> <span class="cn">TRUE</span>, </span>
@@ -315,22 +316,22 @@ level(s) using <code>slice_x</code>:</p>
 <p>For a temperature of 30 degrees, we can indeed see an increased risk
 that diminishes after three days. We can also visualize the cumulative
 temperature-mortality relationship (cumulative over the entire lag
-period) by specifying <code>ptype</code>= “overall”.</p>
+period) by specifying <code>ptype = "overall"</code>.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pred_unpenalized</span>, ptype <span class="op">=</span> <span class="st">"overall"</span>, CI <span class="op">=</span> <span class="cn">TRUE</span>, xlab <span class="op">=</span> <span class="st">"temperature"</span>, ylab <span class="op">=</span> <span class="st">"RR"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_dlnmlps_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="576"></p>
 <p>Again, an increased overall risk can be found for high temperatures.
 Finally, we can visualize the entire temperature-lag-mortality
-relationship using <code>ptype</code>= “cross”. A contour plot can be
+relationship using <code>ptype = "cross"</code>. A contour plot can be
 requested using:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/contour.html" class="external-link">contour</a></span><span class="op">(</span><span class="va">pred_unpenalized</span>, ptype <span class="op">=</span> <span class="st">"cross"</span>, xlab <span class="op">=</span> <span class="st">"lag"</span>, ylab <span class="op">=</span> <span class="st">"temperature"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_dlnmlps_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="576"></p>
-<p>While a simple 3D plot can be requested using:</p>
+<p>A simple 3D plot can be requested using:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pred_unpenalized</span>, ptype <span class="op">=</span> <span class="st">"cross"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_dlnmlps_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="576"></p>
-<p>additional arguments of <code><a href="https://rdrr.io/r/graphics/persp.html" class="external-link">graphics::persp</a></code> can be used to
+<p>Additional arguments of <code><a href="https://rdrr.io/r/graphics/persp.html" class="external-link">graphics::persp()</a></code> can be used to
 make the plot more visually appealing:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pred_unpenalized</span>, ptype <span class="op">=</span> <span class="st">"cross"</span>, ticktype<span class="op">=</span><span class="st">"detailed"</span>, theta<span class="op">=</span><span class="fl">230</span>,</span>
@@ -354,7 +355,7 @@ the order of the penalty needs to be supplied in the argument
 <code>arg</code> of <code><a href="../reference/sm.html">sm()</a></code>. Note that, by default, an
 additional lag penalty is specified, on top of the P-splines penalties,
 to encourage shrinkage towards a null effect at longer lags. To disable
-this penalty, specify <code>add.lagpen</code>= FALSE within the
+this penalty, specify <code>add.lagpen = FALSE</code> within the
 <code>arg</code> argument.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fit a penalized DLNM</span></span>
@@ -496,17 +497,16 @@ which are the estimated hyperparameters (penalties):</p>
 <span>        ltheta<span class="op">=</span><span class="fl">200</span>,phi<span class="op">=</span><span class="fl">30</span>,lphi<span class="op">=</span><span class="fl">30</span>,</span>
 <span>        nticks <span class="op">=</span> <span class="fl">4</span>, shade <span class="op">=</span> <span class="fl">0.75</span>,r<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>,d<span class="op">=</span><span class="fl">5</span>,cex.axis<span class="op">=</span><span class="fl">0.5</span>, cex.lab<span class="op">=</span><span class="fl">0.5</span>,border<span class="op">=</span><span class="cn">NA</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_dlnmlps_files/figure-html/unnamed-chunk-19-5.png" class="r-plt" alt="" width="576"></p>
-<p>One of the advantages of Bayesian modelling is that uncertainty
-quantification can easily be obtained. We already illustrated how to
-request exceedance probabilities, but also attributable risks can be
-calculated within a DLNM framework <span class="citation">(Gasparrini
-and Leone 2014)</span>. Therefore, the <code>dlnmLPS</code> package
-provides the function <code><a href="../reference/attributable_risk.html">attributable_risk()</a></code>. For example, if
-we want to calculate the attributable fraction of temperature during the
-summer of 2007, using the average maximum temperature and total number
-of cases (over all Districts), we can use:</p>
+<p>One of the advantages of Bayesian modelling is that uncertainty is
+readily quantified. Besides exceedance probabilities, attributable risks
+can also be calculated <span class="citation">(Gasparrini and Leone
+2014)</span>. For this purpose, <code>dlnmLPS</code> provides
+<code><a href="../reference/attributable_risk.html">attributable_risk()</a></code>. For example, if we want to calculate
+the attributable fraction of temperature during the summer of 2007,
+using the average maximum temperature and total number of cases (over
+all districts), we can use:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Calculate exposure and outcome timeseries</span></span>
+<code class="sourceCode R"><span><span class="co"># Calculate exposure and outcome time series</span></span>
 <span><span class="va">data2007</span> <span class="op">&lt;-</span> <span class="va">dataset</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fl">2007</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -540,10 +540,10 @@ of cases (over all Districts), we can use:</p>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
 <p>Using the backward perspective on attributable fraction
 (i.e. <code>dir = "back"</code>), we obtain a total
-(<code>tot = TRUE</code>) attributable fraction of 0.07(0.04,0.09). The
-probability that this attributable fraction is strictly positive is
-requested through <code>exc.threshold = 0</code>, and is equal to 1. We
-could also request the forward perspective, using:</p>
+(<code>tot = TRUE</code>) attributable fraction of 0.07 (95% crI
+0.04-0.09). The probability that this attributable fraction is strictly
+positive is requested through <code>exc.threshold = 0</code>, and is
+equal to 1. We could also request the forward perspective, using:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">af2007_fw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/attributable_risk.html">attributable_risk</a></span><span class="op">(</span></span>
 <span>  basis <span class="op">=</span> <span class="va">basis.max_pen</span>, </span>
@@ -567,13 +567,13 @@ could also request the forward perspective, using:</p>
 <span><span class="va">af2007_fw</span><span class="op">$</span><span class="va">samples</span><span class="op">$</span><span class="va">exc.prob</span></span>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
 <p>Results are very similar. Instead of calculating the total
-attributable fraction, using an average temperature timeseries and total
-cases, we could also calculate the district-specific attributable
-fractions, using the district-specific timeseries and cases. This output
-grouping variable can be specified through the argument
+attributable fraction, using an average temperature time series and
+total cases, we could also calculate the district-specific attributable
+fractions, using the district-specific time series and cases. This
+grouping variable for the output can be specified through the argument
 <code>group</code>:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Calculate exposure and outcome timeseries</span></span>
+<code class="sourceCode R"><span><span class="co"># Calculate exposure and outcome time series</span></span>
 <span><span class="va">data2007_district</span> <span class="op">&lt;-</span> <span class="va">dataset</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fl">2007</span><span class="op">)</span> </span>
 <span></span>
@@ -608,8 +608,9 @@ grouping variable can be specified through the argument
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Attributable fraction"</span>, y <span class="op">=</span> <span class="st">"District"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_dlnmlps_files/figure-html/unnamed-chunk-23-1.png" class="r-plt" alt="" width="384"></p>
-<p>Some small regional differences can be seen, which could be explained
-by different district-specific temperature timeseries and cases.</p>
+<p>Some small differences between districts can be seen, which could be
+explained by different district-specific temperature time series and
+cases.</p>
 </div>
 <div class="section level3">
 <h3 id="comparing-penalized-and-unpenalized-models">Comparing penalized and unpenalized models<a class="anchor" aria-label="anchor" href="#comparing-penalized-and-unpenalized-models"></a>
@@ -635,16 +636,16 @@ comparison criteria:</p>
 </h3>
 <p>Through a smooth function <code><a href="../reference/sm.html">sm()</a></code>, we can also include
 spatial and temporal random effects. An area-specific random effect can
-be included independently (<code>type</code> = “ind”) or spatially
-structured (<code>type</code> = “Leroux”, <code>type</code> = “ICAR” or
-<code>type</code> = “Convolution”). In case of spatially structured
+be included independently (<code>type = "ind"</code>) or spatially
+structured (<code>type = "Leroux"</code>, <code>type = "ICAR"</code> or
+<code>type = "Convolution"</code>). In case of spatially structured
 random effects, a map with the spatial structure can be supplied through
-<code>map</code> within the <code>arg</code> argument. A first or second
-order random walk on time can also be supplied through <code>type</code>
-= “rw1” or <code>type</code> = “rw2”.</p>
-<p>A time-varying spatial random effect or spatially-varying time random
-effect can also be requested using the arguments <code>by</code> and
-<code>arg.by</code>.</p>
+<code>map</code> within the <code>arg</code> argument. A first- or
+second-order random walk on time can also be supplied through
+<code>type = "rw1"</code> or <code>type = "rw2"</code>.</p>
+<p>A time-varying spatial random effect or spatially varying temporal
+random effect can also be requested using the arguments <code>by</code>
+and <code>arg.by</code>.</p>
 <p>A model with a year-specific random walk of order one and a
 district-specific Leroux-structured random effect can be fitted as:</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
@@ -658,7 +659,7 @@ district-specific Leroux-structured random effect can be fitted as:</p>
 <span>                             offset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span>,</span>
 <span>                             model.comparison <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>DIC <span class="op">=</span> <span class="cn">TRUE</span>, WAIC <span class="op">=</span> <span class="cn">TRUE</span>, CPO <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>                             family <span class="op">=</span> <span class="st">"Poisson"</span><span class="op">)</span></span></code></pre></div>
-<p>The District-specific random effect can for example be visualized
+<p>The district-specific random effect can for example be visualized
 using:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">re_index</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"District"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">model_penalized2</span><span class="op">$</span><span class="va">xi_mode</span><span class="op">)</span><span class="op">)</span></span>
@@ -673,8 +674,8 @@ using:</p>
 <span><span class="co">#&gt;   method                  from</span></span>
 <span><span class="co">#&gt;   st_interpolate_aw.stars sf</span></span></code></pre></div>
 <p><img src="introduction_dlnmlps_files/figure-html/unnamed-chunk-26-1.png" class="r-plt" alt="" width="384"></p>
-<p>A model with an independently year-varying Leroux random effect on
-District, can for example be fitted as:</p>
+<p>A model with a Leroux random effect on district that varies
+independently by year can for example be fitted as:</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fit a penalized DLNM with temporally varying spatial effect</span></span>
 <span><span class="va">model_penalized3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dlnmLPS.html">dlnmLPS</a></span><span class="op">(</span><span class="va">dtot</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">dow</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="../reference/sm.html">sm</a></span><span class="op">(</span><span class="va">basis.max_pen</span>, arg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>pen <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>

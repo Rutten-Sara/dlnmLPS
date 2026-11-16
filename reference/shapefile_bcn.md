@@ -2,7 +2,7 @@
 
 Spatial boundaries of the 10 administrative districts of Barcelona,
 provided as an `sf` object. The dataset is used alongside the simulated
-`barcelona_temp` dataset to facilitate spatial visualisation and
+`barcelona_temp` dataset to facilitate spatial visualization and
 examples in the `dlnmLPS` package.
 
 ## Usage

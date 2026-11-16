@@ -1,4 +1,4 @@
-# Generate Predictions from a dlnmLPS Model
+# Generate predictions from a dlnmLPS model
 
 This function generates predictions from a fitted
 [dlnmLPS](https://rutten-sara.github.io/dlnmLPS/reference/dlnmLPS.md)
@@ -92,7 +92,7 @@ pred_crossbasis(
 - threshold:
 
   Numeric value defining the threshold used for exceedance probability
-  calculations (at scale of linear predictor). Defaults to `0`.
+  calculations (on the scale of the linear predictor). Defaults to `0`.
 
 - mode:
 
@@ -152,31 +152,31 @@ An object of class `"dlnmLPS_pred"` containing the following components
 
 - allRRfit:
 
-  Matrix of exponentiated associations from `allfit`.
+  Vector of exponentiated associations from `allfit`.
 
 - Qlower_allRRfit:
 
-  Matrix of exponentiated bounds from `Qlower_allfit`.
+  Vector of exponentiated bounds from `Qlower_allfit`.
 
 - Qupper_allRRfit:
 
-  Matrix of exponentiated bounds from `Qupper_allfit`.
+  Vector of exponentiated bounds from `Qupper_allfit`.
 
 - exc.prob_matfit:
 
-  Matrix of exceedance probabilities for matfit, if requested.
+  Vector of exceedance probabilities for `matfit`, if requested.
 
 - exc.prob_allfit:
 
-  Vector of exceedance probabilities for allfit, if requested.
+  Vector of exceedance probabilities for `allfit`, if requested.
 
 - x:
 
-  Exposure values at_x.
+  Exposure values `at_x`.
 
 - y:
 
-  Exposure values at_y.
+  Exposure values `at_y`.
 
 - lag:
 
@@ -313,7 +313,8 @@ model_max_spat <- dlnmLPS(
     data = dataset,
     offset = log(pop),
     model.comparison = list(DIC = TRUE),
-    family = "Poisson")
+    family = "Poisson"
+)
 
 summary(model_max_spat)
 
@@ -368,7 +369,7 @@ extract_predictions(
 )
 
 # Extract lag-specific RR for 28 and 30 degrees Celsius, lag 0 and 8 and
-# for 10% deprivation percentile
+# for the 10th percentile of deprivation
 extract_predictions(
     pred_conf_max,
     slice_x = c(28,30),

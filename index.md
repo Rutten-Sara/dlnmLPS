@@ -63,8 +63,7 @@ repository using:
 remotes::install_github("Rutten-Sara/dlnmLPS")
 ```
 
-To install `dlnmLPS` together with its vignettes, containing short
-tutorials, use:
+To install `dlnmLPS` together with its vignettes (short tutorials), use:
 
 ``` r
 
@@ -129,7 +128,7 @@ functionality is developed and tested.
 ## License
 
 `dlnmLPS`: a fast and flexible Bayesian tool for distributed lag
-non-linear Models. Copyright (C) 2026 Sara Rutten. This program is free
+non-linear models. Copyright (C) 2026 Sara Rutten. This program is free
 software: you can redistribute it and/or modify it under the terms of
 the GNU General Public License as published by the Free Software
 Foundation, either version 3 of the License, or (at your option) any

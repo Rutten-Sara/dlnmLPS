@@ -31,7 +31,7 @@ dlnmLPS(
   A model formula. Smooth terms specified using
   [sm](https://rutten-sara.github.io/dlnmLPS/reference/sm.md) can be
   included on the right-hand side to define random effects, random
-  walks, DLNM cross-basis terms, or other smooth functions.
+  walks, DLNM crossbasis terms, or other smooth functions.
 
 - data:
 
@@ -45,19 +45,20 @@ dlnmLPS(
 - model.comparison:
 
   A list specifying optional model evaluation criteria to calculate.
-  Possible elements are `DIC`, `WAIC`, and `CPO`, each taking a logical
-  value (`TRUE` or `FALSE`). All criteria default to `FALSE`.
+  Possible elements are `"DIC"`, `"WAIC"`, and `"CPO"`, each taking a
+  logical value (`TRUE` or `FALSE`). All criteria default to `FALSE`.
 
 - family:
 
   The distribution family used for the response model. Currently
-  supported options are `Poisson` for the Poisson distribution, `NB` for
-  the negative binomial distribution, `Gaussian` for the normal
-  distribution (default) or `Bernoulli`/`Binomial` for binary data.
+  supported options are `"Poisson"` for the Poisson distribution, `NB`
+  for the negative binomial distribution, `"Gaussian"` for the normal
+  distribution (default), `"Bernoulli"` for binary data or `"Binomial"`
+  for binomial counts (with `Ntrials`).
 
 - Ntrials:
 
-  Number of trials per observation (for `family`="Binomial").
+  Number of trials per observation (for `family = "Binomial"`).
 
 - refit:
 
@@ -78,7 +79,7 @@ dlnmLPS(
 ## Value
 
 A list of class `"dlnmLPS"`. See
-[dlnmLPS_Object](https://rutten-sara.github.io/dlnmLPS/reference/DLNMLPS_Object.md)
+[dlnmLPS_Object](https://rutten-sara.github.io/dlnmLPS/reference/dlnmLPS_Object.md)
 for a description of the returned object and its components.
 
 ## Examples

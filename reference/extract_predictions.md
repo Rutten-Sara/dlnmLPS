@@ -41,9 +41,9 @@ extract_predictions(
 
 - slice_by:
 
-  Optional argument to specify the levels of the by-variable at which to
-  extract predictions. One value or multiple values supplied through a
-  vector.
+  Optional argument to specify the levels of the `by`-variable at which
+  to extract predictions. One value or multiple values supplied through
+  a vector.
 
 - ptype:
 
@@ -94,7 +94,7 @@ dataset <- barcelona_temp |>
 group <- factor(paste0(dataset$District, "-", dataset$year))
 
 
-### Example 1: Penalized and common DLNM
+### Example
 
 # Create the (unpenalized) crossbasis
 
@@ -121,7 +121,8 @@ model_max_conf <- dlnmLPS(
     data = dataset,
     offset = log(pop),
     model.comparison = list(DIC = TRUE),
-    family = "Poisson")
+    family = "Poisson"
+)
 
 # Make predictions
 pred_conf_max <- pred_crossbasis(
@@ -142,7 +143,7 @@ extract_predictions(
 )
 
 # Extract lag-specific RR for 28 and 30 degrees Celsius, lag 0 and 8 and
-# for 10% deprivation percentile
+# for the 10th percentile of deprivation
 extract_predictions(
     pred_conf_max,
     slice_x = c(28,30),

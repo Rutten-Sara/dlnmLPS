@@ -79,7 +79,7 @@ vector.</p></dd>
 
 
 <dt id="arg-slice-by">slice_by<a class="anchor" aria-label="anchor" href="#arg-slice-by"></a></dt>
-<dd><p>Optional argument to specify the levels of the by-variable
+<dd><p>Optional argument to specify the levels of the <code>by</code>-variable
 at which to extract predictions. One value or multiple values supplied through a vector.</p></dd>
 
 
@@ -129,7 +129,7 @@ by-variable (if applicable).</p>
 <span class="r-in"><span><span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">$</span><span class="va">District</span>, <span class="st">"-"</span>, <span class="va">dataset</span><span class="op">$</span><span class="va">year</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">### Example 1: Penalized and common DLNM</span></span></span>
+<span class="r-in"><span><span class="co">### Example</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create the (unpenalized) crossbasis</span></span></span>
 <span class="r-in"><span></span></span>
@@ -156,7 +156,8 @@ by-variable (if applicable).</p>
 <span class="r-in"><span>    data <span class="op">=</span> <span class="va">dataset</span>,</span></span>
 <span class="r-in"><span>    offset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    model.comparison <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>DIC <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    family <span class="op">=</span> <span class="st">"Poisson"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    family <span class="op">=</span> <span class="st">"Poisson"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Make predictions</span></span></span>
 <span class="r-in"><span><span class="va">pred_conf_max</span> <span class="op">&lt;-</span> <span class="fu"><a href="pred_crossbasis.html">pred_crossbasis</a></span><span class="op">(</span></span></span>
@@ -177,7 +178,7 @@ by-variable (if applicable).</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Extract lag-specific RR for 28 and 30 degrees Celsius, lag 0 and 8 and</span></span></span>
-<span class="r-in"><span><span class="co"># for 10% deprivation percentile</span></span></span>
+<span class="r-in"><span><span class="co"># for the 10th percentile of deprivation</span></span></span>
 <span class="r-in"><span><span class="fu">extract_predictions</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="va">pred_conf_max</span>,</span></span>
 <span class="r-in"><span>    slice_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">28</span>,<span class="fl">30</span><span class="op">)</span>,</span></span>

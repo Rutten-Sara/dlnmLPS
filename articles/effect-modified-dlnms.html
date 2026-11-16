@@ -84,10 +84,10 @@ relationship to vary according to a continuous or categorical covariate
 <span class="citation">(Rutten et al. 2026)</span>. This framework
 allows for flexible interactions between the DLNM and a possibly
 non-linear smooth covariate.</p>
-<p>In this vignette, we demonstrate how to fit covariate-varying DLNMs
+<p>In this vignette, we demonstrate how to fit effect-modified DLNMs
 using <code>dlnmLPS</code> and show how to predict and visualize the
 exposure-lag-response relationship.</p>
-<p>The basic functionality of <code>dlnmLPS</code>is introduced in
+<p>The basic functionality of <code>dlnmLPS</code> is introduced in
 <code><a href="../articles/introduction_dlnmlps.html">vignette("introduction_dlnmlps")</a></code>.</p>
 </div>
 <div class="section level2">
@@ -100,12 +100,12 @@ exposure-lag-response relationship.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">barcelona_temp</span><span class="op">)</span></span></code></pre></div>
-<p>This simulated data set contains daily minimum, maximum and mean
+<p>This simulated dataset contains daily minimum, maximum and mean
 temperature in all 10 districts of Barcelona during the summer period (1
 June–30 September) between 2007 and 2011. The population size,
 deprivation index and daily number of deaths are included for every
 district. For this example, we will investigate how the effect of
-maximum temperature on mortality spatially varies according to the
+maximum temperature on mortality varies spatially according to the
 deprivation index. The outcome and exposure variable can then be
 inspected:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -144,21 +144,22 @@ interaction;</p></li>
 <li><p><strong>Smooth unpenalized effect modification</strong>, a
 penalized DLNM modified by a continuous deprivation index, expressed by
 natural splines using 2 knots (on the 10th and 90th
-percentile);</p></li>
+percentiles);</p></li>
 <li><p><strong>Smooth penalized effect modification</strong>, a
 penalized DLNM modified by a continuous deprivation index, expressed by
 penalized splines using 5 df.</p></li>
 </ul>
-<p>We include month as natural splines with 3 degrees of freedom, year
-as a random walk of order one, day of the week as a factor and District
+<p>We include month as a natural spline with 3 degrees of freedom, year
+as a random walk of order one, day of the week as a factor and district
 as an independent random effect. We use a penalized DLNM with 8 degrees
 of freedom and penalty of order 2.</p>
-<p>For the first model, we split the deprivation index in a categorical
-variable with three levels. We specify the modifying covariate through
-the option <code>by</code> and include <code>type</code>=“factor” in the
-argument <code>arg.by</code>. We also include the categorical
-deprivation index as a main effect in the model. The model can be fitted
-as:</p>
+<p>For the first model, we split the deprivation index into a
+categorical variable with three levels (below the 25th percentile,
+25th-75th percentile, above the 75th percentile). We specify the
+modifying covariate through the option <code>by</code> and include
+<code>type = "factor"</code> in the argument <code>arg.by</code>. We
+also include the categorical deprivation index as a main effect in the
+model. The model can be fitted as:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fit a categorical modified DLNM</span></span>
 <span><span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">$</span><span class="va">District</span>, <span class="st">"-"</span>, <span class="va">dataset</span><span class="op">$</span><span class="va">year</span><span class="op">)</span><span class="op">)</span></span>
@@ -185,7 +186,7 @@ as:</p>
 <span>                   model.comparison <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>DIC <span class="op">=</span> <span class="cn">TRUE</span>, WAIC <span class="op">=</span> <span class="cn">TRUE</span>, CPO <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>                   family <span class="op">=</span> <span class="st">"Poisson"</span><span class="op">)</span></span></code></pre></div>
 <p>The second model can similarly be fitted by specifying
-<code>type</code>=“linear” instead of <code>type</code>=“factor”.
+<code>type = "linear"</code> instead of <code>type = "factor"</code>.
 Deprivation index is now also included as a linear main effect:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fit a linear modified DLNM</span></span>
@@ -252,7 +253,7 @@ comparison criteria DIC, WAIC and CPO:</p>
 <p>The fourth model is preferred based on all model selection criteria.
 Using this model, we predict the exposure-lag-response curve for three
 different levels of the deprivation index (2.5th, 50th and 97.5th
-percentile) at temperatures between 22 and 30 degrees Celsius, relative
+percentiles) at temperatures between 22 and 30 degrees Celsius, relative
 to a centering value of 25 degrees. We also request the probability that
 the logarithm of the relative risk exceeds 0:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -268,8 +269,8 @@ the logarithm of the relative risk exceeds 0:</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Using the <code><a href="../reference/extract_predictions.html">extract_predictions()</a></code> function, we can easily
 extract (part of) the requested predictions. For example, if interest is
-in the lag-specific RR for lag 0 and lag 2 at 22 and 30 degrees and for
-deprivation quantiles 2.5% and 97.5%, we can use:</p>
+in the lag-specific RR for lag 0 and lag 2 at 22 and 30 degrees and the
+2.5th and 97.5th percentiles of deprivation, we can use:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_predictions.html">extract_predictions</a></span><span class="op">(</span><span class="va">pred_penalized</span>, slice_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">22</span>,<span class="fl">30</span><span class="op">)</span>, slice_lag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">2</span><span class="op">)</span>, </span>
 <span>                    slice_by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">$</span><span class="va">depriv</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>,<span class="fl">0.975</span><span class="op">)</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span>, </span>
@@ -284,18 +285,19 @@ deprivation quantiles 2.5% and 97.5%, we can use:</p>
 <span><span class="co">#&gt; 7 22   2 1.0057789 0.9596735 1.054099 0.59509832  1.45</span></span>
 <span><span class="co">#&gt; 8 30   2 1.0925640 1.0596552 1.126495 0.99999999  1.45</span></span></code></pre></div>
 <p>To plot the exposure-response relationship at lag 0, 3 and 8 for the
-2.5th, 50th and 97.5th percentile deprivation indices, we can use:</p>
+2.5th, 50th and 97.5th percentiles of the deprivation index, we can
+use:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pred_penalized</span>, slice_lag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">3</span>,<span class="fl">8</span><span class="op">)</span>, ptype <span class="op">=</span> <span class="st">"slices"</span>, CI <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>     xlab <span class="op">=</span> <span class="st">"temperature"</span>, ylab <span class="op">=</span> <span class="st">"RR"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="effect-modified-dlnms_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="576"></p>
-<p>Based on this plot, the differences in temporal evolution of the RR,
-based on deprivation index, seem to be small. The plot title indicates
-the level of deprivation. The option <code>multiple.plots</code> = FALSE
-allows visualizing the results for different levels of the deprivation
-index on one plot. Note that this option is only available for an
-integer (and not a vector) slice value or overall RR-curve. Furthermore,
-the option <code>slice_by</code> allows to specify only a subset of the
+<p>Based on this plot, the differences in the lag-specific RR between
+deprivation levels seem small. The plot title indicates the level of
+deprivation. The option <code>multiple.plots = FALSE</code> allows
+visualizing the results for different levels of the deprivation index on
+one plot. Note that this option is only available for a single (scalar)
+slice value or overall RR-curve. Furthermore, the option
+<code>slice_by</code> can be used to specify only a subset of the
 predicted <code>by</code>-values. For example, if we only want to plot
 the 2.5th and 97.5th deprivation percentiles, we can use:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -319,7 +321,7 @@ deprivation levels:</p>
 example. Using the district-specific maximum temperatures, deprivation
 index and deaths, and the backward perspective, we get:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Calculate exposure and outcome timeseries</span></span>
+<code class="sourceCode R"><span><span class="co"># Calculate exposure and outcome time series</span></span>
 <span><span class="va">data2007_district</span> <span class="op">&lt;-</span> <span class="va">dataset</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fl">2007</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">District</span>, <span class="va">date</span><span class="op">)</span></span>
@@ -338,7 +340,7 @@ index and deaths, and the backward perspective, we get:</p>
 <span>  samples <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>We could for example also calculate a counterfactual attributable
 fraction, in which the deprivation index in every area is equal to the
-2.5th deprivation percentile.</p>
+2.5th percentile of the deprivation index.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate counterfactual attributable risk</span></span>
 <span><span class="va">depriv_lower</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">data2007_district</span><span class="op">$</span><span class="va">depriv</span>, probs <span class="op">=</span> <span class="fl">0.025</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span></span>
@@ -401,7 +403,7 @@ attributable fraction for some districts.</p>
 <p>In this vignette, we introduced the effect-modification functionality
 of <code>dlnmLPS</code>. We demonstrated how to fit four different
 models, differing in the flexibility of the effect modification. We used
-penalized splines to showcase the functionality of the package but
+penalized splines to showcase the functionality of the package, but
 similar models can be fitted with unpenalized splines. See also
 <code><a href="../articles/introduction_dlnmlps.html">vignette("introduction_dlnmlps")</a></code> for more information.</p>
 </div>

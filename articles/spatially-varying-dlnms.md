@@ -25,7 +25,7 @@ In this vignette, we demonstrate how to fit spatially varying DLNMs
 using `dlnmLPS`. We subsequently show how to obtain and visualize the
 estimated spatially varying exposure-lag-response curves.
 
-The basic functionality of `dlnmLPS`is introduced in
+The basic functionality of `dlnmLPS` is introduced in
 [`vignette("introduction_dlnmlps")`](https://rutten-sara.github.io/dlnmLPS/articles/introduction_dlnmlps.md).
 
 ## Spatially varying DLNMs
@@ -78,8 +78,8 @@ dataset <- barcelona_temp |>
 ### Fitting a spatially varying DLNM
 
 In this example, we fit four different types of DLNMs, differing in
-penalization and spatial structure assumed on the regional curves
-(Rutten et al. 2026):
+penalization and spatial structure assumed for the district-specific
+curves (Rutten et al. 2026):
 
 - **Type I**, unpenalized, spatially independent DLNMs;
 
@@ -89,16 +89,16 @@ penalization and spatial structure assumed on the regional curves
 
 - **Type IV**, penalized, Leroux-structured DLNMs.
 
-We include month as natural splines with 3 degrees of freedom, year as a
-random walk of order one, day of the week as a factor and District as a
-random effect.
+We include month as a natural spline with 3 degrees of freedom, year as
+a random walk of order one, day of the week as a factor and district as
+a random effect.
 
 Fitting all of these models is very similar. First of all, we can fit
 models of Type I and Type III, by using an unpenalized crossbasis and
-let it vary by District. Spatially-independent DLNMs can be requested
-using `type` = “ind”, while Leroux-varying DLNMs can be specified using
-`type` = “Leroux”. For the latter, a map containing the neighbourhood
-structure needs to be provided as well.
+let it vary by district. Spatially independent DLNMs can be requested
+using `arg.by = list(type = "ind")`, while Leroux-varying DLNMs can be
+specified using `type = "Leroux"`. For the latter, a map containing the
+neighbourhood structure needs to be provided as well.
 
 ``` r
 
@@ -252,8 +252,8 @@ plot(pred_penalized, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, xlab = "
 The option `multiple.plots` = FALSE allows visualizing the results for
 different districts on one plot. However, this option is only available
 for an integer (and not a vector) slice exposure or lag value or overall
-RR-curve. The lag-response relationships at 30 degrees, can be
-visualized for the four districts using:
+RR-curve. The lag-response relationships at 30 degrees can be visualized
+for the four districts using:
 
 ``` r
 
@@ -263,8 +263,8 @@ plot(pred_penalized, slice_x = 30, ptype = "slices", CI = TRUE, xlab = "lag", yl
 
 ![](spatially-varying-dlnms_files/figure-html/unnamed-chunk-11-1.png)
 
-To visualize these lag-response relationships for all districts and
-disable the legend and hide the credible intervals, we can specify:
+To visualize these lag-response relationships for all districts, without
+legend and credible intervals, we can specify:
 
 ``` r
 
@@ -323,15 +323,15 @@ Similarly, a contour plot could also be made. In general, plots show
 that differences between the different districts in the
 temperature-mortality relationship are relatively small.
 
-It’s also possible to calculate the region-specific attributable
-fractions for a specific year, for example 2007. For a spatially-varying
+It is also possible to calculate the region-specific attributable
+fractions for a specific year, for example 2007. For a spatially varying
 DLNM, the output is automatically grouped using the `by` variable, and
 hence the `group` argument does not need to be specified. Adopting the
 backward perspective, we get:
 
 ``` r
 
-# Calculate exposure and outcome timeseries
+# Calculate exposure and outcome time series
 data2007_district <- dataset |>
   dplyr::filter(year == 2007) |>
   dplyr::arrange(District, date)
@@ -377,9 +377,8 @@ ggplot2::ggplot(af_ci, ggplot2::aes(x = estimate, y = ID)) +
 ## Summary
 
 In this vignette, we introduced the spatially varying functionality of
-`dlnmLPS`. We demonstrated how to fit four different types of
-spatially-varying DLNMs, differing in penalization and spatial
-structure. See also
+`dlnmLPS`. We demonstrated how to fit four different types of spatially
+varying DLNMs, differing in penalization and spatial structure. See also
 [`vignette("introduction_dlnmlps")`](https://rutten-sara.github.io/dlnmLPS/articles/introduction_dlnmlps.md)
 for more information.
 
