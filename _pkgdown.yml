@@ -30,22 +30,22 @@ reference:
   - shapefile_bcn
 - title: Functions
   contents:
-  - title: Model fitting
+  - section: Model fitting
     contents:
     - joint.crossbasis
     - dlnmLPS
     - sm
     - dlnmLPS_Object
-  - title: Predicting
+  - section: Predicting
     contents:
     - pred_crossbasis
     - extract_predictions
     - attributable_risk
-  - title: Visualizing results
+  - section: Visualizing results
     contents:
     - plot.dlnmLPS_pred
     - contour.dlnmLPS_pred
-  - title: Summarizing results
+  - section: Summarizing results
     contents:
     - summary.dlnmLPS
     - print.summary.dlnmLPS

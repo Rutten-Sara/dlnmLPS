@@ -59,7 +59,8 @@ penalized spline representations, but also accommodates unpenalized spline
 bases within the DLNM framework. The model allows inclusion of structured
 components, such as spatial random effects and random walks. Smooth
 covariate effects can be specified using natural splines, P-splines, or
-B-splines.
+B-splines. Observations containing missing values in the variables used
+in the model are automatically removed prior to model fitting.
 }
 \examples{
 \dontrun{
