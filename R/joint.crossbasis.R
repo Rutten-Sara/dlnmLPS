@@ -3,6 +3,7 @@
 #' Constructs a distributed lag non-linear model (DLNM) crossbasis for the
 #' interaction between two exposure variables. The exposures can be supplied
 #' either as concurrent time series or as pre-computed lagged exposure histories.
+#'
 #' @param x A matrix or a list containing the exposure variables.
 #'   If a matrix, the first and second columns contain the time series of the
 #'   first and second exposure, respectively. If a list, `x[[1]]` and `x[[2]]`

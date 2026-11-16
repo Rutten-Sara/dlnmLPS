@@ -19,7 +19,7 @@
 #' @param arg A list specifying additional arguments. The argument
 #'   `arg$type` determines the type of component:
 #'   \describe{
-#'     \item{`crossbasis`}{A penalized or unpenalized DLNM cross-basis (constructed
+#'     \item{`"crossbasis"`}{A penalized or unpenalized DLNM crossbasis (constructed
 #'     using `ps`, `ns` or `bs`, with the same spline basis type
 #'     for the exposure and lag dimensions). The spline specifications,
 #'     such as degrees of freedom or knot locations, may differ between
@@ -27,28 +27,26 @@
 #'     automatically and therefore do not need to be specified explicitly in
 #'     `arg$type`. The additional argument `pen` can be specified, where
 #'     `NULL` specifies an unpenalized basis and an integer
-#'     specifies the penalty structure (default is 2 for `ps`).
+#'     specifies the penalty structure (default is 2 for P-spline bases).
 #'     The additional argument `add.lagpen`
-#'     (default TRUE) is a logical indicator, indicating whether an additional
+#'     (defaults to `TRUE`) is a logical indicator, indicating whether an additional
 #'     penalty should be specified in the lag dimension (for penalized settings)
 #'     to encourage shrinkage of the effect at longer lags. The additional lag
-#'     penalty matrix can be specified using `lagpen`: by default, this is a diagonal
-#'     matrix with entries corresponding to `0^2,1^2,...,(vl-1)^2`, with `vl` the
-#'     degrees of freedom for the lag basis.
-#'     `diag((0:(vl - 1))^2)`.}
-#'     \item{`ps`, `ns`, `bs`}{Smooth functions based on P-splines,
+#'     penalty matrix can be specified using `lagpen`: by default `diag((0:(vl - 1))^2)`,
+#'     with `vl` the degrees of freedom of the lag basis.}
+#'     \item{`"ps"`, `"ns"`, `"bs"`}{Smooth functions based on P-splines,
 #'     natural splines, or B-splines. Additional arguments can include
 #'     those passed to the corresponding spline constructors, such as
 #'     `df`, `knots`, `intercept`, `Boundary.knots`, `degree`, and
 #'     penalty specifications.}
-#'     \item{`ind`, `ICAR`, `Leroux`, `Convolution`}{Random
+#'     \item{`"ind"`, `"ICAR"`, `"Leroux"`, `"Convolution"`}{Random
 #'     effects, including spatial random effects. Additional arguments
 #'     include spatial connectivity information through `map` (sf-object) and
 #'     `connect` (logical value indicating whether the spatial adjacency
 #'     graph should be connected, defaults to `TRUE`).}
-#'     \item{`rw1`, `rw2`}{First- and second-order random walks.
+#'     \item{`"rw1"`, `"rw2"`}{First- and second-order random walks.
 #'     Additional arguments include `cyclic` for specifying cyclic random
-#'     walks (Defaults to `FALSE`).}
+#'     walks (defaults to `FALSE`).}
 #'   }
 #' @param by An optional variable used to modify or stratify the model
 #'   component specified by `x`. This can be:
@@ -69,22 +67,22 @@
 #'   variable. The argument `arg.by$type` determines how the `by` variable
 #'   is modelled:
 #'   \describe{
-#'     \item{`ps`, `ns`, `bs`}{Smooth functions based on P-splines,
+#'     \item{`"ps"`, `"ns"`, `"bs"`}{Smooth functions based on P-splines,
 #'     natural splines, or B-splines. Additional arguments can include
 #'     those passed to the corresponding spline constructors, such as
 #'     `df`, `knots`, `intercept`, `Boundary.knots`, `degree`, and
 #'     penalty specifications.}
-#'      \item{`linear`, `factor`}{Linear relationship or according to
+#'      \item{`"linear"`, `"factor"`}{Linear relationship or according to
 #'      a categorical (factor) variable.}
-#'     \item{`ind`, `ICAR`, `Leroux`}{Random effects, including spatial
+#'     \item{`"ind"`, `"ICAR"`, `"Leroux"`}{Random effects, including spatial
 #'     random effects. Additional arguments include spatial connectivity
 #'     information through `map` (sf-object) and `connect` (logical value indicating
 #'     whether the spatial adjacency graph should be connected, defaults
 #'     to `TRUE`).}
-#'     \item{`rw1`, `rw2`}{First- and second-order random walks.
+#'     \item{`"rw1"`, `"rw2"`}{First- and second-order random walks.
 #'     Additional arguments include `cyclic` for specifying cyclic random
-#'     walks (Defaults to `FALSE`). Only for time-structured (spatial)
-#'     random effects (main type is `ind`, `ICAR` or `Leroux`).}
+#'     walks (defaults to `FALSE`). Only for time-structured (spatial)
+#'     random effects (main type is `"ind"`, `"ICAR"` or `"Leroux"`).}
 #'   }
 #'
 #' @returns
@@ -95,8 +93,8 @@
 #' @examples
 #' # `sm()` is intended to be used inside a dlnmLPS() formula:
 #' \dontrun{
-#' # Penalized DLNM cross-basis
-#' # Cross-basis objects are recognized automatically
+#' # Penalized DLNM crossbasis
+#' # Crossbasis objects are recognized automatically
 #' sm(crossbasis, arg = list(pen = 2))
 #'
 #' # Leroux spatial random effect
@@ -108,7 +106,7 @@
 #' # Penalized P-spline smooth
 #' sm(x, arg = list(type = "ps", pen = 2, df = 5))
 #'
-#' # Penalized DLNM cross-basis by location (region_ID)
+#' # Penalized DLNM crossbasis by location (region_ID)
 #' sm(
 #'   crossbasis,
 #'   arg = list(pen = 2),
@@ -116,7 +114,7 @@
 #'   arg.by = list(type = "Leroux", map = map)
 #' )
 #'
-#' # Penalized DLNM cross-basis by continuous modifier x (using ps)
+#' # Penalized DLNM crossbasis by continuous modifier x (using ps)
 #' sm(
 #'   crossbasis,
 #'   arg = list(pen = 2),

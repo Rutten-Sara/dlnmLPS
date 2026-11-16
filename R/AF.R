@@ -8,15 +8,15 @@
 #' @param cases A vector of cases or, only if `dir = "forw"`, a matrix of
 #'   future cases.
 #' @param model An object of class `"dlnmLPS"` returned by the [dlnmLPS] function.
-#' @param cen A value  (or a vector of length 2 for `"joint.crossbasis"`)
+#' @param cen A value (or a vector of length 2 for `"joint.crossbasis"`)
 #'   specifying the centering (reference) exposure level used
 #'   for calculating relative risk predictions.
-#' @param x Vector of the first exposure or, only if `dir = "back"` a matrix
+#' @param x Vector of the first exposure or, only if `dir = "back"`, a matrix
 #'   of lagged exposures, for which the attributable fraction needs to be
 #'   calculated.
-#' @param y Vector of the second exposure or, only if `dir = "back"` a matrix
+#' @param y Vector of the second exposure or, only if `dir = "back"`, a matrix
 #'   of lagged exposures, for which the attributable fraction needs to be
-#'   calculated. Only for `basis` of class`"joint.crossbasis"`.
+#'   calculated. Only for `basis` of class `"joint.crossbasis"`.
 #' @param by Vector of the `by` variable-levels (same length as cases) at
 #'   which the DLNM relationship is evaluated. For a continuous `by` variable,
 #'   this is a vector of numeric values defining the level at
@@ -27,18 +27,18 @@
 #'   to the ID vector in `by` (i.e., region-specific attributable risks are calculated).
 #'   For non-spatially varying DLNMs, a vector can also be specified (same length
 #'   as cases) to group the output per region.
-#' @param dir Either "back" (default) or "forw" for backward and forward
-#'   perspective on attributable risk respectively.
-#' @param tot If `True`, the total attributable risk over the entire period is calculated.
+#' @param dir Either `"back"` (default) or `"forw"` for the backward and forward
+#'   perspective on attributable risk, respectively.
+#' @param tot If `TRUE`, the total attributable risk over the entire period is calculated.
 #' @param range_x The range of the first exposure for which the attributable risk is
-#'   calculated. If `NULL`(default), the whole range is used.
+#'   calculated. If `NULL` (default), the whole range is used.
 #' @param range_y The range of the second exposure for which the attributable risk is
-#'   calculated. If `NULL`(default), the whole range is used.
-#'   Only for `basis` of class`"joint.crossbasis"`.
+#'   calculated. If `NULL` (default), the whole range is used.
+#'   Only for `basis` of class `"joint.crossbasis"`.
 #' @param samples Set to `TRUE` if samples from the posterior distribution should be returned.
 #'   Samples can only be calculated for `tot = TRUE`.
-#' @param nsamples Number of samples from the posterior distribution to be returned.
-#'   (only when `samples = TRUE`).
+#' @param nsamples Number of samples from the posterior distribution to be returned (only
+#' when `samples = TRUE`).
 #' @param exc.threshold Numeric value defining the threshold used for exceedance
 #'   probability calculations of the attributable fraction. If `NULL` (default), no
 #'   exceedance probabilities are calculated.

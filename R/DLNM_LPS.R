@@ -10,18 +10,19 @@
 #' @import sf
 #' @param model A model formula. Smooth terms specified using [sm] can be
 #'   included on the right-hand side to define random effects, random walks,
-#'   DLNM cross-basis terms, or other smooth functions.
+#'   DLNM crossbasis terms, or other smooth functions.
 #' @param data A data frame containing the response variable and covariates
 #'   specified in the model formula.
 #' @param offset An optional model offset term.
 #' @param model.comparison A list specifying optional model evaluation criteria to calculate.
-#'   Possible elements are `DIC`, `WAIC`, and `CPO`, each taking a logical value
+#'   Possible elements are `"DIC"`, `"WAIC"`, and `"CPO"`, each taking a logical value
 #'   (`TRUE` or `FALSE`). All criteria default to `FALSE`.
 #' @param family The distribution family used for the response model. Currently
-#'   supported options are `Poisson` for the Poisson distribution,
-#'   `NB` for the negative binomial distribution, `Gaussian` for the normal
-#'   distribution (default) or `Bernoulli`/`Binomial` for binary data.
-#' @param Ntrials Number of trials per observation (for `family`="Binomial").
+#'   supported options are `"Poisson"` for the Poisson distribution,
+#'   `NB` for the negative binomial distribution, `"Gaussian"` for the normal
+#'   distribution (default), `"Bernoulli"` for binary data or `"Binomial"` for
+#'   binomial counts (with `Ntrials`).
+#' @param Ntrials Number of trials per observation (for `family = "Binomial"`).
 #' @param refit Optional number of additional model refinement iterations. Each
 #'   iteration updates the coefficient and hyperparameter estimates based on the
 #'   previous iteration. Default is `0`.

@@ -25,16 +25,16 @@
 #'   \item{`"slices"`}{Slices through the exposure-lag-response surface.}
 #' }
 #' @param multiple.plots Logical. Should the results of different by-levels be plotted in
-#' different windows (default = TRUE)?
-#' @param show.legend Logical. Should the legend appear on the plot (default = TRUE)?
-#' @param CI Logical. Should credible intervals be displayed (default = FALSE)? credible
+#' different windows (defaults to `TRUE`)?
+#' @param show.legend Logical. Should the legend appear on the plot (defaults to `TRUE`)?
+#' @param CI Logical. Should credible intervals be displayed (defaults to `FALSE`)? credible
 #' intervals are only available for two-dimensional plots.
 #' @param xlim,ylim,zlim Numeric vectors of length two giving axis limits.
 #' @param cols Colours used for lines, surfaces or contours.
 #' @param xlab,ylab,zlab Axis labels.
 #' @param mar Figure margins.
 #' @param ... Additional graphical arguments passed to the underlying plotting
-#' functions. For 3D plots, additional arguments of `graphics::persp` can be passed.
+#' functions. For 3D plots, additional arguments of `graphics::persp()` can be passed.
 #'
 #' @details
 #' The available plot types depend on whether the prediction object contains

@@ -1,8 +1,8 @@
 #' Summarize a dlnmLPS model
 #'
-#' Computes a summary of the fixed effects of a fitted `"dlnmLPS"` model.
-#' The summary includes posterior means (modes), standard deviations, and
-#' approximate 95% credible intervals based on the Laplace approximation.
+#' Summarizes the posterior of the model coefficients of the `"dlnmLPS"` model
+#' (mean = mode under the Laplace approximation, SD, 2.5/50/97.5% quantiles)
+#' and of the hyperparameters.
 #' @param object A fitted `"dlnmLPS"` model.
 #' @param ... Additional arguments to be passed.
 #' @returns An object of class \code{"summary.dlnmLPS"}.

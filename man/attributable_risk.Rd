@@ -31,17 +31,17 @@ future cases.}
 
 \item{model}{An object of class \code{"dlnmLPS"} returned by the \link{dlnmLPS} function.}
 
-\item{cen}{A value  (or a vector of length 2 for \code{"joint.crossbasis"})
+\item{cen}{A value (or a vector of length 2 for \code{"joint.crossbasis"})
 specifying the centering (reference) exposure level used
 for calculating relative risk predictions.}
 
-\item{x}{Vector of the first exposure or, only if \code{dir = "back"} a matrix
+\item{x}{Vector of the first exposure or, only if \code{dir = "back"}, a matrix
 of lagged exposures, for which the attributable fraction needs to be
 calculated.}
 
-\item{y}{Vector of the second exposure or, only if \code{dir = "back"} a matrix
+\item{y}{Vector of the second exposure or, only if \code{dir = "back"}, a matrix
 of lagged exposures, for which the attributable fraction needs to be
-calculated. Only for \code{basis} of class\code{"joint.crossbasis"}.}
+calculated. Only for \code{basis} of class \code{"joint.crossbasis"}.}
 
 \item{by}{Vector of the \code{by} variable-levels (same length as cases) at
 which the DLNM relationship is evaluated. For a continuous \code{by} variable,
@@ -55,23 +55,23 @@ to the ID vector in \code{by} (i.e., region-specific attributable risks are calc
 For non-spatially varying DLNMs, a vector can also be specified (same length
 as cases) to group the output per region.}
 
-\item{dir}{Either "back" (default) or "forw" for backward and forward
-perspective on attributable risk respectively.}
+\item{dir}{Either \code{"back"} (default) or \code{"forw"} for the backward and forward
+perspective on attributable risk, respectively.}
 
-\item{tot}{If \code{True}, the total attributable risk over the entire period is calculated.}
+\item{tot}{If \code{TRUE}, the total attributable risk over the entire period is calculated.}
 
 \item{range_x}{The range of the first exposure for which the attributable risk is
-calculated. If \code{NULL}(default), the whole range is used.}
+calculated. If \code{NULL} (default), the whole range is used.}
 
 \item{range_y}{The range of the second exposure for which the attributable risk is
-calculated. If \code{NULL}(default), the whole range is used.
-Only for \code{basis} of class\code{"joint.crossbasis"}.}
+calculated. If \code{NULL} (default), the whole range is used.
+Only for \code{basis} of class \code{"joint.crossbasis"}.}
 
 \item{samples}{Set to \code{TRUE} if samples from the posterior distribution should be returned.
 Samples can only be calculated for \code{tot = TRUE}.}
 
-\item{nsamples}{Number of samples from the posterior distribution to be returned.
-(only when \code{samples = TRUE}).}
+\item{nsamples}{Number of samples from the posterior distribution to be returned (only
+when \code{samples = TRUE}).}
 
 \item{exc.threshold}{Numeric value defining the threshold used for exceedance
 probability calculations of the attributable fraction. If \code{NULL} (default), no

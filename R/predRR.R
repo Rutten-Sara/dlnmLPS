@@ -1,4 +1,4 @@
-#' Generate Predictions from a dlnmLPS Model
+#' Generate predictions from a dlnmLPS model
 #'
 #' This function generates predictions from a fitted
 #' [dlnmLPS] model over a specified grid of exposure and lag values. Predictions
@@ -30,7 +30,7 @@
 #' @param exc.prob Logical value indicating whether exceedance probabilities
 #'   should be calculated. Defaults to `FALSE`.
 #' @param threshold Numeric value defining the threshold used for exceedance
-#'   probability calculations (at scale of linear predictor). Defaults to `0`.
+#'   probability calculations (on the scale of the linear predictor). Defaults to `0`.
 #' @param mode Optional user-specified posterior mode.
 #' @param by Level or value of the `by` variable at which the DLNM relationship
 #'   is evaluated. For a continuous `by` variable, this is a (vector of) numeric
@@ -56,13 +56,13 @@
 #'   cumulative predictions in `allfit`.}
 #'   \item{Qupper_allfit}{Vector of upper credible interval bounds for the overall
 #'   cumulative predictions in `allfit`.}
-#'   \item{allRRfit}{Matrix of exponentiated associations from `allfit`.}
-#'   \item{Qlower_allRRfit}{Matrix of exponentiated bounds from `Qlower_allfit`.}
-#'   \item{Qupper_allRRfit}{Matrix of exponentiated bounds from `Qupper_allfit`.}
-#'   \item{exc.prob_matfit}{Matrix of exceedance probabilities for matfit, if requested.}
-#'   \item{exc.prob_allfit}{Vector of exceedance probabilities for allfit, if requested.}
-#'   \item{x}{Exposure values at_x.}
-#'   \item{y}{Exposure values at_y.}
+#'   \item{allRRfit}{Vector of exponentiated associations from `allfit`.}
+#'   \item{Qlower_allRRfit}{Vector of exponentiated bounds from `Qlower_allfit`.}
+#'   \item{Qupper_allRRfit}{Vector of exponentiated bounds from `Qupper_allfit`.}
+#'   \item{exc.prob_matfit}{Vector of exceedance probabilities for `matfit`, if requested.}
+#'   \item{exc.prob_allfit}{Vector of exceedance probabilities for `allfit`, if requested.}
+#'   \item{x}{Exposure values `at_x`.}
+#'   \item{y}{Exposure values `at_y`.}
 #'   \item{lag}{Lag range.}
 #'   \item{by}{Level or value of the `by` variable (if applicable).}
 #'   \item{family}{The distribution family of the model.}
@@ -189,7 +189,8 @@
 #'     data = dataset,
 #'     offset = log(pop),
 #'     model.comparison = list(DIC = TRUE),
-#'     family = "Poisson")
+#'     family = "Poisson"
+#' )
 #'
 #' summary(model_max_spat)
 #'
@@ -241,17 +242,17 @@
 #'     pred_conf_max,
 #'     slice_x = c(28,30),
 #'     ptype = "allRRfit"
-#')
+#' )
 #'
 #' # Extract lag-specific RR for 28 and 30 degrees Celsius, lag 0 and 8 and
-#' # for 10% deprivation percentile
+#' # for the 10th percentile of deprivation
 #' extract_predictions(
 #'     pred_conf_max,
 #'     slice_x = c(28,30),
 #'     slice_lag = c(0,8),
 #'     slice_by = quantile(dataset$depriv,probs= c(0.10)),
 #'     ptype = "matRRfit"
-#')
+#' )
 #'
 #' # Plot results (contour plot exposure-lag-response)
 #' contour(pred_conf_max, ptype = "cross", cols = function(n) hcl.colors(n, "Inferno"))
@@ -859,7 +860,7 @@ data_pred_1d <- function(basis, at_x, predlag, cen){
 #' extract predictions (bivariate exposures only). Integer or numeric vector.
 #' @param slice_lag  Lag value(s) at which to extract predictions. Integer or numeric
 #' vector.
-#' @param slice_by  Optional argument to specify the levels of the by-variable
+#' @param slice_by  Optional argument to specify the levels of the `by`-variable
 #' at which to extract predictions. One value or multiple values supplied through a vector.
 #' @param ptype Character string specifying the type of prediction. One of:
 #' \describe{
@@ -895,7 +896,7 @@ data_pred_1d <- function(basis, at_x, predlag, cen){
 #' group <- factor(paste0(dataset$District, "-", dataset$year))
 #'
 #'
-#' ### Example 1: Penalized and common DLNM
+#' ### Example
 #'
 #' # Create the (unpenalized) crossbasis
 #'
@@ -922,7 +923,8 @@ data_pred_1d <- function(basis, at_x, predlag, cen){
 #'     data = dataset,
 #'     offset = log(pop),
 #'     model.comparison = list(DIC = TRUE),
-#'     family = "Poisson")
+#'     family = "Poisson"
+#' )
 #'
 #' # Make predictions
 #' pred_conf_max <- pred_crossbasis(
@@ -940,17 +942,17 @@ data_pred_1d <- function(basis, at_x, predlag, cen){
 #'     pred_conf_max,
 #'     slice_x = c(28,30),
 #'     ptype = "allRRfit"
-#')
+#' )
 #'
 #' # Extract lag-specific RR for 28 and 30 degrees Celsius, lag 0 and 8 and
-#' # for 10% deprivation percentile
+#' # for the 10th percentile of deprivation
 #' extract_predictions(
 #'     pred_conf_max,
 #'     slice_x = c(28,30),
 #'     slice_lag = c(0,8),
 #'     slice_by = quantile(dataset$depriv,probs= c(0.10)),
 #'     ptype = "matRRfit"
-#')
+#' )
 #' }
 #'
 #' @export

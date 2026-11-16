@@ -22,7 +22,7 @@ effects or other structured effects.}
 \item{arg}{A list specifying additional arguments. The argument
 \code{arg$type} determines the type of component:
 \describe{
-\item{\code{crossbasis}}{A penalized or unpenalized DLNM cross-basis (constructed
+\item{\code{"crossbasis"}}{A penalized or unpenalized DLNM crossbasis (constructed
 using \code{ps}, \code{ns} or \code{bs}, with the same spline basis type
 for the exposure and lag dimensions). The spline specifications,
 such as degrees of freedom or knot locations, may differ between
@@ -30,28 +30,26 @@ the two dimensions. Objects of class \code{crossbasis} are recognized
 automatically and therefore do not need to be specified explicitly in
 \code{arg$type}. The additional argument \code{pen} can be specified, where
 \code{NULL} specifies an unpenalized basis and an integer
-specifies the penalty structure (default is 2 for \code{ps}).
+specifies the penalty structure (default is 2 for P-spline bases).
 The additional argument \code{add.lagpen}
-(default TRUE) is a logical indicator, indicating whether an additional
+(defaults to \code{TRUE}) is a logical indicator, indicating whether an additional
 penalty should be specified in the lag dimension (for penalized settings)
 to encourage shrinkage of the effect at longer lags. The additional lag
-penalty matrix can be specified using \code{lagpen}: by default, this is a diagonal
-matrix with entries corresponding to \verb{0^2,1^2,...,(vl-1)^2}, with \code{vl} the
-degrees of freedom for the lag basis.
-\code{diag((0:(vl - 1))^2)}.}
-\item{\code{ps}, \code{ns}, \code{bs}}{Smooth functions based on P-splines,
+penalty matrix can be specified using \code{lagpen}: by default \code{diag((0:(vl - 1))^2)},
+with \code{vl} the degrees of freedom of the lag basis.}
+\item{\code{"ps"}, \code{"ns"}, \code{"bs"}}{Smooth functions based on P-splines,
 natural splines, or B-splines. Additional arguments can include
 those passed to the corresponding spline constructors, such as
 \code{df}, \code{knots}, \code{intercept}, \code{Boundary.knots}, \code{degree}, and
 penalty specifications.}
-\item{\code{ind}, \code{ICAR}, \code{Leroux}, \code{Convolution}}{Random
+\item{\code{"ind"}, \code{"ICAR"}, \code{"Leroux"}, \code{"Convolution"}}{Random
 effects, including spatial random effects. Additional arguments
 include spatial connectivity information through \code{map} (sf-object) and
 \code{connect} (logical value indicating whether the spatial adjacency
 graph should be connected, defaults to \code{TRUE}).}
-\item{\code{rw1}, \code{rw2}}{First- and second-order random walks.
+\item{\code{"rw1"}, \code{"rw2"}}{First- and second-order random walks.
 Additional arguments include \code{cyclic} for specifying cyclic random
-walks (Defaults to \code{FALSE}).}
+walks (defaults to \code{FALSE}).}
 }}
 
 \item{by}{An optional variable used to modify or stratify the model
@@ -74,22 +72,22 @@ factor is a region indicator.
 variable. The argument \code{arg.by$type} determines how the \code{by} variable
 is modelled:
 \describe{
-\item{\code{ps}, \code{ns}, \code{bs}}{Smooth functions based on P-splines,
+\item{\code{"ps"}, \code{"ns"}, \code{"bs"}}{Smooth functions based on P-splines,
 natural splines, or B-splines. Additional arguments can include
 those passed to the corresponding spline constructors, such as
 \code{df}, \code{knots}, \code{intercept}, \code{Boundary.knots}, \code{degree}, and
 penalty specifications.}
-\item{\code{linear}, \code{factor}}{Linear relationship or according to
+\item{\code{"linear"}, \code{"factor"}}{Linear relationship or according to
 a categorical (factor) variable.}
-\item{\code{ind}, \code{ICAR}, \code{Leroux}}{Random effects, including spatial
+\item{\code{"ind"}, \code{"ICAR"}, \code{"Leroux"}}{Random effects, including spatial
 random effects. Additional arguments include spatial connectivity
 information through \code{map} (sf-object) and \code{connect} (logical value indicating
 whether the spatial adjacency graph should be connected, defaults
 to \code{TRUE}).}
-\item{\code{rw1}, \code{rw2}}{First- and second-order random walks.
+\item{\code{"rw1"}, \code{"rw2"}}{First- and second-order random walks.
 Additional arguments include \code{cyclic} for specifying cyclic random
-walks (Defaults to \code{FALSE}). Only for time-structured (spatial)
-random effects (main type is \code{ind}, \code{ICAR} or \code{Leroux}).}
+walks (defaults to \code{FALSE}). Only for time-structured (spatial)
+random effects (main type is \code{"ind"}, \code{"ICAR"} or \code{"Leroux"}).}
 }}
 }
 \value{
@@ -104,8 +102,8 @@ in the model formula supplied to \code{\link[=dlnmLPS]{dlnmLPS()}}.
 \examples{
 # `sm()` is intended to be used inside a dlnmLPS() formula:
 \dontrun{
-# Penalized DLNM cross-basis
-# Cross-basis objects are recognized automatically
+# Penalized DLNM crossbasis
+# Crossbasis objects are recognized automatically
 sm(crossbasis, arg = list(pen = 2))
 
 # Leroux spatial random effect
@@ -117,7 +115,7 @@ sm(time, arg = list(type = "rw2", cyclic = TRUE))
 # Penalized P-spline smooth
 sm(x, arg = list(type = "ps", pen = 2, df = 5))
 
-# Penalized DLNM cross-basis by location (region_ID)
+# Penalized DLNM crossbasis by location (region_ID)
 sm(
   crossbasis,
   arg = list(pen = 2),
@@ -125,7 +123,7 @@ sm(
   arg.by = list(type = "Leroux", map = map)
 )
 
-# Penalized DLNM cross-basis by continuous modifier x (using ps)
+# Penalized DLNM crossbasis by continuous modifier x (using ps)
 sm(
   crossbasis,
   arg = list(pen = 2),

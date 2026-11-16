@@ -49,11 +49,11 @@ univariate exposures).}
 }}
 
 \item{multiple.plots}{Logical. Should the results of different by-levels be plotted in
-different windows (default = TRUE)?}
+different windows (defaults to \code{TRUE})?}
 
-\item{show.legend}{Logical. Should the legend appear on the plot (default = TRUE)?}
+\item{show.legend}{Logical. Should the legend appear on the plot (defaults to \code{TRUE})?}
 
-\item{CI}{Logical. Should credible intervals be displayed (default = FALSE)? credible
+\item{CI}{Logical. Should credible intervals be displayed (defaults to \code{FALSE})? credible
 intervals are only available for two-dimensional plots.}
 
 \item{xlim, ylim, zlim}{Numeric vectors of length two giving axis limits.}
@@ -65,7 +65,7 @@ intervals are only available for two-dimensional plots.}
 \item{mar}{Figure margins.}
 
 \item{...}{Additional graphical arguments passed to the underlying plotting
-functions. For 3D plots, additional arguments of \code{graphics::persp} can be passed.}
+functions. For 3D plots, additional arguments of \code{graphics::persp()} can be passed.}
 }
 \value{
 Produces a plot. The function is called for its side effects and returns

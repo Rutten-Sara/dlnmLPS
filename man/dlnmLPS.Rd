@@ -19,7 +19,7 @@ dlnmLPS(
 \arguments{
 \item{model}{A model formula. Smooth terms specified using \link{sm} can be
 included on the right-hand side to define random effects, random walks,
-DLNM cross-basis terms, or other smooth functions.}
+DLNM crossbasis terms, or other smooth functions.}
 
 \item{data}{A data frame containing the response variable and covariates
 specified in the model formula.}
@@ -27,15 +27,16 @@ specified in the model formula.}
 \item{offset}{An optional model offset term.}
 
 \item{model.comparison}{A list specifying optional model evaluation criteria to calculate.
-Possible elements are \code{DIC}, \code{WAIC}, and \code{CPO}, each taking a logical value
+Possible elements are \code{"DIC"}, \code{"WAIC"}, and \code{"CPO"}, each taking a logical value
 (\code{TRUE} or \code{FALSE}). All criteria default to \code{FALSE}.}
 
 \item{family}{The distribution family used for the response model. Currently
-supported options are \code{Poisson} for the Poisson distribution,
-\code{NB} for the negative binomial distribution, \code{Gaussian} for the normal
-distribution (default) or \code{Bernoulli}/\code{Binomial} for binary data.}
+supported options are \code{"Poisson"} for the Poisson distribution,
+\code{NB} for the negative binomial distribution, \code{"Gaussian"} for the normal
+distribution (default), \code{"Bernoulli"} for binary data or \code{"Binomial"} for
+binomial counts (with \code{Ntrials}).}
 
-\item{Ntrials}{Number of trials per observation (for \code{family}="Binomial").}
+\item{Ntrials}{Number of trials per observation (for \code{family = "Binomial"}).}
 
 \item{refit}{Optional number of additional model refinement iterations. Each
 iteration updates the coefficient and hyperparameter estimates based on the

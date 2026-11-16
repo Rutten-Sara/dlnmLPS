@@ -54,7 +54,7 @@ univariate exposures).}
 \item{mar}{Figure margins.}
 
 \item{...}{Additional graphical arguments passed to the underlying plotting
-functions. For 3D plots, additional arguments of \code{graphics::persp} can be passed.}
+functions. For 3D plots, additional arguments of \code{graphics::persp()} can be passed.}
 }
 \value{
 Produces a contour plot and returns \code{NULL} invisibly.

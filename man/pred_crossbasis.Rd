@@ -2,7 +2,7 @@
 % Please edit documentation in R/predRR.R
 \name{pred_crossbasis}
 \alias{pred_crossbasis}
-\title{Generate Predictions from a dlnmLPS Model}
+\title{Generate predictions from a dlnmLPS model}
 \usage{
 pred_crossbasis(
   basis,
@@ -59,7 +59,7 @@ cumulative relative risks. Defaults to \code{FALSE}.}
 should be calculated. Defaults to \code{FALSE}.}
 
 \item{threshold}{Numeric value defining the threshold used for exceedance
-probability calculations (at scale of linear predictor). Defaults to \code{0}.}
+probability calculations (on the scale of the linear predictor). Defaults to \code{0}.}
 
 \item{mode}{Optional user-specified posterior mode.}
 
@@ -88,13 +88,13 @@ values in \code{matfit}.}
 cumulative predictions in \code{allfit}.}
 \item{Qupper_allfit}{Vector of upper credible interval bounds for the overall
 cumulative predictions in \code{allfit}.}
-\item{allRRfit}{Matrix of exponentiated associations from \code{allfit}.}
-\item{Qlower_allRRfit}{Matrix of exponentiated bounds from \code{Qlower_allfit}.}
-\item{Qupper_allRRfit}{Matrix of exponentiated bounds from \code{Qupper_allfit}.}
-\item{exc.prob_matfit}{Matrix of exceedance probabilities for matfit, if requested.}
-\item{exc.prob_allfit}{Vector of exceedance probabilities for allfit, if requested.}
-\item{x}{Exposure values at_x.}
-\item{y}{Exposure values at_y.}
+\item{allRRfit}{Vector of exponentiated associations from \code{allfit}.}
+\item{Qlower_allRRfit}{Vector of exponentiated bounds from \code{Qlower_allfit}.}
+\item{Qupper_allRRfit}{Vector of exponentiated bounds from \code{Qupper_allfit}.}
+\item{exc.prob_matfit}{Vector of exceedance probabilities for \code{matfit}, if requested.}
+\item{exc.prob_allfit}{Vector of exceedance probabilities for \code{allfit}, if requested.}
+\item{x}{Exposure values \code{at_x}.}
+\item{y}{Exposure values \code{at_y}.}
 \item{lag}{Lag range.}
 \item{by}{Level or value of the \code{by} variable (if applicable).}
 \item{family}{The distribution family of the model.}
@@ -226,7 +226,8 @@ model_max_spat <- dlnmLPS(
     data = dataset,
     offset = log(pop),
     model.comparison = list(DIC = TRUE),
-    family = "Poisson")
+    family = "Poisson"
+)
 
 summary(model_max_spat)
 
@@ -281,7 +282,7 @@ extract_predictions(
 )
 
 # Extract lag-specific RR for 28 and 30 degrees Celsius, lag 0 and 8 and
-# for 10\% deprivation percentile
+# for the 10th percentile of deprivation
 extract_predictions(
     pred_conf_max,
     slice_x = c(28,30),
