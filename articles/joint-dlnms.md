@@ -110,7 +110,8 @@ model_additive <- dlnmLPS(dtot ~ factor(dow) +
                                 sm(District, arg = list(type = "ind")),
                            data = dataset,
                            offset = log(pop),
-                           model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                           model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                   CPO = TRUE),
                            family = "Poisson")
 ```
 
@@ -153,7 +154,8 @@ model_unpenalized <- dlnmLPS(dtot ~ factor(dow) +
                                    sm(District, arg = list(type = "ind")),
                               data = dataset,
                               offset = log(pop),
-                              model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                              model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                      CPO = TRUE),
                               family = "Poisson")
 ```
 
@@ -179,7 +181,8 @@ model_penalized <- dlnmLPS(dtot ~ factor(dow) +
                                  sm(District, arg = list(type = "ind")),
                               data = dataset,
                               offset = log(pop),
-                              model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                              model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                      CPO = TRUE),
                               family = "Poisson")
 ```
 
@@ -197,8 +200,10 @@ be requested, using:
 df = data.frame()
 k=1
 for (i in seq(23,30,by=0.5)){
-  lower_i = min(barcelona_temp$Tmin[barcelona_temp$Tmax<i+0.25 & barcelona_temp$Tmax>i-0.25])
-  upper_i = max(barcelona_temp$Tmin[barcelona_temp$Tmax<i+0.25 & barcelona_temp$Tmax>i-0.25])
+  lower_i = min(barcelona_temp$Tmin[barcelona_temp$Tmax<i+0.25 & 
+                                      barcelona_temp$Tmax>i-0.25])
+  upper_i = max(barcelona_temp$Tmin[barcelona_temp$Tmax<i+0.25 & 
+                                      barcelona_temp$Tmax>i-0.25])
   for (j in seq(14,21,by=0.5)){
     if (j<upper_i & j>lower_i){
       df[k,1] = i
@@ -229,7 +234,8 @@ three `x` and `y` combinations, we can use:
 
 ``` r
 
-extract_predictions(pred_penalized, slice_x = df$x[1:3], slice_y = df$y[1:3], ptype = "matRRfit")
+extract_predictions(pred_penalized, slice_x = df$x[1:3], slice_y = df$y[1:3], 
+                    ptype = "matRRfit")
 #>     x    y lag       fit     lower     upper   exc.prob
 #> 1  23 14.0   0 0.9852169 0.9672663 1.0035005 0.05620042
 #> 2  23 14.5   0 0.9855044 0.9677709 1.0035628 0.05750335
@@ -282,7 +288,8 @@ A contour plot and 3D plot of the overall cumulative RR can be made:
 
 ``` r
 
-contour(pred_penalized, ptype = "overall", xlab = "maximum temperature", ylab = "minimum temperature")
+contour(pred_penalized, ptype = "overall", 
+        xlab = "maximum temperature", ylab = "minimum temperature")
 ```
 
 ![](joint-dlnms_files/figure-html/unnamed-chunk-10-1.png)
@@ -313,8 +320,8 @@ or the exposure-response relationship for the immediate risk (lag = 0):
 
 ``` r
 
-contour(pred_penalized, slice_lag = 0, xlab = "maximum temperature", ylab = "minimum temperature", 
-        ptype = "slices")
+contour(pred_penalized, slice_lag = 0, xlab = "maximum temperature", 
+        ylab = "minimum temperature", ptype = "slices")
 ```
 
 ![](joint-dlnms_files/figure-html/unnamed-chunk-12-1.png)
@@ -323,8 +330,8 @@ and the risk at lag 5:
 
 ``` r
 
-contour(pred_penalized, slice_lag = 5, xlab = "maximum temperature", ylab = "minimum temperature",
-        ptype = "slices")
+contour(pred_penalized, slice_lag = 5, xlab = "maximum temperature", 
+        ylab = "minimum temperature", ptype = "slices")
 ```
 
 ![](joint-dlnms_files/figure-html/unnamed-chunk-13-1.png)
@@ -371,7 +378,8 @@ af_ci <- dplyr::bind_rows(lapply(seq_along(af2007_district$samples), function(i)
 
 # Visualize results
 ggplot2::ggplot(af_ci, ggplot2::aes(x = estimate, y = ID)) +
-  ggplot2::geom_errorbar(ggplot2::aes(xmin = lower, xmax = upper), orientation = "y") +
+  ggplot2::geom_errorbar(ggplot2::aes(xmin = lower, xmax = upper), 
+                         orientation = "y") +
   ggplot2::geom_point() +
   ggplot2::labs(x = "Attributable fraction", y = "District") +
   ggplot2::theme_minimal()

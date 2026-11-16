@@ -121,7 +121,8 @@ basis.max_pen <- dlnm::crossbasis(
 )
 
 dataset$depriv_cat <- ifelse(dataset$depriv <= quantile(dataset$depriv,0.25), "low",
-                             ifelse(dataset$depriv >= quantile(dataset$depriv,0.75), "high", "medium"))
+                             ifelse(dataset$depriv >= quantile(dataset$depriv,0.75), 
+                                    "high", "medium"))
 
 model1 <- dlnmLPS(dtot ~ factor(dow) + factor(depriv_cat) +
                         sm(basis.max_pen, arg = list(pen = 2),
@@ -162,9 +163,10 @@ using natural splines with two knots. The model can be fitted as:
 # Fit an unpenalized smooth modified DLNM
 knots_depriv <- quantile(dataset$depriv, probs = c(0.10,0.90))
 
-model3 <- dlnmLPS(dtot ~ factor(dow) + sm(depriv, arg = list(type = "ns", knots = knots_depriv)) +
-                        sm(basis.max_pen, arg = list(pen = 2),
-                           by = depriv, arg.by = list(type = "ns", knots = knots_depriv)) +
+model3 <- dlnmLPS(dtot ~ factor(dow) + 
+                        sm(depriv, arg = list(type = "ns", knots = knots_depriv)) +
+                        sm(basis.max_pen, arg = list(pen = 2), by = depriv, 
+                           arg.by = list(type = "ns", knots = knots_depriv)) +
                         sm(month, arg = list(type = "ns", df = 3)) +
                         sm(year, arg = list(type = "rw1")) +
                         sm(District, arg = list(type = "ind")),
@@ -180,9 +182,10 @@ index using penalized splines:
 ``` r
 
 # Fit a penalized smooth modified DLNM
-model4 <- dlnmLPS(dtot ~ factor(dow) + sm(depriv, arg = list(type = "ps", df = 5, pen = 2)) +
-                        sm(basis.max_pen, arg = list(pen = 2),
-                           by = depriv, arg.by = list(type = "ps", df = 5, pen = 2)) +
+model4 <- dlnmLPS(dtot ~ factor(dow) + 
+                        sm(depriv, arg = list(type = "ps", df = 5, pen = 2)) +
+                        sm(basis.max_pen, arg = list(pen = 2), by = depriv, 
+                           arg.by = list(type = "ps", df = 5, pen = 2)) +
                         sm(month, arg = list(type = "ns", df = 3)) +
                         sm(year, arg = list(type = "rw1")) +
                         sm(District, arg = list(type = "ind")),
@@ -247,7 +250,8 @@ can use:
 ``` r
 
 extract_predictions(pred_penalized, slice_x = c(22,30), slice_lag = c(0,2), 
-                    slice_by = round(quantile(dataset$depriv, probs = c(0.025,0.975)),2), 
+                    slice_by = round(quantile(dataset$depriv, 
+                                              probs = c(0.025,0.975)),2), 
                     ptype = "matRRfit")
 #>    x lag       fit     lower    upper   exc.prob    by
 #> 1 22   0 0.9442464 0.8760011 1.017808 0.06696302 -2.09
@@ -292,7 +296,8 @@ plot(pred_penalized, slice_x = 30,
 
 ``` r
 
-plot(pred_penalized, slice_by = round(quantile(dataset$depriv, probs = c(0.025,0.975)),2), 
+plot(pred_penalized, 
+     slice_by = round(quantile(dataset$depriv, probs = c(0.025,0.975)),2), 
      ptype = "overall", CI = TRUE, xlab = "temperature", ylab = "RR",  
      multiple.plots = FALSE)
 ```
@@ -343,7 +348,8 @@ fraction, in which the deprivation index in every area is equal to the
 ``` r
 
 # Calculate counterfactual attributable risk
-depriv_lower <- round(quantile(data2007_district$depriv, probs = 0.025, na.rm = TRUE),2)
+depriv_lower <- round(quantile(data2007_district$depriv, 
+                               probs = 0.025, na.rm = TRUE),2)
 af2007_counter <- attributable_risk(
   basis = basis.max_pen, 
   cases = data2007_district$dtot, 
@@ -393,7 +399,8 @@ ggplot2::ggplot(af_plot_df, ggplot2::aes(x = estimate, y = ID, colour = scenario
   ggplot2::geom_errorbar(ggplot2::aes(xmin = lower, xmax = upper), orientation = "y", 
                          position = ggplot2::position_dodge(0.5)) +
   ggplot2::geom_point(position = ggplot2::position_dodge(0.5)) +
-  ggplot2::scale_colour_manual(values = c("Observed" = "#0072B2","Counterfactual" = "#D55E00")) +
+  ggplot2::scale_colour_manual(values = c("Observed" = "#0072B2",
+                                          "Counterfactual" = "#D55E00")) +
   ggplot2::labs(x = "Attributable fraction", y = "District",colour = "Scenario") +
   ggplot2::theme_minimal()
 ```

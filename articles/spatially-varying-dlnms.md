@@ -126,18 +126,22 @@ model_typeI <- dlnmLPS(dtot ~ factor(dow) +
                              sm(District, arg = list(type = "ind")),
                         data = dataset,
                         offset = log(pop),
-                        model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                        model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                CPO = TRUE),
                         family = "Poisson")
 
 model_typeIII <- dlnmLPS(dtot ~ factor(dow) + 
-                               sm(basis.max,
-                                  by = District, arg.by = list(type = "Leroux", map = shapefile_bcn)) +
+                               sm(basis.max, by = District, 
+                                  arg.by = list(type = "Leroux", 
+                                                map = shapefile_bcn)) +
                                sm(month, arg = list(type = "ns", df = 3)) +
                                sm(year, arg = list(type = "rw1")) +
-                               sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+                               sm(District, arg = list(type = "Leroux", 
+                                                       map = shapefile_bcn)),
                           data = dataset,
                           offset = log(pop),
-                          model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                          model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                  CPO = TRUE),
                           family = "Poisson")
 ```
 
@@ -163,18 +167,22 @@ model_typeII <- dlnmLPS(dtot ~ factor(dow) +
                               sm(District, arg = list(type = "ind")),
                          data = dataset,
                          offset = log(pop),
-                         model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                         model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                 CPO = TRUE),
                          family = "Poisson")
 
 model_typeIV <- dlnmLPS(dtot ~ factor(dow) + 
-                              sm(basis.max_pen, arg = list(pen = 2),
-                                  by = District, arg.by = list(type = "Leroux", map = shapefile_bcn)) +
+                              sm(basis.max_pen, arg = list(pen = 2), by = District, 
+                                 arg.by = list(type = "Leroux", 
+                                               map = shapefile_bcn)) +
                               sm(month, arg = list(type = "ns", df = 3)) +
                               sm(year, arg = list(type = "rw1")) +
-                              sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+                              sm(District, arg = list(type = "Leroux", 
+                                                      map = shapefile_bcn)),
                          data = dataset,
                          offset = log(pop),
-                         model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                         model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                 CPO = TRUE),
                          family = "Poisson")
 ```
 
@@ -193,8 +201,8 @@ model_typeII$DIC; model_typeII$WAIC; -sum(log(model_typeII$CPO))
 #> [1] 30382.19
 #> [1] 15191.02
 model_typeIII$DIC; model_typeIII$WAIC; -sum(log(model_typeIII$CPO))
-#> [1] 30375.43
-#> [1] 30379.17
+#> [1] 30375.42
+#> [1] 30379.16
 #> [1] 15189.47
 model_typeIV$DIC; model_typeIV$WAIC; -sum(log(model_typeIV$CPO))
 #> [1] 30365.26
@@ -230,7 +238,8 @@ the first four districts, we can use:
 
 ``` r
 
-extract_predictions(pred_penalized, slice_x = 30, slice_by = unique(dataset$District)[1:4],
+extract_predictions(pred_penalized, slice_x = 30, 
+                    slice_by = unique(dataset$District)[1:4],
                     ptype = "allRRfit")
 #>    x      fit    lower    upper by
 #> 1 30 1.695993 1.505548 1.910528 01
@@ -244,13 +253,14 @@ four districts and for lag 0, 3 and 8 as:
 
 ``` r
 
-plot(pred_penalized, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, xlab = "temperature",
-     ylab = "RR", slice_by = unique(dataset$District)[1:4])
+plot(pred_penalized, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, 
+     xlab = "temperature", ylab = "RR", 
+     slice_by = unique(dataset$District)[1:4])
 ```
 
 ![](spatially-varying-dlnms_files/figure-html/unnamed-chunk-10-1.png)
 
-The option `multiple.plots` = FALSE allows visualizing the results for
+The option `multiple.plots = FALSE` allows visualizing the results for
 different districts on one plot. However, this option is only available
 for an integer (and not a vector) slice exposure or lag value or overall
 RR-curve. The lag-response relationships at 30 degrees can be visualized
@@ -258,8 +268,9 @@ for the four districts using:
 
 ``` r
 
-plot(pred_penalized, slice_x = 30, ptype = "slices", CI = TRUE, xlab = "lag", ylab = "RR",
-     multiple.plots = FALSE, slice_by = unique(dataset$District)[1:4])
+plot(pred_penalized, slice_x = 30, ptype = "slices", CI = TRUE, 
+     xlab = "lag", ylab = "RR", multiple.plots = FALSE, 
+     slice_by = unique(dataset$District)[1:4])
 ```
 
 ![](spatially-varying-dlnms_files/figure-html/unnamed-chunk-11-1.png)
@@ -269,8 +280,8 @@ legend and credible intervals, we can specify:
 
 ``` r
 
-plot(pred_penalized, slice_x = 30, ptype = "slices", CI = FALSE, xlab = "lag", ylab = "RR",
-     multiple.plots = FALSE, show.legend = FALSE)
+plot(pred_penalized, slice_x = 30, ptype = "slices", CI = FALSE, 
+     xlab = "lag", ylab = "RR", multiple.plots = FALSE, show.legend = FALSE)
 ```
 
 ![](spatially-varying-dlnms_files/figure-html/unnamed-chunk-12-1.png)
@@ -280,8 +291,8 @@ using:
 
 ``` r
 
-plot(pred_penalized, ptype = "overall", CI = FALSE, xlab = "temperature", ylab = "RR", 
-     multiple.plots = FALSE, show.legend = FALSE, col = "black")
+plot(pred_penalized, ptype = "overall", CI = FALSE, xlab = "temperature", 
+     ylab = "RR", multiple.plots = FALSE, show.legend = FALSE, col = "black")
 ```
 
 ![](spatially-varying-dlnms_files/figure-html/unnamed-chunk-13-1.png)
@@ -367,7 +378,8 @@ af_ci <- dplyr::bind_rows(lapply(seq_along(af2007_district$samples), function(i)
 
 # Visualize results
 ggplot2::ggplot(af_ci, ggplot2::aes(x = estimate, y = ID)) +
-  ggplot2::geom_errorbar(ggplot2::aes(xmin = lower, xmax = upper), orientation = "y") +
+  ggplot2::geom_errorbar(ggplot2::aes(xmin = lower, xmax = upper), 
+                         orientation = "y") +
   ggplot2::geom_point() +
   ggplot2::labs(x = "Attributable fraction", y = "District") +
   ggplot2::theme_minimal()

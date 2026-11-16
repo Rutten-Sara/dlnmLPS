@@ -140,7 +140,8 @@ basis.max <- dlnm::crossbasis(
 model_unpenalized <- dlnmLPS(dtot ~ sm(basis.max),
                               data = dataset,
                               offset = log(pop),
-                              model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                              model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                      CPO = TRUE),
                               family = "Poisson")
 ```
 
@@ -160,7 +161,8 @@ model_unpenalized2 <- dlnmLPS(dtot ~ factor(dow) + sm(basis.max) +
                                     sm(month, arg = list(type = "ns", df = 3)),
                               data = dataset,
                               offset = log(pop),
-                              model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                              model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                      CPO = TRUE),
                               family = "Poisson")
 ```
 
@@ -267,7 +269,8 @@ at lag 0 and lag 8 for these temperatures, we can similarly use
 
 ``` r
 
-extract_predictions(pred_unpenalized, slice_x = c(22,30), slice_lag = c(0,8), ptype = "matRRfit")
+extract_predictions(pred_unpenalized, slice_x = c(22,30), slice_lag = c(0,8), 
+                    ptype = "matRRfit")
 #>    x lag       fit     lower    upper   exc.prob
 #> 1 22   0 0.9569183 0.9089288 1.007442 0.04671868
 #> 2 30   0 1.1845835 1.1495812 1.220652 1.00000000
@@ -295,7 +298,8 @@ level(s) using `slice_x`:
 
 ``` r
 
-plot(pred_unpenalized, slice_x = 30, ptype = "slices", CI = TRUE, xlab = "lag", ylab = "RR")
+plot(pred_unpenalized, slice_x = 30, ptype = "slices", CI = TRUE, 
+     xlab = "lag", ylab = "RR")
 ```
 
 ![](introduction_dlnmlps_files/figure-html/unnamed-chunk-12-1.png)
@@ -307,7 +311,8 @@ period) by specifying `ptype = "overall"`.
 
 ``` r
 
-plot(pred_unpenalized, ptype = "overall", CI = TRUE, xlab = "temperature", ylab = "RR")
+plot(pred_unpenalized, ptype = "overall", CI = TRUE, 
+     xlab = "temperature", ylab = "RR")
 ```
 
 ![](introduction_dlnmlps_files/figure-html/unnamed-chunk-13-1.png)
@@ -377,11 +382,13 @@ basis.max_pen <- dlnm::crossbasis(
   group = group
 )
 
-model_penalized <- dlnmLPS(dtot ~ factor(dow) + sm(basis.max_pen, arg = list(pen = 2)) +
+model_penalized <- dlnmLPS(dtot ~ factor(dow) + 
+                                 sm(basis.max_pen, arg = list(pen = 2)) +
                                  sm(month, arg = list(type = "ns", df = 3)),
                             data = dataset,
                             offset = log(pop),
-                            model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                            model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                    CPO = TRUE),
                             family = "Poisson")
 ```
 
@@ -498,14 +505,16 @@ pred_penalized <- pred_crossbasis(
   CI = TRUE
 )
 
-plot(pred_penalized, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, xlab = "temperature", ylab = "RR")
+plot(pred_penalized, slice_lag = c(0,3,8), ptype = "slices", CI = TRUE, 
+     xlab = "temperature", ylab = "RR")
 ```
 
 ![](introduction_dlnmlps_files/figure-html/unnamed-chunk-19-1.png)
 
 ``` r
 
-plot(pred_penalized, slice_x = 30, ptype = "slices", CI = TRUE, xlab = "lag", ylab = "RR")
+plot(pred_penalized, slice_x = 30, ptype = "slices", CI = TRUE, 
+     xlab = "lag", ylab = "RR")
 ```
 
 ![](introduction_dlnmlps_files/figure-html/unnamed-chunk-19-2.png)
@@ -653,7 +662,8 @@ af_ci <- dplyr::bind_rows(lapply(seq_along(af2007_district$samples), function(i)
 
 # Visualize results
 ggplot2::ggplot(af_ci, ggplot2::aes(x = estimate, y = ID)) +
-  ggplot2::geom_errorbar(ggplot2::aes(xmin = lower, xmax = upper), orientation = "y") +
+  ggplot2::geom_errorbar(ggplot2::aes(xmin = lower, xmax = upper), 
+                         orientation = "y") +
   ggplot2::geom_point() +
   ggplot2::labs(x = "Attributable fraction", y = "District") +
   ggplot2::theme_minimal()
@@ -710,13 +720,16 @@ district-specific Leroux-structured random effect can be fitted as:
 
 # Fit a penalized DLNM with spatial and temporal RW
 data(shapefile_bcn)
-model_penalized2 <- dlnmLPS(dtot ~ factor(dow) + sm(basis.max_pen, arg = list(pen = 2)) +
+model_penalized2 <- dlnmLPS(dtot ~ factor(dow) + 
+                                  sm(basis.max_pen, arg = list(pen = 2)) +
                                   sm(month, arg = list(type = "ns", df = 3)) +
                                   sm(year, arg = list(type = "rw1")) +
-                                  sm(District, arg = list(type = "Leroux", map = shapefile_bcn)),
+                                  sm(District, arg = list(type = "Leroux", 
+                                                          map = shapefile_bcn)),
                              data = dataset,
                              offset = log(pop),
-                             model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                             model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                     CPO = TRUE),
                              family = "Poisson")
 ```
 
@@ -745,13 +758,16 @@ independently by year can for example be fitted as:
 ``` r
 
 # Fit a penalized DLNM with temporally varying spatial effect
-model_penalized3 <- dlnmLPS(dtot ~ factor(dow) + sm(basis.max_pen, arg = list(pen = 2)) +
+model_penalized3 <- dlnmLPS(dtot ~ factor(dow) + 
+                                  sm(basis.max_pen, arg = list(pen = 2)) +
                                   sm(month, arg = list(type = "ns", df = 3)) +
-                                  sm(District, arg = list(type = "Leroux", map = shapefile_bcn),
+                                  sm(District, arg = list(type = "Leroux", 
+                                                          map = shapefile_bcn),
                                          by = year, arg.by = list(type = "ind")),
                              data = dataset,
                              offset = log(pop),
-                             model.comparison = list(DIC = TRUE, WAIC = TRUE, CPO = TRUE),
+                             model.comparison = list(DIC = TRUE, WAIC = TRUE, 
+                                                     CPO = TRUE),
                              family = "Poisson")
 ```
 
