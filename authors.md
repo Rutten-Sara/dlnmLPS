@@ -16,6 +16,8 @@ Email: <sara.rutten@uhasselt.be>
 [ORCID](https://orcid.org/0009-0000-3194-5769)
 [GitHub](https://github.com/Rutten-Sara)
 
+## All authors
+
 - **Sara Rutten**. Author, maintainer, copyright holder.
   [](https://orcid.org/0009-0000-3194-5769)  
   Interuniversity Institute for Biostatistics and statistical
