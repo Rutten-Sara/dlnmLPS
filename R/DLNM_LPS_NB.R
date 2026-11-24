@@ -407,7 +407,7 @@ dlnmLPS_NB <- function(model,
           inv_phi = 1/phi
 
           Qv_est <- Qv(v)
-
+          Qv_est <- Qv_est + Matrix::Diagonal(nrow(Qv_est)) * 1e-5
 
           varval <-  var.nb(Cvxi_temp, inv_phi)
           inv_varval <- 1/varval

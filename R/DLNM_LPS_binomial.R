@@ -361,7 +361,7 @@ dlnmLPS_binomial <- function(model,
       log_pv <- function(v, xi){
 
         result <- tryCatch({
-          Qv_est <- Qv(v)
+          Qv_est <- Qv(v)+Matrix::Diagonal(nrow(XWX)) * 1e-5
           a1 <- -0.5*determinant_Pv(XWX+Qv_est)
 
           a4 <- 0.5 * sum((xi * Qv_est) %*% xi)

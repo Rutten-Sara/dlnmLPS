@@ -278,6 +278,7 @@ dlnmLPS_Gaussian <- function(model,
         result <- tryCatch({
           tau <- exp(v[1])
           Qv_est <- Qv(v)
+          Qv_est <- Qv_est+Matrix::Diagonal(nrow(Qv_est)) * 1e-5
           a1 <- -0.5*determinant_Pv(tau*XtX+Qv_est)
 
           a4 <- 0.5 * sum((xi * Qv_est) %*% xi)
