@@ -492,7 +492,7 @@ dlnmLPS_NB <- function(model,
             }
           }
 
-          v_mode = opt_result$v_mode
+          v_mode = opt_result$par
 
 
           Qv_mode <- Qv(v_mode)
