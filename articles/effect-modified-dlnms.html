@@ -245,7 +245,7 @@ comparison criteria DIC, WAIC and CPO:</p>
 <span><span class="co">#&gt; [1] 15206.92</span></span>
 <span><span class="va">model2</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model2</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model2</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 30389.52</span></span>
-<span><span class="co">#&gt; [1] 30392.74</span></span>
+<span><span class="co">#&gt; [1] 30392.75</span></span>
 <span><span class="co">#&gt; [1] 15196.3</span></span>
 <span><span class="va">model3</span><span class="op">$</span><span class="va">DIC</span>; <span class="va">model3</span><span class="op">$</span><span class="va">WAIC</span>; <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">model3</span><span class="op">$</span><span class="va">CPO</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 30389.78</span></span>
@@ -282,14 +282,14 @@ in the lag-specific RR for lag 0 and lag 2 at 22 and 30 degrees and the
 <span>                                              probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>,<span class="fl">0.975</span><span class="op">)</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span>, </span>
 <span>                    ptype <span class="op">=</span> <span class="st">"matRRfit"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    x lag       fit     lower    upper   exc.prob    by</span></span>
-<span><span class="co">#&gt; 1 22   0 0.9442464 0.8760011 1.017808 0.06696302 -2.09</span></span>
-<span><span class="co">#&gt; 2 30   0 1.1271127 1.0665336 1.191133 0.99998908 -2.09</span></span>
-<span><span class="co">#&gt; 3 22   2 0.9529780 0.9034248 1.005249 0.03854716 -2.09</span></span>
-<span><span class="co">#&gt; 4 30   2 1.0263029 0.9943065 1.059329 0.94593282 -2.09</span></span>
-<span><span class="co">#&gt; 5 22   0 0.9615813 0.8950641 1.033042 0.14205176  1.45</span></span>
-<span><span class="co">#&gt; 6 30   0 1.1422335 1.0804124 1.207592 0.99999860  1.45</span></span>
-<span><span class="co">#&gt; 7 22   2 1.0057793 0.9596724 1.054101 0.59510276  1.45</span></span>
-<span><span class="co">#&gt; 8 30   2 1.0925656 1.0596566 1.126497 0.99999999  1.45</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 22   0 0.9442479 0.8760097 1.017802 0.06694729 -2.09</span></span>
+<span><span class="co">#&gt; 2 30   0 1.1271121 1.0665362 1.191129 0.99998909 -2.09</span></span>
+<span><span class="co">#&gt; 3 22   2 0.9529766 0.9034271 1.005244 0.03853159 -2.09</span></span>
+<span><span class="co">#&gt; 4 30   2 1.0263039 0.9943084 1.059329 0.94594462 -2.09</span></span>
+<span><span class="co">#&gt; 5 22   0 0.9615869 0.8950738 1.033043 0.14207111  1.45</span></span>
+<span><span class="co">#&gt; 6 30   0 1.1422361 1.0804169 1.207592 0.99999860  1.45</span></span>
+<span><span class="co">#&gt; 7 22   2 1.0057816 0.9596763 1.054102 0.59514306  1.45</span></span>
+<span><span class="co">#&gt; 8 30   2 1.0925645 1.0596561 1.126495 0.99999999  1.45</span></span></code></pre></div>
 <p>To plot the exposure-response relationship at lag 0, 3 and 8 for the
 2.5th, 50th and 97.5th percentiles of the deprivation index, we can
 use:</p>

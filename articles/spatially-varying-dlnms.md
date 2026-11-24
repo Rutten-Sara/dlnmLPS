@@ -242,10 +242,10 @@ extract_predictions(pred_penalized, slice_x = 30,
                     slice_by = unique(dataset$District)[1:4],
                     ptype = "allRRfit")
 #>    x      fit    lower    upper by
-#> 1 30 1.695993 1.505548 1.910528 01
-#> 2 30 1.367327 1.165756 1.603751 02
-#> 3 30 1.482202 1.286156 1.708131 03
-#> 4 30 1.464596 1.208412 1.775093 04
+#> 1 30 1.695991 1.505547 1.910526 01
+#> 2 30 1.367338 1.165780 1.603743 02
+#> 3 30 1.482207 1.286160 1.708136 03
+#> 4 30 1.464586 1.208404 1.775079 04
 ```
 
 We can visualize the temperature-mortality relationship for the first
